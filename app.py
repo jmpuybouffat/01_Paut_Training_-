@@ -8,12 +8,18 @@ import json
 from scan_access import scan_status
 from scan import plan_scan, beam_segment
 from geometry import validate_dimensions, preparation
-from libraries import PROBES, INDICATIONS, MWB_PROBES, PROJECT_INDICATIONS
+from libraries import PROBES, INDICATIONS, MWB_PROBES, PROJECT_INDICATIONS, gesture_demo_indications
 
 st.set_page_config(page_title='BYTE NDT | NOZZLE REV0.4', layout='wide')
 lang=st.sidebar.radio('Langue / Language',['FR','EN'],horizontal=True)
 def T(fr,en): return fr if lang=='FR' else en
+def render_dashboard(html,height):
+ if callable(getattr(st,'iframe',None)): st.iframe(html,height=height,width='stretch')
+ else: components.html(html,height=height,scrolling=True)
 workflow=st.sidebar.selectbox('Usage / Use',['TRAINING','REAL_EXAM_PREPARATION'])
+training_scenario=st.sidebar.selectbox(T('Pièce de formation','Training specimen'),['DEMO_GESTE_PAROI','PIECE_PERSONNALISEE'],index=0 if workflow=='TRAINING' else 1,disabled=workflow!='TRAINING')
+if workflow!='TRAINING': training_scenario='PIECE_PERSONNALISEE'
+if training_scenario=='DEMO_GESTE_PAROI': st.sidebar.caption(T('Cinq cibles artificielles en paroi principale. Leurs positions ne représentent pas les flancs de soudure.','Five artificial targets in the main wall. Their positions do not represent weld faces.'))
 st.sidebar.caption(T('Parcours : 1 Pièce 3D → 2 Réglages → 3 Scan manuel → 4 Notice.','Workflow: 1 3D specimen → 2 Setup → 3 Manual scan → 4 Guide.'))
 st.sidebar.caption(T('Monoélément. Examen : préparation du dossier, procédure non validée.','Single element. Examination: dossier preparation, procedure not validated.'))
 mouse_mode=st.sidebar.selectbox(T('Souris 3D','3D mouse'),['orbit','turntable','pan'])
@@ -30,7 +36,7 @@ st.caption(T('Nozzle traversant • Pénétration complète • Préparation cha
 piece_tab,setup_tab,scan_tab,guide_tab=st.tabs([T('1 · Piquage 3D','1 · Nozzle 3D'),T('2 · Réglages de la pièce','2 · Specimen setup'),T('3 · Scan manuel','3 · Manual scan'),T('4 · Mode d’emploi','4 · User guide')])
 with guide_tab.expander(T('Écran opérateur du premier twin — scan manuel, faisceau et rayons','Original twin operator screen — manual scan, beam and rays'),expanded=False):
  st.info(T('Fonctions reprises du twin FORMATION ALPHA : modèle historique de tôle soudée de 25 mm, 3 indications. Cette vue est indépendante des paramètres nozzle et des 5 indications de la pièce test. Référence historique, distincte du scan nozzle de l’onglet 3.','Restored FORMATION ALPHA functions: historical 25 mm welded-plate model, 3 indications. This view is independent of nozzle parameters and the 5 test-piece indications. Historical reference, separate from the nozzle scan in tab 3.'))
- components.html(Path(__file__).with_name('operator_view.html').read_text(encoding='utf-8'),height=2100,scrolling=True)
+ render_dashboard(Path(__file__).with_name('operator_view.html').read_text(encoding='utf-8'),height=2100)
 with st.sidebar:
  st.header(T('Tubes et intersection','Pipes and intersection'))
  D1=st.slider(T('Diamètre extérieur tube principal (mm)','Main pipe OD (mm)'),100.,1200.,400.,10.)
@@ -172,10 +178,10 @@ with piece_tab:
 with setup_tab:
  st.subheader(T('Sondes MWB / compactes — accès au balayage','MWB / compact probes — scanning access'))
  st.info(T('Référence MWB et dimensions fabricant à renseigner. Ce contrôle compare les encombrements saisis ; il ne valide ni le contact courbe ni la couverture acoustique.','Enter MWB reference and manufacturer dimensions. This check compares entered clearances; it validates neither curved contact nor acoustic coverage.'))
- mwb_index=st.selectbox(T('Configuration MWB','MWB configuration'),range(len(MWB_PROBES)),format_func=lambda i:MWB_PROBES[i]['name'])
+ mwb_index=st.selectbox(T('Configuration MWB','MWB configuration'),range(len(MWB_PROBES)),index=next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45),format_func=lambda i:MWB_PROBES[i]['name'])
  mwb=MWB_PROBES[mwb_index]
  probe_data=dict(mwb,elements=1,active_elements=1)
- st.caption(T('Cette sélection MWB est utilisée par le scan manuel.','This MWB selection drives the manual scan.'))
+ st.caption(T('Krautkrämer MWB : pastille 8 × 9 mm. La page catalogue fournie confirme les versions 2 MHz (N = 15 mm) et le croquis Type 23. Caractéristiques complètes 4/5 MHz à confirmer. Ces données ne transforment pas l’éventail illustratif en calcul de champ.','Krautkrämer MWB: 8 × 9 mm aperture. The supplied catalogue page confirms 2 MHz versions (N = 15 mm) and the Type 23 sketch. Full 4/5 MHz specifications remain to confirm. These data do not turn the illustrative fan into a field calculation.'))
  st.write(T('Angle réfracté nominal','Nominal refracted angle'),mwb['refracted_angle_deg'],'° ·',mwb['frequency_MHz'],'MHz')
  st.download_button(T('Exporter la bibliothèque MWB','Export MWB library'),json.dumps(MWB_PROBES,ensure_ascii=False,indent=2),'NOZZLE_REV0_4_MWB.json','application/json')
  probe_reference=st.text_input(T('Référence sonde / sabot','Probe / wedge reference'),mwb['name'],key=f'mwb_reference_{mwb_index}')
@@ -233,9 +239,10 @@ with setup_tab:
 
  st.subheader(T('Bibliothèque et placement des indications','Indication library and placement'))
  st.info(T('Paramètres de génération de pièces test : ajuster les dimensions et fixer les positions pour chaque variante. Les valeurs initiales sont des valeurs de départ.','Test-piece generation parameters: adjust dimensions and set positions for each variant. Initial values are starting values.'))
- specimen_name=st.text_input(T('Identifiant pièce test','Test piece identifier'),'PIECE_TEST_001')
- project_defaults=[dict(row,enabled=True,azimuth_deg=None,z_mm=None,depth_mm=None,orientation_deg=None) for row in PROJECT_INDICATIONS]
- project_table=st.data_editor(pd.DataFrame(project_defaults).astype({k:'float64' for k in ['length_mm','width_mm','diameter_mm','azimuth_deg','z_mm','depth_mm','orientation_deg']}),hide_index=True,num_rows='fixed',disabled=['id','type'],key='project_parameters')
+ specimen_name=st.text_input(T('Identifiant pièce test','Test piece identifier'),'DEMO_GESTE_PAROI_001' if training_scenario=='DEMO_GESTE_PAROI' else 'PIECE_TEST_001',key='name_'+training_scenario)
+ project_defaults=gesture_demo_indications(t1) if training_scenario=='DEMO_GESTE_PAROI' else [dict(row,enabled=True,azimuth_deg=None,z_mm=None,depth_mm=None,orientation_deg=None) for row in PROJECT_INDICATIONS]
+ if training_scenario=='DEMO_GESTE_PAROI': st.info(T('Scénario de geste prêt à balayer : cibles artificielles en paroi, sans placement sur les flancs réels. Choisir PIECE_PERSONNALISEE pour définir votre pièce.','Ready-to-scan motion scenario: artificial main-wall targets, not real bevel-face locations. Select PIECE_PERSONNALISEE to define your specimen.'))
+ project_table=st.data_editor(pd.DataFrame(project_defaults).astype({k:'float64' for k in ['length_mm','width_mm','diameter_mm','azimuth_deg','z_mm','depth_mm','orientation_deg']}),hide_index=True,num_rows='fixed',disabled=['id','type'],key='project_parameters_'+training_scenario)
  project_indications=json.loads(project_table.to_json(orient='records'))
  invalid_project=False
  for row in project_indications:
@@ -253,7 +260,7 @@ with setup_tab:
  st.caption(T('Les champs de position vides restent non définis dans l’export. Le placement sur les flancs nécessite encore une définition locale du joint.','Empty position fields remain undefined in the export. Placement on bevel faces still requires a local joint definition.'))
  specimen_config={'revision':'0.4','specimen_id':specimen_name,'status':'INVALID_PARAMETERS' if invalid_project else ('POSITIONS_PENDING' if pending else 'ILLUSTRATIVE_NOT_VALIDATED'),
   'scan_plan':{'surface':'MAIN_PIPE_OD','azimuth_start_deg':scan_a0,'azimuth_end_deg':scan_a1,'z_start_mm':scan_z0,'z_end_mm':scan_z1,'step_mm':scan_step,'beam_heading_deg':scan_heading,'points':scan_points},'plugins':{'cascade':{'status':'NOT_CONNECTED'},'CAD_TCG':{'status':'NOT_CONNECTED'}},
-  'workflow':workflow,'acquisition':'MONO_ELEMENT','scattering':{'requested_model':scattering,'implemented':False},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED'},
+  'training_scenario':training_scenario,'placement_basis':'ARTIFICIAL_MAIN_WALL_NOT_WELD_FACES' if training_scenario=='DEMO_GESTE_PAROI' else 'USER_DEFINED','workflow':workflow,'acquisition':'MONO_ELEMENT','scattering':{'requested_model':scattering,'implemented':False},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED'},
   'geometry':{'main_OD_mm':D1,'main_thickness_mm':t1,'nozzle_OD_mm':D2,'nozzle_thickness_mm':t2,'axis_angle_deg':angle,'offset_mm':offset,'main_length_mm':length,'nozzle_length_mm':nlen},
   'joint':{'bevel_deg':bevel,'gap_mm':gap,'land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf},
   'material':{'name':mat,'VL_m_s':vl,'VT_m_s':vs,'density_kg_m3':rho},
@@ -269,7 +276,7 @@ with scan_tab:
  operator_config=dict(specimen_config,language=lang)
  operator_json=json.dumps(operator_config,ensure_ascii=False,allow_nan=False).replace('<',chr(92)+'u003c')
  operator_html=Path(__file__).with_name('nozzle_operator.html').read_text(encoding='utf-8').replace('__CONFIG__',operator_json)
- components.html(operator_html,height=1550,scrolling=True)
+ render_dashboard(operator_html,height=1400)
 with setup_tab.expander(T('Exemples exploratoires et diagnostic — avancé','Exploratory examples and diagnostics — advanced')):
  st.caption(T('Placement 3D exploratoire ci-dessous : exemples indépendants du registre projet.','Exploratory 3D placement below: examples independent of the project register.'))
  st.caption(T('Positions dans la paroi principale : azimut autour de Z, profondeur radiale depuis la surface extérieure. Aucune amplitude UT ni critère d’acceptation.','Positions in main wall: azimuth around Z, radial depth from outer surface. No UT amplitude or acceptance criterion.'))

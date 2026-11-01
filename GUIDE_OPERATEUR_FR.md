@@ -1,3 +1,9 @@
+## Démonstration de formation prête à balayer
+
+Choisir **TRAINING / DEMO_GESTE_PAROI**. Le scénario fournit cinq cibles artificielles de démonstration dans la paroi principale ; ce ne sont pas des positions réelles sur les flancs. Le mode élève masque les indications. Dans l’onglet 3, déplacer la MWB sur la surface 3D ; le faisceau pédagogique transparent et l’A-scan sont côte à côte et synchronisés. Les boutons Créneaux/Pause et Inverser le parcours restent disponibles. Le bouton ±1° et la molette sur le palpeur modifient son orientation. L’éventail coloré reste une représentation géométrique, pas un champ Green/Born/Kirchhoff/GTD.
+
+Choisir **PIECE_PERSONNALISEE** pour saisir les positions de votre propre pièce. Les sections suivantes concernant les positions manquantes s’appliquent à ce mode. **Exporter scène RV** fournit le repère, les poses, les rayons et la scène paramétrique pour l’intégrateur ; voir VR_SCENE_SCHEMA.md.
+
 ## Scan de surface 3D — correctif de geste
 
 Dans l’écran manuel, la vue opérateur s’ouvre sur le piquage 3D. Choisir **Déplacer sonde**, saisir le symbole MWB avec le bouton gauche et glisser sur la surface du tube principal. Le point est contraint au cylindre. Les exclusions et l’ouverture arrêtent le déplacement. Pour tourner la pièce, choisir **Tourner pièce** ; la molette dans ce mode zoome. Revenir à **Déplacer sonde** pour scanner ; la molette au voisinage du palpeur règle alors l’orientation. **Déroulé** reste une aide secondaire. Les indications restent cachées sur la vue de surface ; la révélation des vues internes est réservée au mode instructeur.

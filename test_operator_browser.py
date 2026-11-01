@@ -24,6 +24,16 @@ def main():
         page.set_content(template.replace('__CONFIG__',json.dumps(config)))
         assert page.locator('#operatorSurface').input_value()=='3d'
         assert not page.locator('#instructor').is_checked()
+        assert page.locator('#showBeam').is_checked()
+        assert page.locator('.grid > .card').nth(1).locator('#ascan').count()==1
+        pose=page.evaluate('window.BYTE_NDT.getPose()')
+        assert abs(sum(v*v for v in pose['beam_direction_world'])-1)<1e-8
+        m=pose['rotation_matrix_local_to_world']
+        import numpy as np
+        assert np.allclose(np.array(m).T@np.array(m),np.eye(3))
+        assert abs(np.linalg.det(np.array(m))-1)<1e-8
+        with page.expect_download() as vr: page.locator('#exportVR').click()
+        assert vr.value.suggested_filename=='NOZZLE_VR_SCENE_V1.json'
         q=page.evaluate('surfaceProjection(point(az,z,R+2))')
         old_pose=page.evaluate('[az,z]')
         box=page.locator('#top').bounding_box()

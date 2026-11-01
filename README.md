@@ -1,3 +1,13 @@
+Pour le cas courant, la configuration initiale est **MWB 45° à 4 MHz**, avec 5 MHz sélectionnable. Le 2 MHz reste disponible pour le cas cascade. Le N = 15 mm du catalogue 2 MHz n’est pas repris comme valeur catalogue à 4/5 MHz.
+
+## Étape formation — surface 3D, faisceau visible, A-scan et export RV
+
+Le scénario **TRAINING / DEMO_GESTE_PAROI** est prêt à balayer : cinq cibles artificielles dans la paroi principale, sans prétendre à un placement sur les flancs de soudure. **PIECE_PERSONNALISEE** conserve la définition libre. Les indications restent masquées en mode élève. La surface 3D et l’A-scan sont côte à côte ; le faisceau pédagogique peut être affiché par transparence. Toutes les vues utilisent la même pose du palpeur.
+
+Krautkrämer MWB : la page catalogue fournie confirme les 45/60/70 degrés en 2 MHz, pastille 8×9 mm et N=15 mm. Le croquis Type 23 donne 24×14×22 mm. Le reste des spécifications 4/5 MHz n’est pas vérifié par cette page. Le calcul de champ physique Green/Born/Kirchhoff/GTD n’est pas implémenté. La pastille nominale ne pilote pas encore une directivité physique.
+
+Pour la mise en ligne, lire **DEPLOIEMENT_STREAMLIT.md**. Pour la reprise par un intégrateur RV, lire **VR_SCENE_SCHEMA.md** et utiliser **Exporter scène RV**. La scène contient les indications de référence de l’auteur ; elle ne doit pas être donnée comme corrigé à l’élève. Le fichier est exporté localement, sans envoi à un tiers.
+
 ## Correctif ergonomique — vue du piquage restaurée en premier
 
 Quatre onglets : 1 Piquage 3D, 2 Réglages de la pièce, 3 Scan manuel, 4 Mode d’emploi. Le planificateur et les exemples avancés restent dans les réglages ; ils ne remplacent pas la vue du piquage. Une seule sélection MWB commande le scan. Sous Windows, double-cliquer **LANCER_NOZZLE.bat**. Lire **GUIDE_OPERATEUR_FR.md** pour le parcours détaillé.
