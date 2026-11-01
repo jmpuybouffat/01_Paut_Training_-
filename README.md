@@ -1,3 +1,7 @@
+## Correctif ergonomique — vue du piquage restaurée en premier
+
+Quatre onglets : 1 Piquage 3D, 2 Réglages de la pièce, 3 Scan manuel, 4 Mode d’emploi. Le planificateur et les exemples avancés restent dans les réglages ; ils ne remplacent pas la vue du piquage. Une seule sélection MWB commande le scan. Sous Windows, double-cliquer **LANCER_NOZZLE.bat**. Lire **GUIDE_OPERATEUR_FR.md** pour le parcours détaillé.
+
 # BYTE NDT — NOZZLE GEOMETRY TWIN REV0.4
 
 Version de travail pour formation et préparation d’examen. Le scan manuel est désormais raccordé à la géométrie nozzle et aux cinq indications de la configuration. Le panneau historique de tôle reste disponible en référence repliée.
