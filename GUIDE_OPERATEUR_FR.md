@@ -1,3 +1,9 @@
+## Retrouver le champ coloré du premier modèle
+
+Onglet **3 · Scan manuel**, panneau **Champ coloré — propagation et réflexions pédagogiques**. Le choix initial **Champ avec réflexions — premier modèle** affiche la carte 0 à −40 dB et les parcours réfléchis, synchronisés au palpeur de surface et à l’A-scan. Le champ est pédagogique : il ne représente pas une mesure ni une simulation élastodynamique validée.
+
+Les choix **Volume 3D calculé** et **Coupe calculée** montrent le champ direct scalaire équivalent, avec phase et fréquence. Le seuil dB règle les points du volume affichés. Dans ces deux modes, le calcul s’arrête à la première interface ; les autres parcours restent géométriques. Le palpeur est commun à toutes les vues. En mode élève, les positions des indications restent cachées.
+
 ## Démonstration de formation prête à balayer
 
 Choisir **TRAINING / DEMO_GESTE_PAROI**. Le scénario fournit cinq cibles artificielles de démonstration dans la paroi principale ; ce ne sont pas des positions réelles sur les flancs. Le mode élève masque les indications. Dans l’onglet 3, déplacer la MWB sur la surface 3D ; le faisceau pédagogique transparent et l’A-scan sont côte à côte et synchronisés. Les boutons Créneaux/Pause et Inverser le parcours restent disponibles. Le bouton ±1° et la molette sur le palpeur modifient son orientation. L’éventail coloré reste une représentation géométrique, pas un champ Green/Born/Kirchhoff/GTD.

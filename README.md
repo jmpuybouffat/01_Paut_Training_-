@@ -1,3 +1,7 @@
+## Champ coloré rétabli depuis le premier twin
+
+Dans l’onglet 3, le panneau de champ ouvre désormais **Champ avec réflexions — premier modèle** : carte colorée en dB et enveloppe 3D le long des parcours, réflexions incluses. La carte reste pédagogique et non étalonnée, comme le premier modèle. Les modes **Volume 3D calculé** et **Coupe calculée** ajoutent un champ direct scalaire issu de l’intégrale complexe de Green sur une ouverture finie. Ces modèles réduits ne constituent pas un solveur CIVA élastodynamique. Lire **CHAMP_SCALAIRE.md**.
+
 Pour le cas courant, la configuration initiale est **MWB 45° à 4 MHz**, avec 5 MHz sélectionnable. Le 2 MHz reste disponible pour le cas cascade. Le N = 15 mm du catalogue 2 MHz n’est pas repris comme valeur catalogue à 4/5 MHz.
 
 ## Étape formation — surface 3D, faisceau visible, A-scan et export RV
@@ -81,3 +85,7 @@ Sources historiques : dépôt `jmpuybouffat/BYTE-NDT-TWIN-FORMATION-ALPHA`, écr
 Set pipe/joint/material parameters, select the single-element MWB in the scan-access section, define accessible/excluded scan zones, and position the five project indications. Drag the probe on the unwrapped main pipe in a raster, then rotate slightly with the wheel or ±1° controls to seek the displayed training maximum. Use A/B/C gates and record samples. Switch the ray view to 3D; camera drag/zoom is independent from probe manipulation. Export manual scan data before reloading or changing the Streamlit configuration. Geometric rays and training echoes are illustrative; DAC/TCG, cascade, Born/Kirchhoff/GTD and real acquisition are not implemented.
 
 Échos de base : profils de racine et de sommet approchés, réponses pédagogiques liées au trajet et repères de ½, 1, 1½, 2 skips. Pas d’écho créé automatiquement à chaque réflexion. Les temps sont issus des parcours ; amplitudes non étalonnées. Test optionnel Chromium : `python test_geometry_echoes_browser.py`. La porte initiale couvre les doubles skips. Voir le complément du guide pour les conventions et les limites.
+
+## Carte de champ direct calculée
+
+Le panneau de champ utilise désormais l’intégration complexe du Green scalaire sur une ouverture rectangulaire équivalente. Carte colorée relative 0 à −40 dB et coupe projetée dans la vue 3D. Phase et fréquence incluses, champ direct seulement. Lire **CHAMP_SCALAIRE.md** : ce n’est pas CIVA, pas un calcul élastodynamique, et l’A-scan heuristique n’est pas couplé à cette carte. Les mentions antérieures « aucun champ calculé » restent vraies pour le champ UT élastique complet mais sont remplacées, pour ce modèle réduit, par cette section. Tests : `python -m unittest test_acoustic_field -v`.

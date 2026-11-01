@@ -26,3 +26,7 @@ Dimensions et géométrie actives du cristal, géométrie/propriétés du sabot,
 Vérifier directivité et champ proche/lointain de la source, temps de vol analytiques, interfaces et conversions de modes, réponses de référence pour inclusion et réflecteur plan, diffraction de bord et stabilité aux frontières, convergence numérique, dépendance à la fréquence, comparaison à des mesures ou à un moteur de référence. Distinguer calcul numérique, validation analytique et comparaison expérimentale.
 
 Cascade/CAD-TCG restent des modules distincts. La classification ne peut être déduite automatiquement de la nature connue du défaut injecté dans l’exercice. Aucun moteur Green/Born/Kirchhoff/GTD opérationnel ou validé n’est revendiqué dans ce correctif d’interface.
+
+## Mise à jour du champ
+
+La carte pédagogique avec réflexions du premier twin est rétablie comme mode visuel par défaut. Un calcul scalaire de Green sur ouverture rectangulaire finie fournit en plus un champ direct monochromatique en coupe et en volume 3D. Ce n’est pas le Green élastodynamique complet visé par les exigences ci-dessus. L’A-scan reste heuristique ; Born/Kirchhoff/GTD ne sont pas implémentés. Voir CHAMP_SCALAIRE.md.

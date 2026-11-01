@@ -4,6 +4,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 from scan import plan_scan
 from libraries import PROJECT_INDICATIONS
+from acoustic_field import scalar_aperture_cut
 
 
 def configuration():
@@ -11,7 +12,7 @@ def configuration():
     geometry=dict(main_OD_mm=400,main_thickness_mm=20,main_length_mm=800,nozzle_OD_mm=160,nozzle_thickness_mm=12,nozzle_length_mm=320,offset_mm=0,axis_angle_deg=63)
     indications=[dict(d,enabled=True,azimuth_deg=None,z_mm=None,depth_mm=None,orientation_deg=None) for d in PROJECT_INDICATIONS]
     indications[0].update(azimuth_deg=-50,z_mm=-90,depth_mm=10,orientation_deg=0)
-    return dict(language='FR',workflow='TRAINING',geometry=geometry,joint=dict(gap_mm=2,land_mm=2,bevel_deg=35),material=dict(VT_m_s=3240),mwb=dict(refracted_angle_deg=45,frequency_MHz=2),scan_zones=[zone],indications=indications,scan_plan=dict(azimuth_start_deg=-50,azimuth_end_deg=-30,z_start_mm=-100,z_end_mm=0,beam_heading_deg=0,points=plan_scan(200,800,-50,-30,-100,0,10,[zone])))
+    return dict(direct_field=scalar_aperture_cut(2,3240,ns=60,nt=41,include_volume=True),language='FR',workflow='TRAINING',geometry=geometry,joint=dict(gap_mm=2,land_mm=2,bevel_deg=35),material=dict(VT_m_s=3240),mwb=dict(refracted_angle_deg=45,frequency_MHz=2),scan_zones=[zone],indications=indications,scan_plan=dict(azimuth_start_deg=-50,azimuth_end_deg=-30,z_start_mm=-100,z_end_mm=0,beam_heading_deg=0,points=plan_scan(200,800,-50,-30,-100,0,10,[zone])))
 
 
 def main():
@@ -25,6 +26,15 @@ def main():
         assert page.locator('#operatorSurface').input_value()=='3d'
         assert not page.locator('#instructor').is_checked()
         assert page.locator('#showBeam').is_checked()
+        assert page.evaluate('C.direct_field.model')=='HARMONIC_SCALAR_GREEN_RECTANGULAR_APERTURE'
+        assert page.evaluate('Number.isFinite(fieldDb(10,0))')
+        assert page.locator('#fieldView').input_value()=='teaching'
+        page.locator('#fieldView').select_option('volume')
+        assert page.evaluate('volumePoints().length')>0
+        page.locator('#fieldView').select_option('cut')
+        assert 'scalaire' in page.locator('#fieldScope').inner_text()
+        page.locator('#fieldView').select_option('teaching')
+        assert 'premier modèle' in page.locator('#fieldScope').inner_text()
         assert page.locator('.grid > .card').nth(1).locator('#ascan').count()==1
         pose=page.evaluate('window.BYTE_NDT.getPose()')
         assert abs(sum(v*v for v in pose['beam_direction_world'])-1)<1e-8

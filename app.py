@@ -6,6 +6,7 @@ import streamlit.components.v1 as components
 from pathlib import Path
 import json
 from scan_access import scan_status
+from acoustic_field import scalar_aperture_cut
 from scan import plan_scan, beam_segment
 from geometry import validate_dimensions, preparation
 from libraries import PROBES, INDICATIONS, MWB_PROBES, PROJECT_INDICATIONS, gesture_demo_indications
@@ -13,6 +14,9 @@ from libraries import PROBES, INDICATIONS, MWB_PROBES, PROJECT_INDICATIONS, gest
 st.set_page_config(page_title='BYTE NDT | NOZZLE REV0.4', layout='wide')
 lang=st.sidebar.radio('Langue / Language',['FR','EN'],horizontal=True)
 def T(fr,en): return fr if lang=='FR' else en
+@st.cache_data(show_spinner=False)
+def cached_direct_field(frequency,speed,width,height):
+ return scalar_aperture_cut(frequency,speed,width,height,include_volume=True)
 def render_dashboard(html,height):
  if callable(getattr(st,'iframe',None)): st.iframe(html,height=height,width='stretch')
  else: components.html(html,height=height,scrolling=True)
@@ -26,8 +30,8 @@ mouse_mode=st.sidebar.selectbox(T('Souris 3D','3D mouse'),['orbit','turntable','
 if 'camera_revision' not in st.session_state: st.session_state.camera_revision=0
 if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view')): st.session_state.camera_revision+=1
 with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — inactive')):
- scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Green','Kirchhoff','Born','GTD'])
- st.sidebar.caption(T('Modèles non implémentés : pas de calcul acoustique.','Models not implemented: no acoustic computation.'))
+ scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Kirchhoff','Born','GTD'])
+ st.sidebar.caption(T('Diffusion/diffraction non implémentées. La carte de champ utilise un Green scalaire direct distinct.','Scattering/diffraction not implemented. The field map uses a separate scalar direct Green model.'))
  procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'')
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
 st.title('BYTE NDT — NOZZLE GEOMETRY TWIN — REV0.4')
@@ -273,7 +277,13 @@ with scan_tab:
  if pending:
   n_ready=sum(all(row[k] is not None for k in ['azimuth_deg','z_mm','depth_mm','orientation_deg']) for row in project_indications if row['enabled'])
   st.warning(T(f'{n_ready} indication(s) positionnée(s). Les indications sans position complète ne génèrent pas de réponse pédagogique. Compléter l’onglet 2.',f'{n_ready} indication(s) positioned. Indications without a complete position generate no training response. Complete tab 2.'))
- operator_config=dict(specimen_config,language=lang)
+ try:
+  with st.spinner(T('Calcul du champ direct scalaire…','Computing scalar direct field…')):
+   direct_field=cached_direct_field(mwb['frequency_MHz'],vs,mwb['active_width_mm'],mwb['active_height_mm'])
+ except ValueError as exc:
+  st.error(T('Champ direct non calculé : ','Direct field not calculated: ')+str(exc))
+  direct_field=None
+ operator_config=dict(specimen_config,language=lang,direct_field=direct_field)
  operator_json=json.dumps(operator_config,ensure_ascii=False,allow_nan=False).replace('<',chr(92)+'u003c')
  operator_html=Path(__file__).with_name('nozzle_operator.html').read_text(encoding='utf-8').replace('__CONFIG__',operator_json)
  render_dashboard(operator_html,height=1400)
