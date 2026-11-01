@@ -1,0 +1,432 @@
+
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><style>
+body{margin:0;font-family:Arial,sans-serif;color:#1c2935;background:#fff} .hint{font-size:13px;color:#475569;margin:6px 0 10px}
+.wrap{display:grid;grid-template-columns:minmax(360px,1.5fr) minmax(290px,1fr);gap:12px}
+canvas{width:100%;border:1px solid #aab7c4;border-radius:6px;touch-action:none;background:#eef3f6}
+.panel{background:#f5f8fa;padding:10px;border-radius:6px} .data{font-family:monospace;font-size:13px;margin:7px 0}
+button{padding:7px 12px;margin-right:6px;cursor:pointer} .legend{font-size:12px;color:#526172;margin-top:8px}
+@media(max-width:720px){.wrap{grid-template-columns:1fr}}
+
+/* ALPHA single-page dashboard: all four UT views visible together */
+body{background:#edf2f6;padding:12px;box-sizing:border-box}
+.wrap{display:block}.wrap>.panel{margin-top:12px}
+#alphaDashboard{display:grid;grid-template-columns:minmax(390px,1.25fr) minmax(390px,1fr);gap:12px;align-items:start}
+.alphaCard{background:#fff;border:1px solid #c4d1dc;border-radius:8px;padding:10px;min-width:0;box-shadow:0 1px 3px #b8c7d455}
+.alphaCard canvas{display:block;width:100%;height:auto;max-height:350px;object-fit:contain}
+.alphaCard #plate{max-height:365px}.alphaCard #section{max-height:280px}.alphaCard #heat{max-height:280px}.alphaCard #ascan{max-height:220px}
+.alphaCard b{display:block;margin-bottom:6px}.alphaCard .legend{font-size:11px}
+#alphaHeader{margin:0 0 8px;font-size:20px}#alphaNotice{font-size:12px;color:#455a6d;margin:0 0 12px}
+@media(max-width:860px){#alphaDashboard{grid-template-columns:1fr}}
+</style></head><body>
+<h2 id="alphaHeader">BYTE NDT — TWIN FORMATION · ALPHA REV0 8512</h2><p id="alphaNotice">Démonstrateur pédagogique non étalonné · trajets géométriques illustratifs · non validé comme CIVA</p><div style="margin:8px 0"><button id="fr">Français</button><button id="en">English</button><span id="langstatus" class="legend"> FR / EN</span></div><div id="operatorHelp" class="hint"><b>Geste opérateur :</b> glisser le MWB à la souris pour X/Y ; <b>molette</b> au-dessus du palpeur pour θz (ou boutons ↶ ↷). Le cordon et les bords limitent le déplacement. Rotation manuelle continue de 0° à 355° par pas de 5°. 0° vise +Y, 180° vise −Y. Géométrie de soudure : modèle paramétrique pédagogique à valider.</div>
+<div class="wrap"><div><canvas id="plate" width="650" height="430"></canvas><div id="plateLegend" class="legend">Vue de dessus · zone grise : tôle · bande ocre : cordon de soudure · MWB bleu · ligne jaune : direction azimutale réelle du faisceau (0° = +Y).</div></div>
+<div class="panel"><div><button id="left">↶ −5°</button><button id="right">↷ +5°</button><button id="reset">Réinitialiser</button><button id="side">Autre côté du cordon</button></div>
+<div id="state" class="data"></div><div style="margin:8px 0;padding:7px;background:#e5edf2;border-radius:4px"><label><input id="instructor" type="checkbox"> <span id="instructorLabel">Mode instructeur — révéler les 3 indications</span></label><div id="instructorHelp" class="legend">Mode élève par défaut : positions et types cachés. Mode instructeur : repères visibles sur la vue et liste des indications.</div><div id="truth" class="legend"></div></div><b id="ascanTitle">A-scan : racine, géométrie et indications (simulation pédagogique)</b>
+<div style="margin:6px 0"><label id="gainLabel">Gain affichage A-scan (non étalonné) : <input id="gain" type="range" min="1" max="8" value="3" step="0.5"> <span id="gainValue">×3</span></label></div><canvas id="ascan" width="400" height="200"></canvas><div id="echoInfo" class="legend"></div>
+<div style="margin-top:12px"><b id="sectionTitle">Coupe transversale de la soudure — profil géométrique</b>
+<canvas id="section" width="400" height="250"></canvas>
+<div id="sectionPathInfo" class="legend"></div>
+<div class="panel" style="margin-top:10px;background:#e7eef5;border:1px solid #9eb0c1">
+<b id="measureTitle">Porte A-scan / Mesures XYZ (pédagogiques)</b>
+<div class="hint" id="gateHelp">Porte en temps de vol aller-retour. Déplacez le MWB puis enregistrez des mesures pendant le balayage.</div>
+<div id="gatesPanel" style="display:grid;gap:6px"></div>
+<div class="hint" id="gateRules">Chaque porte : intervalle temporel et seuils inférieur/supérieur en % FSH. Seules les amplitudes entre les deux seuils sont retenues.</div>
+<div style="margin-top:8px"><button id="sample">Enregistrer ce point</button><button id="clearSamples">Effacer les mesures</button></div>
+<div id="measurement" class="data" style="white-space:pre-wrap"></div>
+<div id="sizing" class="data" style="white-space:pre-wrap"></div>
+<div id="samplesCount" class="legend"></div>
+</div>
+<div style="margin-top:12px"><b id="heatTitle">Champ acoustique à rayons réfléchis — échelle relative en dB</b>
+<div style="margin:5px 0">MWB <select id="probe"><option value="45">45°</option><option value="60" selected>60°</option><option value="70">70°</option></select> · 4 MHz · cristal 8 × 9 mm</div>
+<canvas id="heat" width="400" height="280"></canvas>
+<div id="heatLegend" class="legend">Projection transversale Y-Z du faisceau angulaire (±5°) et trajets réfléchis géométriques (rotation Z incluse), onde transversale 3 240 m/s, atténuation illustrative. Échelle 0 à −40 dB. Pas un calcul CIVA ni une validation Green/Kirchhoff/Born/GTD.</div></div>
+<div id="sectionLegend" class="legend">V à 60° · épaisseur 25 mm · surépaisseur supérieure ondulée et pénétration à la racine. Géométrie illustrative : dimensions de bourrelets à confirmer sur éprouvette.</div></div>
+<div id="modelLegend" class="legend">Les temps de vol sont calculés à partir de parcours géométriques simplifiés (onde T à 3 240 m/s, épaisseur 25 mm). Les amplitudes sont heuristiques : pas de coefficient de réflexion ni de réponse physique Green/Kirchhoff/Born/GTD. Trois indications pédagogiques : deux non volumiques (avec diffractions possibles) et une volumique. Leur nature et leur position sont cachées en mode élève.</div>
+</div></div>
+<script>
+const p=document.getElementById('plate'),ctx=p.getContext('2d'),a=document.getElementById('ascan'),ac=a.getContext('2d');
+let x=180,y=215,theta=0,drag=false,offX=0,offY=0;const weldX=325;
+const CAP_HALF=35,PROBE_RADIUS=29; // marge conservatrice incluant la rotation du MWB
+function safeProbeX(px){const gap=CAP_HALF+PROBE_RADIUS;return x<weldX?clamp(px,48,weldX-gap):clamp(px,weldX+gap,602)}
+// Repere commun: 0° = vers +Y transversal, 180° = vers -Y; X longitudinal.
+// Un angle nominal MWB est mesure dans l'acier depuis la normale a la surface.
+function orientation(){const r=theta*Math.PI/180;return {ux:Math.cos(r),uy:Math.sin(r)}}
+// Repere de reference : X longitudinal (haut vers bas sur vue), Y transversal (gauche vers droite), Z profondeur positive.
+// Variables graphiques x,y sont des pixels et NE SONT PAS les axes de reference.
+// Les trois indications sont fixes dans l'eprouvette, invisibles en mode eleve.
+const defects=[
+ {name:'Manque de fusion',kind:'planar',X:-24,Y:-5,Z:12,half:4.0,reflect:0.48},
+ {name:'Fissure de refroidissement',kind:'planar',X:31,Y:4,Z:17,half:3.2,reflect:0.42},
+ {name:'Inclusion',kind:'volume',X:2,Y:1,Z:9,half:2.8,reflect:0.38}
+];
+const c=3.24; // mm/us, onde T nominale
+function geometry(){
+ const alpha=Number(document.getElementById('probe').value)*Math.PI/180;
+ const {ux,uy}=orientation();
+ const sx=(x-weldX)*.5,sy=(y-215)*.5; // sx = Y transversal, sy = X longitudinal
+ const vx=Math.sin(alpha)*ux,vy=Math.sin(alpha)*uy,vz=Math.cos(alpha);
+ // Axe de faisceau normalise. Projection de la racine (ligne x=0,z=25).
+ const tRoot=25/vz;
+ const rootX=sx+vx*tRoot;
+ const rootMiss=Math.abs(rootX);
+ const rootWidth=2.0+0.07*tRoot; // ouverture indicative en mm
+ const facing=(0-sx)*vx>0;
+ const rootWeight=facing?0.94*Math.exp(-.5*Math.pow(rootMiss/rootWidth,2)):0;
+ const rootTime=2*tRoot/c;
+ const backTime=2*25/(c*vz);
+ const backWeight=.12;
+ // Retour géométrique supérieur simplifié: l'écho de raccordement du cap
+ // dépend de l'incidence et disparaît si le faisceau ne vise pas le cordon.
+ const toCap=(0-sx)*vx>0;
+ const capDist=toCap&&Math.abs(vx)>.08?Math.abs(sx/vx):Infinity;
+ const capTime=0; // top cap return requires a traced reflected path, not a direct horizontal shortcut
+ const capWeight=0; // no direct cap echo: only an upward leg may encounter the top steel/air boundary
+ // Ces amplitudes sont des substituts pédagogiques, pas des coefficients physiques.
+
+ const echoes=[]; // Defect responses are generated by rayFlawInteractions() only.
+ return {alpha,ux,uy,sx,sy,vx,vy,vz,rootMiss,rootWeight,rootTime,backTime,backWeight,capTime,capWeight,echoes};
+}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+function draw(){
+ctx.clearRect(0,0,650,430);ctx.fillStyle='#9baab5';ctx.fillRect(14,14,622,402);
+ctx.strokeStyle='#8294a2';ctx.lineWidth=1;for(let i=30;i<650;i+=25){ctx.beginPath();ctx.moveTo(i,14);ctx.lineTo(i,416);ctx.stroke()}
+ctx.fillStyle='rgba(214,87,59,.18)';ctx.fillRect(weldX-(CAP_HALF+PROBE_RADIUS),14,2*(CAP_HALF+PROBE_RADIUS),402);ctx.save();ctx.strokeStyle='#e7c44a';ctx.lineWidth=2;ctx.setLineDash([5,5]);for(const edge of [weldX-(CAP_HALF+PROBE_RADIUS),weldX+(CAP_HALF+PROBE_RADIUS)]){ctx.beginPath();ctx.moveTo(edge,14);ctx.lineTo(edge,416);ctx.stroke()}ctx.setLineDash([]);ctx.restore();ctx.fillStyle='#bb855f';ctx.beginPath();ctx.moveTo(weldX-15,14);
+for(let yy=14;yy<=416;yy+=5)ctx.lineTo(weldX-15+3*Math.sin(yy/19),yy);
+for(let yy=416;yy>=14;yy-=5)ctx.lineTo(weldX+15+3*Math.sin(yy/23),yy);
+ctx.closePath();ctx.fill();
+ctx.save();ctx.translate(x,y);ctx.rotate(theta*Math.PI/180);
+ctx.fillStyle='#173e61';ctx.fillRect(-23,-17,46,34);ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.strokeRect(-23,-17,46,34);
+ctx.fillStyle='#60b8df';ctx.fillRect(-14,-10,28,20);
+ctx.strokeStyle='#ffe17c';ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(23,0);ctx.lineTo(72,0);ctx.stroke();ctx.setLineDash([]);ctx.restore();
+ctx.fillStyle='#1c2935';ctx.font='14px Arial';ctx.fillText(L('plateTitle'),25,35);
+ctx.fillText(L('capTitle'),355,36);ctx.fillText('Y →',35,393);ctx.fillText('X ↓',35,410);
+if(document.getElementById('instructor').checked){
+ for(const [i,d] of defects.entries()){
+   const px=weldX+d.Y*2,py=215+d.X*2;
+   ctx.fillStyle=i===2?'#22c55e':'#d7263d';ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle='#111827';ctx.font='bold 12px Arial';ctx.fillText('I'+(i+1),px+8,py-6);
+ }
+}
+
+const G=geometry();
+document.getElementById('state').innerText=`X = ${((y-215)*0.5).toFixed(1)} mm (${L('longitudinal')})\nY = ${((x-weldX)*0.5).toFixed(1)} mm (${L('transversal')})\nRotation Z = ${theta.toFixed(0)}°\nMWB = ${Math.round(G.alpha*180/Math.PI)}° · ${L('direction')} = ${G.ux.toFixed(2)}\n${G.rootWeight>.03?L('rootHit'):L('rootMiss')}`;
+drawAscan();drawHeat();drawSection();
+}
+function drawAscan(){
+ac.clearRect(0,0,400,200);ac.fillStyle='#071a1b';ac.fillRect(0,0,400,200);
+ac.strokeStyle='#285343';ac.lineWidth=.6;
+for(let xx=0;xx<=400;xx+=40){ac.beginPath();ac.moveTo(xx,0);ac.lineTo(xx,200);ac.stroke()}
+for(let yy=0;yy<=200;yy+=40){ac.beginPath();ac.moveTo(0,yy);ac.lineTo(400,yy);ac.stroke()}
+const G=geometry();
+const gain=Number(document.getElementById("gain").value);
+document.getElementById("gainValue").textContent="×"+gain;
+const interfacePeaks=interfaceEchoesFromSection();
+const flawPeaks=rayFlawInteractions().events;
+const peaks=[...interfacePeaks,...flawPeaks];
+ac.strokeStyle='#59f8a1';ac.lineWidth=2;ac.beginPath();
+for(let xx=0;xx<400;xx++){
+ const t=xx/5;let signal=1.1*Math.sin(xx*.23)+.6*Math.sin(xx*.79);
+ for(const peak of peaks)if(peak.t>=0&&peak.t<=80)signal+=Math.min(1,peak.amp*gain)*125*Math.exp(-.5*Math.pow((t-peak.t)/peak.width,2));
+ const yy=168-Math.min(151,signal);if(xx===0)ac.moveTo(xx,yy);else ac.lineTo(xx,yy)
+}ac.stroke();
+drawGateAndMeasurement(G,peaks);
+ac.fillStyle='#b9e8ce';ac.font='11px Arial';ac.fillText('0',4,187);ac.fillText('40 µs',194,187);ac.fillText('80 µs',355,187);
+const rootPct=Math.round(G.rootWeight*100),backPct=Math.round(G.backWeight*100);
+const rootText=`${G.rootTime.toFixed(1)} µs · ${rootPct}% FSH`;
+const active=flawPeaks.filter(e=>e.amp>.015).length;
+document.getElementById('echoInfo').innerText=(uiLang==='fr'?'Retours interfaces: ':'Interface returns: ')+interfacePeaks.length+' · '+(uiLang==='fr'?'Réponses défauts par trajets: ':'Ray-based flaw responses: ')+active+' · '+L('uncalibrated');
+const instr=document.getElementById('instructor').checked;
+document.getElementById('truth').innerText=instr?defects.map((d,i)=>`I${i+1} — ${L(['fusion','crack','inclusion'][i])} · X ${d.X} mm · Y ${d.Y} mm · Z ${d.Z} mm`).join('\n'):L('unknown');
+}
+
+// Mesure en porte: les echos sont des contributions synthetiques du simulateur.
+// Coordonnees de la mesure: X longitudinal, Y transversal, Z profondeur positive.
+let samples=[],currentMeasurement=null,uiLang='fr';
+const tr={fr:{title:'Porte A-scan / Mesures XYZ (pédagogiques)',help:'Porte en temps de vol aller-retour. Déplacez le MWB puis enregistrez des mesures pendant le balayage.',start:'Début porte (µs)',end:'Fin porte (µs)',sample:'Enregistrer ce point',clear:'Effacer les mesures',none:'Aucun écho dans la porte',max:'Maximum en porte',point:'Point émergence',pos:'Position estimée',gate:'Porte',saved:'Points enregistrés',size:'Étendue à −6 dB (50 % du maximum enregistré)',insufficient:'Balayage insuffisant : enregistrer plusieurs points autour du maximum.',warning:'Estimations géométriques et amplitudes non étalonnées. −6 dB calculé sur les points enregistrés, pas une taille de défaut certifiée.'},en:{title:'A-scan gate / XYZ measurements (training model)',help:'Two-way time-of-flight gate. Move the probe and record samples while scanning.',start:'Gate start (µs)',end:'Gate end (µs)',sample:'Record this point',clear:'Clear samples',none:'No echo within gate',max:'Gated maximum',point:'Beam exit point',pos:'Estimated position',gate:'Gate',saved:'Recorded samples',size:'−6 dB extent (50% of recorded maximum)',insufficient:'Insufficient scan: record multiple points around the maximum.',warning:'Geometric estimates and uncalibrated amplitudes. −6 dB is derived from recorded points, not a certified flaw size.'}};
+
+const labels8510={
+fr:{operatorHelp:'<b>Geste opérateur :</b> glisser le MWB pour X/Y ; molette sur le palpeur pour θz (ou boutons ↶ ↷). Rotation manuelle par pas de 5°, 0° vers +Y, 180° vers −Y. Le cordon et les bords limitent le déplacement. Modèle pédagogique à valider.',plateLegend:'Vue de dessus · gris : tôle · ocre : cordon · bleu : MWB · jaune : direction du faisceau (0° = +Y).',reset:'Réinitialiser',instructorLabel:'Mode instructeur — révéler les 3 indications',instructorHelp:'Mode élève : positions et types cachés. Mode instructeur : repères et liste visibles.',ascanTitle:'A-scan : racine, géométrie et indications (simulation pédagogique)',heatTitle:'Champ acoustique à rayons réfléchis — échelle relative en dB',heatLegend:'Projection transversale Y-Z du champ direct ; trajets réfléchis géométriques. Onde T nominale 3 240 m/s ; atténuation illustrative. Échelle 0 à −40 dB. Pas un calcul CIVA ni une validation physique.',sectionTitle:'Coupe Y-Z : faisceau et réflexions sur les interfaces',sectionLegend:'Coupe Y–Z : jaune = trajet direct, orange/cyan = réflexions successives sur les frontières acier/air (fond, racine, surface et bourrelet). Les flancs du V sont des repères métallurgiques, non des miroirs acoustiques automatiques. Trajets illustratifs sans coefficients de réflexion.',modelLegend:'Temps de vol et amplitudes : modèle géométrique et heuristique, non calibré. Les réflexions et la structure du matériau ne sont pas encore validées physiquement. Les trois indications restent cachées en mode élève.',plateTitle:'Tôle soudée — vue opérateur',capTitle:'Cordon / cap : zone interdite au MWB',root:'Racine',back:'Fond',cap:'Bourrelet supérieur',second:'2e trajet',diffusion:'Diffusion',reflection:'Réflexion',diffraction:'Diffraction',fusion:'Manque de fusion',crack:'Fissure de refroidissement',inclusion:'Inclusion',rootHit:'Racine insonifiée',rootMiss:'Racine hors du faisceau principal',longitudinal:'longitudinal',transversal:'transversal, axe cordon = 0',direction:'direction Y',rootGap:'Écart de l’axe à la racine',active:'Contributions d’indications visibles dans le signal',uncalibrated:'Amplitudes non calibrées',estimated:'estimation',unknown:'Trois indications inconnues — à rechercher et caractériser.',upper:'Bourrelet supérieur',sectionRoot:'Racine',relative:'relative, non étalonnée',gateName:'Porte',min:'seuil bas',max:'seuil haut',edge:'Bord de tôle',sectionOff:'Palpeur hors coupe affichée — déplacer vers la soudure'},
+en:{operatorHelp:'<b>Operator control:</b> drag the MWB probe along X/Y; use the mouse wheel over the probe to rotate θz (or ↶ ↷ buttons). Manual 5° steps, 0° points toward +Y, 180° toward −Y. The weld cap and plate edges restrict probe movement. Training model pending validation.',plateLegend:'Top view · grey: plate · ochre: weld bead · blue: MWB probe · yellow: beam direction (0° = +Y).',reset:'Reset',instructorLabel:'Instructor mode — reveal the 3 indications',instructorHelp:'Student mode: flaw locations and types hidden. Instructor mode: markers and list visible.',ascanTitle:'A-scan: root, geometry and indications (training simulation)',heatTitle:'Simplified acoustic field — relative dB scale',heatLegend:'Transverse Y-Z projection of the direct field; geometric reflected paths. Nominal shear-wave speed 3,240 m/s; illustrative attenuation. Scale 0 to −40 dB. Not a CIVA computation or physically validated model.',sectionTitle:'Y-Z cross-section: beam and interface reflections',sectionLegend:'Y–Z section: yellow = incident leg, orange/cyan = successive reflections at steel/air boundaries (backwall, root, surface and weld cap). V-groove fusion faces are metallurgical references, not automatic acoustic mirrors. Illustrative ray paths; no reflection coefficients computed.',modelLegend:'Times of flight and amplitudes are based on simplified geometry and heuristic, uncalibrated estimates. Reflections and material structure are not yet physically validated. Three indications remain hidden in student mode.',plateTitle:'Welded plate — operator view',capTitle:'Weld cap: probe exclusion zone',root:'Root',back:'Backwall',cap:'Top weld cap',second:'Second leg',diffusion:'Scattering',reflection:'Reflection',diffraction:'Diffraction',fusion:'Lack of fusion',crack:'Cooling crack',inclusion:'Inclusion',rootHit:'Root within main beam',rootMiss:'Root outside main beam',longitudinal:'longitudinal',transversal:'transverse, weld centreline = 0',direction:'Y direction',rootGap:'Beam-axis miss at root',active:'Indication contributions in signal',uncalibrated:'Uncalibrated amplitudes',estimated:'estimate',unknown:'Three unknown indications — locate and characterize.',upper:'Top weld cap',sectionRoot:'Root',relative:'relative, uncalibrated',gateName:'Gate',min:'lower',max:'upper',edge:'Plate edge',sectionOff:'Probe outside displayed section — move toward weld'}};
+function L(k){return labels8510[uiLang][k]||k}
+function localizeStatic(){let d=labels8510[uiLang];for(let id of ['operatorHelp','plateLegend','instructorLabel','instructorHelp','ascanTitle','heatTitle','heatLegend','sectionTitle','sectionLegend','modelLegend']){document.getElementById(id).innerHTML=d[id]};document.getElementById('reset').textContent=d.reset;document.documentElement.lang=uiLang;document.getElementById('fr').setAttribute('aria-pressed',String(uiLang==='fr'));document.getElementById('en').setAttribute('aria-pressed',String(uiLang==='en'));}
+
+const gateColors=['#f5cb45','#4bc5f0','#d39bff'];
+const gates=[{lo:15,hi:65,min:5,max:100},{lo:15,hi:65,min:5,max:100},{lo:15,hi:65,min:5,max:100}];
+let selectedGate=0;
+function initGates(){const panel=document.getElementById('gatesPanel');panel.innerHTML='';
+ gates.forEach((g,i)=>{const div=document.createElement('div');div.style='padding:6px;border:1px solid '+gateColors[i]+';border-radius:5px';
+ div.innerHTML=`<label><input type="radio" name="activeGate" value="${i}" ${i===0?'checked':''}> ${L('gateName')} ${'ABC'[i]}</label> · <label>t₁ <input type="number" data-g="${i}" data-k="lo" value="${g.lo}" min="0" max="80" step="0.5" style="width:55px"> µs</label> <label>t₂ <input type="number" data-g="${i}" data-k="hi" value="${g.hi}" min="0" max="80" step="0.5" style="width:55px"> µs</label> <label>${L('min')} <input type="number" data-g="${i}" data-k="min" value="${g.min}" min="0" max="100" step="1" style="width:52px"> %</label> <label>${L('max')} <input type="number" data-g="${i}" data-k="max" value="${g.max}" min="0" max="100" step="1" style="width:52px"> %</label>`;
+ panel.appendChild(div)});
+ panel.oninput=e=>{const el=e.target;if(el.name==='activeGate'){selectedGate=Number(el.value);samples=[];draw();return}if(el.dataset.g!==undefined){const i=Number(el.dataset.g),k=el.dataset.k;gates[i][k]=Number(el.value);draw()}};
+}
+function gateBounds(i=selectedGate){const g=gates[i];return {lo:clamp(Math.min(g.lo,g.hi),0,80),hi:clamp(Math.max(g.lo,g.hi),0,80),min:clamp(Math.min(g.min,g.max),0,100),max:clamp(Math.max(g.min,g.max),0,100)}}
+function drawGateAndMeasurement(G,peaks){
+ gates.forEach((_,i)=>{const {lo,hi,min,max}=gateBounds(i),col=gateColors[i];
+ ac.fillStyle=i===selectedGate?'rgba(255,217,77,.08)':'rgba(160,180,200,.025)';ac.fillRect(lo*5,0,(hi-lo)*5,200);
+ ac.strokeStyle=col;ac.lineWidth=i===selectedGate?2:1;
+ for(const t of [lo,hi]){ac.beginPath();ac.moveTo(t*5,0);ac.lineTo(t*5,180);ac.stroke()}
+ // amplitude % FSH : ligne horizontale supérieure et inférieure dans la porte
+ for(const v of [min,max]){const yy=168-v*1.25;ac.beginPath();ac.moveTo(lo*5,yy);ac.lineTo(hi*5,yy);ac.stroke()}
+ });
+ const {lo,hi,min,max}=gateBounds();
+ const valid=peaks.filter(q=>q.t>=lo&&q.t<=hi&&Math.min(100,q.amp*100*Number(document.getElementById("gain").value))>=min&&Math.min(100,q.amp*100*Number(document.getElementById("gain").value))<=max&&q.amp>.001).sort((a,b)=>b.amp-a.amp);
+ const best=valid[0],X0=(y-215)*.5,Y0=(x-weldX)*.5;
+ if(best){const distance=best.t*c/2;currentMeasurement={X:X0+G.uy*Math.sin(G.alpha)*distance,Y:Y0+G.ux*Math.sin(G.alpha)*distance,Z:Math.cos(G.alpha)*distance,X0,Y0,t:best.t,amp:Math.min(100,best.amp*100*Number(document.getElementById("gain").value)),label:({'Racine':'root','Fond':'back','Bourrelet supérieur':'cap','2e trajet':'second','Diffusion':'diffusion','Réflexion':'reflection','Diffraction':'diffraction'}[best.label]||best.label),angle:Math.round(G.alpha*180/Math.PI),theta,gate:'ABC'[selectedGate]}}
+ else currentMeasurement=null;
+ renderMeasurement();
+}
+function renderMeasurement(){
+ const t=tr[uiLang],m=currentMeasurement,{lo,hi,min,max}=gateBounds();
+ document.getElementById('measurement').innerText=m?`${L('gateName')} ${m.gate}: ${lo.toFixed(1)}–${hi.toFixed(1)} µs · ${min}–${max} % FSH\n${t.point}: X ${m.X0.toFixed(1)}, Y ${m.Y0.toFixed(1)}, Z 0 mm\n${t.max}: ${m.amp.toFixed(1)} % (${L('relative')}) · ${m.t.toFixed(1)} µs — ${L(m.label)}\n${t.pos}: X ${m.X.toFixed(1)}, Y ${m.Y.toFixed(1)}, Z ${m.Z.toFixed(1)} mm`:t.none;
+ const n=samples.length;document.getElementById('samplesCount').innerText=`${t.saved}: ${n}. ${t.warning}`;
+ if(n<2){document.getElementById('sizing').innerText=t.insufficient;return}
+ const peak=samples.reduce((a,b)=>a.amp>b.amp?a:b),over=samples.filter(q=>q.amp>=peak.amp/2);
+ const span=(key)=>{const v=over.map(q=>q[key]);return `${Math.min(...v).toFixed(1)} … ${Math.max(...v).toFixed(1)} mm (Δ ${(Math.max(...v)-Math.min(...v)).toFixed(1)} mm)`};
+ document.getElementById('sizing').innerText=`${t.max}: ${peak.amp.toFixed(1)} % · X ${peak.X.toFixed(1)}, Y ${peak.Y.toFixed(1)}, Z ${peak.Z.toFixed(1)} mm\n${t.size}:\nX: ${span('X')}\nY: ${span('Y')}\nZ: ${span('Z')}\n${t.warning}`;
+}
+document.getElementById('sample').onclick=()=>{if(currentMeasurement){samples.push({...currentMeasurement});renderMeasurement()}};
+document.getElementById('clearSamples').onclick=()=>{samples=[];renderMeasurement()};
+function setLanguage(lang){uiLang=lang;const t=tr[lang];document.getElementById('measureTitle').innerText=t.title;document.getElementById('gateHelp').innerText=t.help;document.getElementById('gateRules').innerText=lang==='fr'?'Trois portes A/B/C : limites temporelles et seuils inférieur/supérieur en % FSH. Mesure de la porte sélectionnée.':'Three A/B/C gates: time limits and lower/upper amplitude thresholds (% FSH). Measurement uses selected gate.';document.getElementById('sample').innerText=t.sample;document.getElementById('clearSamples').innerText=t.clear;document.getElementById('langstatus').innerText=lang==='fr'?'Interface : français':'Interface: English';document.getElementById('alphaNotice').innerText=lang==='fr'?'Démonstrateur pédagogique non étalonné · trajets géométriques illustratifs · non validé comme CIVA':'Uncalibrated training demonstrator · illustrative geometric ray paths · not validated as CIVA';document.getElementById('side').innerText=lang==='fr'?'Autre côté du cordon':'Opposite weld side';document.getElementById('gainLabel').firstChild.textContent=lang==='fr'?'Gain affichage A-scan (non étalonné) : ':'A-scan display gain (uncalibrated): ';localizeStatic();initGates();drawSection();draw()}
+document.getElementById('fr').onclick=()=>setLanguage('fr');document.getElementById('en').onclick=()=>setLanguage('en');
+function pointer(e){let r=p.getBoundingClientRect();return {x:(e.clientX-r.left)*650/r.width,y:(e.clientY-r.top)*430/r.height}}
+p.addEventListener('pointerdown',e=>{let pt=pointer(e);if(Math.hypot(pt.x-x,pt.y-y)<40){drag=true;offX=pt.x-x;offY=pt.y-y;p.setPointerCapture(e.pointerId)}});
+p.addEventListener('pointermove',e=>{if(!drag)return;let pt=pointer(e);let nx=clamp(pt.x-offX,48,602);x=safeProbeX(nx);y=clamp(pt.y-offY,45,382);draw()});
+p.addEventListener('pointerup',()=>drag=false);p.addEventListener('pointercancel',()=>drag=false);
+p.addEventListener('wheel',e=>{e.preventDefault();theta=(theta+(e.deltaY>0?5:-5)+360)%360;draw()},{passive:false});
+document.getElementById('left').onclick=()=>{theta=(theta+355)%360;draw()};
+document.getElementById('right').onclick=()=>{theta=(theta+5)%360;draw()};
+document.getElementById('reset').onclick=()=>{x=180;y=215;theta=0;draw()};
+document.getElementById('side').onclick=()=>{const gap=CAP_HALF+PROBE_RADIUS; x=x<weldX?weldX+gap+12:weldX-gap-12;theta=(theta+180)%360;draw()};
+document.getElementById('gain').addEventListener('input',draw);
+
+function drawHeat(){
+const canvas=document.getElementById('heat');if(!canvas)return;
+const h=canvas.getContext('2d'),W=400,H=280;
+h.fillStyle='#0d2234';h.fillRect(0,0,W,H);
+// Geometrie en coupe : surface z=40, fond z=240, soudure centree a x=200.
+const top=42,bot=241,originX=clamp(200+(x-weldX)*.56,12,388);
+const angle=Number(document.getElementById('probe').value)*Math.PI/180;
+// Projection Y-Z du faisceau, meme repere que la vue operateur et l'A-scan.
+const G=geometry();
+const dx=Math.sin(angle)*G.ux,dz=Math.cos(angle);
+// Ray-fan energy is accumulated ONLY along steel paths, including reflections.
+// This replaces the former unbounded straight Gaussian field, which crossed surfaces.
+const fan=[-5,-4,-3,-2,-1,0,1,2,3,4,5].map(delta=>({delta,path:sectionRaySegments(delta)}));
+const image=h.createImageData(W,H),S=sectionGeometry();
+for(let j=0;j<H;j++)for(let i=0;i<W;i++){
+ const Y=(i-200)*180/W,Z=(j-top)*25/(bot-top);
+ let energy=0;
+ if(j>=top&&j<=bot&&Z>=S.cap(Y)&&Z<=S.root(Y)){
+  for(const f of fan){
+   const weight=Math.exp(-.5*(f.delta/3.0)**2);
+   let previous=0;
+   for(const seg of f.path.segments){
+    const ax=seg.aw[0],az=seg.aw[1],bx=seg.bw[0],bz=seg.bw[1];
+    const vx=bx-ax,vz=bz-az,len2=vx*vx+vz*vz;
+    if(len2<.0001)continue;
+    const u=clamp(((Y-ax)*vx+(Z-az)*vz)/len2,0,1);
+    const miss=Math.hypot(Y-ax-u*vx,Z-az-u*vz);
+    const travelled=previous+u*(seg.distance-previous);
+    const width=1.0+.018*travelled;
+    energy+=weight*Math.exp(-.5*(miss/width)**2)*Math.exp(-.018*travelled)*Math.pow(.70,seg.bounce);
+    previous=seg.distance;
+   }
+  }
+ }
+ const db=energy<=.00001?-40:clamp(20*Math.log10(energy/8),-40,0);
+ const q=(db+40)/40;
+ let r,g,b;
+ if(q<.25){let t=q/.25;r=5;g=Math.round(15+65*t);b=Math.round(55+125*t)}
+ else if(q<.5){let t=(q-.25)/.25;r=0;g=Math.round(80+150*t);b=Math.round(180-80*t)}
+ else if(q<.75){let t=(q-.5)/.25;r=Math.round(255*t);g=230;b=Math.round(100*(1-t))}
+ else{let t=(q-.75)/.25;r=255;g=Math.round(230-160*t);b=0}
+ const qx=(j*W+i)*4;image.data[qx]=r;image.data[qx+1]=g;image.data[qx+2]=b;image.data[qx+3]=255;
+}
+h.putImageData(image,0,0);
+h.strokeStyle='#dbe5eb';h.lineWidth=1;h.beginPath();h.moveTo(0,top);h.lineTo(W,top);h.moveTo(0,bot);h.lineTo(W,bot);h.stroke();
+// Profil en V et renforts en surimpression, non inclus dans le solveur acoustique.
+h.strokeStyle='#fff';h.lineWidth=1.5;h.beginPath();h.moveTo(125,top);h.lineTo(200,bot);h.lineTo(275,top);h.stroke();
+ // Trace the same ray path as the Y-Z section and the A-scan.
+ const path=sectionRaySegments();
+ for(const seg of path.segments){
+  const project=q=>[200+q[0]*(W/180),top+q[1]*(bot-top)/25];
+  const A=project(seg.aw),B=project(seg.bw);
+  h.strokeStyle=seg.bounce===0?'#fff6a0':seg.bounce%2?'#ff9b5e':'#75e0e4';
+  h.lineWidth=2.4;h.setLineDash(seg.bounce===0?[5,4]:[]);
+  h.beginPath();h.moveTo(...A);h.lineTo(...B);h.stroke();h.setLineDash([]);
+ }
+ for(const m of rayFlawInteractions().markers){
+  // section marker coordinates back to physical Y-Z, then heat coordinates.
+  const Y=(m.p[0]-S.mid)/S.sx,Z=(m.p[1]-S.top)/S.sz;
+  h.fillStyle=m.kind==='Diffraction'?'#f9a8d4':'#ffffff';
+  h.beginPath();h.arc(200+Y*(W/180),top+Z*(bot-top)/25,3,0,Math.PI*2);h.fill();
+ }
+h.strokeStyle='#e7ba8a';h.beginPath();h.moveTo(118,top);h.quadraticCurveTo(200,15,282,top);h.moveTo(174,bot);h.quadraticCurveTo(200,260,226,bot);h.stroke();
+h.fillStyle='#f9fafb';h.font='11px Arial';h.fillText('0 dB',6,16);h.fillText('−40 dB',337,16);
+const grad=h.createLinearGradient(48,0,330,0);
+for(const [t,col] of [[0,'#050f37'],[.25,'#0050b4'],[.5,'#00e664'],[.75,'#ffe600'],[1,'#ff4600']])grad.addColorStop(t,col);
+h.fillStyle=grad;h.fillRect(48,6,280,10);h.strokeStyle='#ffffff';h.strokeRect(48,6,280,10);
+h.fillStyle='#ffffff';h.fillText('MWB',clamp(originX-15,0,365),top-5);
+}
+document.getElementById('probe').addEventListener('change',draw);
+document.getElementById('instructor').addEventListener('change',draw);
+// REV0 8512: ray tracing in the Y-Z section. External steel/air boundaries only.
+// Bevels are metallurgical interfaces, NOT automatic perfect reflectors.
+function sectionGeometry(){
+ // Coordinates in mm: transverse Y, depth Z. Drawing uses independent scales.
+ const top=60,bot=205,mid=200, sx=2.05,sz=(bot-top)/25;
+ const upper=[],lower=[];
+ function cap(y){const q=Math.abs(y)/15.7;if(q>=1)return 0;return -2.6*(1-q*q)*(1+.12*Math.sin(y*2));}
+ function root(y){const q=Math.abs(y)/5.35;if(q>=1)return 25;return 25+2.2*(1-q*q)*(1+.1*Math.sin(y*3));}
+ for(let y=-90;y<=90.0001;y+=.5){upper.push([y,cap(y)]);lower.push([y,root(y)]);}
+ const P=q=>[mid+q[0]*sx,top+q[1]*sz];
+ return {top,bot,mid,sx,sz,upper,lower,P,cap,root};
+}
+function sectionRaySegments(angleOffset=0){
+ const S=sectionGeometry(),G=geometry();
+ const start=[G.sx,0],startScreen=S.P(start);
+ // MWB footprint must remain outside the raised weld cap.
+ if(Math.abs(G.sx)<CAP_HALF/2)return {segments:[],start:startScreen,visible:false};
+ // 2D section is the transverse projection of the 3D beam; longitudinal
+ // azimuth component is omitted from this display, not from flight length.
+ const a=G.alpha+angleOffset*Math.PI/180;
+ let dir=[Math.sin(a)*G.ux,Math.cos(a)],mag=Math.hypot(...dir);
+ if(mag<.001)return {segments:[],start:startScreen,visible:false};
+ dir=dir.map(v=>v/mag);
+ const surfaces=[];
+ for(const [arr,name] of [[S.upper,'top'],[S.lower,'back']])
+  for(let i=0;i<arr.length-1;i++)surfaces.push({a:arr[i],b:arr[i+1],name});
+ surfaces.push({a:[-90,0],b:[-90,25],name:'edge'},{a:[90,0],b:[90,25],name:'edge'});
+ const cross=(a,b)=>a[0]*b[1]-a[1]*b[0];
+ function firstHit(o,d){let best=null;
+  for(const s of surfaces){const e=[s.b[0]-s.a[0],s.b[1]-s.a[1]],q=[s.a[0]-o[0],s.a[1]-o[1]],den=cross(d,e);
+   if(Math.abs(den)<1e-10)continue;
+   const t=cross(q,e)/den,u=cross(q,d)/den;
+   if(t>1e-3&&u>=-1e-8&&u<=1+1e-8&&(!best||t<best.t))best={t,p:[o[0]+t*d[0],o[1]+t*d[1]],s};
+  }return best;
+ }
+ let origin=[...start],segments=[],projected=0;
+ for(let bounce=0;bounce<5;bounce++){
+  const hit=firstHit(origin,dir);if(!hit)break;
+  const length=hit.t;projected+=length;
+  const distance=projected/mag; // mm of 3D ray for constant azimuth approximation
+  segments.push({a:S.P(origin),b:S.P(hit.p),aw:[...origin],bw:hit.p,name:hit.s.name,bounce,length,distance});
+  if(hit.s.name==='edge')break;
+  const tangent=[hit.s.b[0]-hit.s.a[0],hit.s.b[1]-hit.s.a[1]],tm=Math.hypot(...tangent);
+  const n=[-tangent[1]/tm,tangent[0]/tm],dot=dir[0]*n[0]+dir[1]*n[1];
+  dir=[dir[0]-2*dot*n[0],dir[1]-2*dot*n[1]];
+  const dm=Math.hypot(...dir);dir=dir.map(v=>v/dm);
+  origin=[hit.p[0]+dir[0]*.002,hit.p[1]+dir[1]*.002];
+ }
+ return {segments,start:startScreen,visible:true};
+}
+// Only a geometrically returned ray is an interface pulse-echo event.
+function interfaceEchoesFromSection(){
+ const R=sectionRaySegments(),S=sectionGeometry();if(!R.visible)return [];
+ const results=[];
+ for(let i=1;i<R.segments.length;i++){
+  const seg=R.segments[i];if(seg.name!=='top')continue;
+  const offset=Math.abs(seg.bw[0]-(R.start[0]-S.mid)/S.sx);
+  const aperture=4; // provisional reception aperture in mm
+  if(offset>aperture)continue;
+  results.push({t:seg.distance/c,amp:.18*Math.exp(-offset/aperture),
+   label:'Réflexion',width:.55,source:'section-ray'});
+ }
+ return results;
+}
+// Shared path-based flaw events: the same ray segments feed section markers and A-scan.
+// This is a geometric, finite-beam training approximation, NOT full elastic GTD/Born.
+function rayFlawInteractions(){
+ // Event acquisition on an angular fan; each indication contributes at most
+ // one strongest pulse per scattering mechanism. Times are two-way ray lengths.
+ // This is a finite-beam training surrogate, not Born/Kirchhoff/GTD validation.
+ const G=geometry(),events=[],markers=[];
+ const fan=[-10,-8,-6,-4,-2,0,2,4,6,8,10];
+ for(const d of defects){
+  const mechanisms=d.kind==='volume'
+   ?[{Y:d.Y,X:d.X,Z:d.Z,kind:'Diffusion',base:d.reflect*.90}]
+   :[{Y:d.Y,X:d.X,Z:d.Z,kind:'Réflexion',base:d.reflect*.65},
+     {Y:d.Y,X:d.X,Z:d.Z-d.half,kind:'Diffraction',base:d.reflect*.23},
+     {Y:d.Y,X:d.X,Z:d.Z+d.half,kind:'Diffraction',base:d.reflect*.23}];
+  for(const target of mechanisms){
+   let best=null;
+   for(const delta of fan){
+    const alpha=G.alpha+delta*Math.PI/180;
+    const dir=[Math.sin(alpha)*G.ux,Math.sin(alpha)*G.uy,Math.cos(alpha)];
+    const vec=[target.Y-G.sx,target.X-G.sy,target.Z];
+    const distance=vec[0]*dir[0]+vec[1]*dir[1]+vec[2]*dir[2];
+    if(distance<=0||distance>95)continue;
+    const miss=Math.hypot(vec[0]-distance*dir[0],vec[1]-distance*dir[1],vec[2]-distance*dir[2]);
+    const beam=2.1+.06*distance;
+    if(miss>1.8*beam)continue;
+    // A direct response is allowed only before the first steel/air boundary.
+    const R=sectionRaySegments(delta);
+    if(!R.visible||!R.segments.length||distance>R.segments[0].distance+1)continue;
+    const amp=target.base*Math.exp(-.5*(miss/beam)**2)/(1+.012*distance);
+    if(amp<.009)continue;
+    if(!best||amp>best.amp)best={t:2*distance/c,amp,
+      label:target.kind,width:target.kind==='Diffraction'?.38:.52,
+      id:d.name,source:'direct-ray-fan',p:sectionGeometry().P([target.Y,target.Z]),kind:target.kind};
+   }
+
+   if(best){events.push(best);markers.push(best)}
+  }
+ }
+ return {events,markers};
+}
+
+function drawSection(){
+ const canvas=document.getElementById('section'),g=canvas.getContext('2d'),S=sectionGeometry(),P=S.P;
+ g.clearRect(0,0,400,250);g.fillStyle='#0d2234';g.fillRect(0,0,400,250);
+ g.save();g.beginPath();g.rect(0,32,400,202);g.clip();
+ g.fillStyle='#7d94a5';g.fillRect(0,S.top,400,S.bot-S.top);
+ const path=(pts)=>{g.beginPath();pts.forEach((q,i)=>{const p=P(q);if(i)g.lineTo(...p);else g.moveTo(...p)});};
+ // Weld bevels are metallurgical markers, not automatic mirrors.
+ g.fillStyle='#c18b64';path([[-14.4,0],[0,25],[14.4,0]]);g.closePath();g.fill();
+ g.fillStyle='#d9a275';path(S.upper.filter(q=>Math.abs(q[0])<=15.7));g.lineTo(...P([15.7,0]));g.lineTo(...P([-15.7,0]));g.closePath();g.fill();
+ g.beginPath();g.moveTo(...P([-5.35,25]));for(const q of S.lower.filter(q=>Math.abs(q[0])<=5.35))g.lineTo(...P(q));g.lineTo(...P([5.35,25]));g.closePath();g.fill();
+ g.strokeStyle='#e4edf3';g.lineWidth=1.5;for(const arr of [S.upper,S.lower]){path(arr);g.stroke()}
+ g.strokeStyle='#f5d5b5';g.setLineDash([3,5]);path([[-14.4,0],[0,25],[14.4,0]]);g.stroke();g.setLineDash([]);
+ // Narrow angular fan; all members follow the same interface reflection solver.
+ for(const delta of [-5,-3,3,5])for(const seg of sectionRaySegments(delta).segments){
+  g.strokeStyle=seg.bounce===0?'rgba(255,225,124,.23)':'rgba(117,224,228,.34)';
+  g.lineWidth=1.2;g.beginPath();g.moveTo(...seg.a);g.lineTo(...seg.b);g.stroke();
+ }
+ const R=sectionRaySegments();
+ for(const seg of R.segments){g.strokeStyle=seg.bounce===0?'#ffe17c':seg.bounce%2?'#ff9b5e':'#75e0e4';g.lineWidth=seg.bounce===0?3:2.2;
+  g.setLineDash(seg.bounce===0?[7,4]:[]);g.beginPath();g.moveTo(...seg.a);g.lineTo(...seg.b);g.stroke();g.setLineDash([]);
+  g.fillStyle=g.strokeStyle;g.beginPath();g.arc(...seg.b,3.1,0,Math.PI*2);g.fill();
+ }
+ // Scattering/diffraction locations, derived from exactly the same events as A-scan.
+ const interactions=rayFlawInteractions();
+ for(const m of interactions.markers){
+  g.fillStyle=m.kind==='Diffraction'?'#f9a8d4':m.kind==='Diffusion'?'#76f6a7':'#ffffff';
+  g.beginPath();g.arc(m.p[0],m.p[1],m.kind==='Diffraction'?3:4,0,Math.PI*2);g.fill();
+ }
+ g.restore();g.fillStyle='#fff';g.font='11px Arial';g.fillText(L('upper'),132,15);g.fillText('V 60°',184,111);g.fillText(L('sectionRoot'),219,241);g.fillText('25 mm',20,143);
+ if(R.visible)g.fillText('MWB',clamp(R.start[0]-13,15,355),S.top-7);
+ else{g.fillStyle='#ffd69c';g.fillText(L('sectionOff'),16,230)}
+ const names={top:L('upper'),back:L('back'),edge:L('edge')};
+ document.getElementById('sectionPathInfo').textContent=R.segments.map((s,i)=>`${i+1}: ${names[s.name]} · ${(s.distance/c).toFixed(1)} µs`).join('  |  ')||L('sectionOff');
+}
+
+
+(function buildAlphaDashboard(){
+ const wrap=document.querySelector('.wrap'),panel=wrap.querySelector('.panel');
+ const dash=document.createElement('div');dash.id='alphaDashboard';wrap.parentNode.insertBefore(dash,wrap);
+ function card(items){const c=document.createElement('section');c.className='alphaCard';items.forEach(el=>{if(el)c.appendChild(el)});dash.appendChild(c);return c}
+ const plate=document.getElementById('plate');card([plate.parentElement]);
+ const secTitle=document.getElementById('sectionTitle');
+ card([secTitle,document.getElementById('section'),document.getElementById('sectionPathInfo'),document.getElementById('sectionLegend')]);
+ const asTitle=document.getElementById('ascanTitle');
+ card([asTitle,document.getElementById('gainLabel').parentElement,document.getElementById('ascan'),document.getElementById('echoInfo')]);
+ const heatTitle=document.getElementById('heatTitle');
+ card([heatTitle,document.getElementById('probe').parentElement,document.getElementById('heat'),document.getElementById('heatLegend')]);
+ // Preserve original controls, gates, callbacks and physical model.
+})();
+
+initGates();
+drawSection();
+draw();
+setLanguage('fr');
+</script></body></html>
