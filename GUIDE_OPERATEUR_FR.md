@@ -105,3 +105,9 @@ Pour les réponses de racine, sommet et indications, le modèle pédagogique sup
 La porte initiale s’étend automatiquement pour laisser examiner les doubles skips aux angles élevés. L’opérateur choisit ensuite la porte et ses bornes. Le passage entre vue de coupe et vue 3D utilise les mêmes segments. La géométrie complète de soudure, les coefficients physiques et les conversions de modes restent à développer.
 
 La zone de préparation interdit le placement du palpeur ; elle n’est pas considérée entièrement vide pour la propagation. Le tracé s’arrête dans l’alésage du nozzle, aux limites du tube ou au terme du nombre de legs modélisés. C’est une approximation de domaine, sans solide CAO soudé validé.
+
+## Racine, sommet et description de grains
+
+Dans la barre latérale, le panneau **Racine et sommet — profils facettés de formation** ajuste l’aspect grossier/brisé des bourrelets (amplitude, nombre de facettes et identifiant reproductible). Ce sont des hypothèses de pièce training. Les réponses géométriques tiennent compte des profils et d’une pondération heuristique d’incidence ; ce n’est pas un calcul complet de réflexion sur les faces.
+
+Le panneau **Microstructure — description pour étape suivante** enregistre morphologie, taille et orientation des grains. Ces données sont exportées, mais n’altèrent pas encore les vitesses, le champ ou l’A-scan. Lire RACINE_SOMMET_MICROSTRUCTURE.md pour les limites.

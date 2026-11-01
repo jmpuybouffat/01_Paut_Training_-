@@ -7,6 +7,7 @@ from pathlib import Path
 import json
 from scan_access import scan_status
 from acoustic_field import scalar_aperture_cut
+from joint_profiles import faceted_joint_profiles
 from scan import plan_scan, beam_segment
 from geometry import validate_dimensions, preparation
 from libraries import PROBES, INDICATIONS, MWB_PROBES, PROJECT_INDICATIONS, gesture_demo_indications
@@ -57,6 +58,18 @@ with st.sidebar:
  land=st.slider(T('Talon (mm)','Root land (mm)'),0.,12.,2.,.5)
  width=st.slider(T('Largeur nominale du cordon (mm)','Nominal weld width (mm)'),2.,50.,14.,1.)
  reinf=st.slider(T('Surépaisseur (mm)','Reinforcement (mm)'),0.,12.,3.,.5)
+ with st.expander(T('Racine et sommet — profils facettés de formation','Root and cap — faceted training profiles')):
+  faceted_enabled=st.checkbox(T('Profils irréguliers','Irregular profiles'),True)
+  root_roughness=st.number_input(T('Irrégularité racine (mm)','Root irregularity (mm)'),0.,3.,.8,.1)
+  cap_roughness=st.number_input(T('Irrégularité sommet (mm)','Cap irregularity (mm)'),0.,4.,1.,.1)
+  facet_count=st.number_input(T('Facettes autour du joint','Facets around joint'),8,96,24,1)
+  profile_seed=st.number_input(T('Identifiant du profil reproductible','Repeatable profile identifier'),0,100000,17,1)
+  st.caption(T('Hypothèses de formation, pas une surface mesurée. Les amplitudes restent heuristiques.','Training assumptions, not measured surfaces. Amplitudes remain heuristic.'))
+ with st.expander(T('Microstructure — description pour étape suivante','Microstructure — description for next stage')):
+  grain_form=st.selectbox(T('Morphologie des grains','Grain morphology'),['EQUIAXED','COLUMNAR','MIXED'])
+  grain_size=st.number_input(T('Taille nominale des grains (mm)','Nominal grain size (mm)'),.01,10.,1.,.1)
+  grain_orientation=st.number_input(T('Orientation préférentielle (°)','Preferred orientation (°)'),-180.,180.,0.,1.)
+  st.caption(T('Métadonnées uniquement : aucun calcul anisotrope ni diffusion par les grains.','Metadata only: no anisotropic propagation or grain scattering calculation.'))
  st.header(T('Matériau (indicatif)','Material (indicative)'))
  mat=st.selectbox(T('Matériau','Material'),['Acier carbone','Inox austénitique','Aluminium','Personnalisé'],format_func=lambda x: {'Acier carbone':T('Acier carbone','Carbon steel'),'Inox austénitique':T('Inox austénitique','Austenitic steel'),'Aluminium':'Aluminium','Personnalisé':T('Personnalisé','Custom')}[x])
  presets={'Acier carbone':(5920,3240,7850),'Inox austénitique':(5790,3100,7900),'Aluminium':(6320,3130,2700),'Personnalisé':(5900,3200,7800)}
@@ -170,7 +183,19 @@ face,cap=preparation(ths,Ri,R,r,offset,u,b,c,bevel,gap,land,reinf)
 face[np.abs(face[...,2])>length/2]=np.nan
 cap[np.abs(cap[...,2])>length/2]=np.nan
 surface(face[...,0],face[...,1],face[...,2],T('Préparation radiale approchée','Approximate radial preparation'),'#e5b14c',.65)
-surface(cap[...,0],cap[...,1],cap[...,2],T('Profil de renfort illustratif','Illustrative reinforcement profile'),'#dc8053',.8)
+joint_profiles=None
+if faceted_enabled:
+ try:
+  joint_profiles=faceted_joint_profiles(R,Ri,r,angle,offset,length,gap,land,bevel,reinf,root_roughness,cap_roughness,facet_count,profile_seed)
+ except ValueError as exc:
+  st.error(T('Profil facetté non construit : ','Faceted profile not built: ')+str(exc))
+if joint_profiles:
+ for name,color in [('cap','#dc8053'),('root','#28a398')]:
+  if name=='root' and not inner: continue
+  mesh=joint_profiles['meshes'][name];v=np.asarray(mesh['vertices_mm']);tri=np.asarray(mesh['triangles'])
+  fig.add_trace(go.Mesh3d(x=v[:,0],y=v[:,1],z=v[:,2],i=tri[:,0],j=tri[:,1],k=tri[:,2],flatshading=True,color=color,opacity=.8,name=T('Profil facetté ','Faceted profile ')+name))
+else:
+ surface(cap[...,0],cap[...,1],cap[...,2],T('Profil de renfort illustratif','Illustrative reinforcement profile'),'#dc8053',.8)
 
 with piece_tab:
  st.subheader(T('Le piquage — vue de référence REV0.3 enrichie','Nozzle — enhanced REV0.3 reference view'))
@@ -266,8 +291,8 @@ with setup_tab:
   'scan_plan':{'surface':'MAIN_PIPE_OD','azimuth_start_deg':scan_a0,'azimuth_end_deg':scan_a1,'z_start_mm':scan_z0,'z_end_mm':scan_z1,'step_mm':scan_step,'beam_heading_deg':scan_heading,'points':scan_points},'plugins':{'cascade':{'status':'NOT_CONNECTED'},'CAD_TCG':{'status':'NOT_CONNECTED'}},
   'training_scenario':training_scenario,'placement_basis':'ARTIFICIAL_MAIN_WALL_NOT_WELD_FACES' if training_scenario=='DEMO_GESTE_PAROI' else 'USER_DEFINED','workflow':workflow,'acquisition':'MONO_ELEMENT','scattering':{'requested_model':scattering,'implemented':False},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED'},
   'geometry':{'main_OD_mm':D1,'main_thickness_mm':t1,'nozzle_OD_mm':D2,'nozzle_thickness_mm':t2,'axis_angle_deg':angle,'offset_mm':offset,'main_length_mm':length,'nozzle_length_mm':nlen},
-  'joint':{'bevel_deg':bevel,'gap_mm':gap,'land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf},
-  'material':{'name':mat,'VL_m_s':vl,'VT_m_s':vs,'density_kg_m3':rho},
+  'joint':{'faceted_enabled':faceted_enabled,'root_roughness_mm':root_roughness,'cap_roughness_mm':cap_roughness,'facet_count':facet_count,'profile_seed':profile_seed,'bevel_deg':bevel,'gap_mm':gap,'land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf},
+  'material':{'microstructure':{'morphology':grain_form,'grain_size_mm':grain_size,'preferred_orientation_deg':grain_orientation,'implemented_in_physics':False},'name':mat,'VL_m_s':vl,'VT_m_s':vs,'density_kg_m3':rho},
   'mwb':dict(mwb,reference=probe_reference),'scan_zones':json.loads(scan_rows.to_json(orient='records')),'indications':project_indications}
  st.download_button(T('Exporter la configuration de la pièce test JSON','Export test-piece configuration JSON'),json.dumps(specimen_config,ensure_ascii=False,indent=2,allow_nan=False),'NOZZLE_REV0_4_TEST_PIECE.json','application/json',disabled=invalid_project)
 with scan_tab:
@@ -283,7 +308,7 @@ with scan_tab:
  except ValueError as exc:
   st.error(T('Champ direct non calculé : ','Direct field not calculated: ')+str(exc))
   direct_field=None
- operator_config=dict(specimen_config,language=lang,direct_field=direct_field)
+ operator_config=dict(specimen_config,language=lang,direct_field=direct_field,joint_profiles=joint_profiles)
  operator_json=json.dumps(operator_config,ensure_ascii=False,allow_nan=False).replace('<',chr(92)+'u003c')
  operator_html=Path(__file__).with_name('nozzle_operator.html').read_text(encoding='utf-8').replace('__CONFIG__',operator_json)
  render_dashboard(operator_html,height=1400)

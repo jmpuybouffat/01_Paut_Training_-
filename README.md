@@ -89,3 +89,5 @@ Set pipe/joint/material parameters, select the single-element MWB in the scan-ac
 ## Carte de champ direct calculée
 
 Le panneau de champ utilise désormais l’intégration complexe du Green scalaire sur une ouverture rectangulaire équivalente. Carte colorée relative 0 à −40 dB et coupe projetée dans la vue 3D. Phase et fréquence incluses, champ direct seulement. Lire **CHAMP_SCALAIRE.md** : ce n’est pas CIVA, pas un calcul élastodynamique, et l’A-scan heuristique n’est pas couplé à cette carte. Les mentions antérieures « aucun champ calculé » restent vraies pour le champ UT élastique complet mais sont remplacées, pour ce modèle réduit, par cette section. Tests : `python -m unittest test_acoustic_field -v`.
+
+Profils de soudure et microstructure : voir **RACINE_SOMMET_MICROSTRUCTURE.md**. Racine/sommet facettés déterministes, normales et réponse pédagogique dépendante de l’incidence. Description de grains préparée comme métadonnées, sans calcul anisotrope ni diffusion cristallographique. Tests : `python -m unittest test_geometry test_scan test_acoustic_field test_joint_profiles -v` (15 tests).

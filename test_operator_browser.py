@@ -5,6 +5,7 @@ from playwright.sync_api import sync_playwright
 from scan import plan_scan
 from libraries import PROJECT_INDICATIONS
 from acoustic_field import scalar_aperture_cut
+from joint_profiles import faceted_joint_profiles
 
 
 def configuration():
@@ -12,7 +13,7 @@ def configuration():
     geometry=dict(main_OD_mm=400,main_thickness_mm=20,main_length_mm=800,nozzle_OD_mm=160,nozzle_thickness_mm=12,nozzle_length_mm=320,offset_mm=0,axis_angle_deg=63)
     indications=[dict(d,enabled=True,azimuth_deg=None,z_mm=None,depth_mm=None,orientation_deg=None) for d in PROJECT_INDICATIONS]
     indications[0].update(azimuth_deg=-50,z_mm=-90,depth_mm=10,orientation_deg=0)
-    return dict(direct_field=scalar_aperture_cut(2,3240,ns=60,nt=41,include_volume=True),language='FR',workflow='TRAINING',geometry=geometry,joint=dict(gap_mm=2,land_mm=2,bevel_deg=35),material=dict(VT_m_s=3240),mwb=dict(refracted_angle_deg=45,frequency_MHz=2),scan_zones=[zone],indications=indications,scan_plan=dict(azimuth_start_deg=-50,azimuth_end_deg=-30,z_start_mm=-100,z_end_mm=0,beam_heading_deg=0,points=plan_scan(200,800,-50,-30,-100,0,10,[zone])))
+    return dict(joint_profiles=faceted_joint_profiles(200,180,80,63,0,800,2,2,35,3),direct_field=scalar_aperture_cut(2,3240,ns=60,nt=41,include_volume=True),language='FR',workflow='TRAINING',geometry=geometry,joint=dict(gap_mm=2,land_mm=2,bevel_deg=35),material=dict(VT_m_s=3240),mwb=dict(refracted_angle_deg=45,frequency_MHz=2),scan_zones=[zone],indications=indications,scan_plan=dict(azimuth_start_deg=-50,azimuth_end_deg=-30,z_start_mm=-100,z_end_mm=0,beam_heading_deg=0,points=plan_scan(200,800,-50,-30,-100,0,10,[zone])))
 
 
 def main():
@@ -24,6 +25,8 @@ def main():
         page.on('pageerror',lambda e:errors.append(str(e)))
         page.set_content(template.replace('__CONFIG__',json.dumps(config)))
         assert page.locator('#operatorSurface').input_value()=='3d'
+        assert page.evaluate('C.joint_profiles.measured') is False
+        assert page.evaluate('geometricReferences.root.length')>0
         assert not page.locator('#instructor').is_checked()
         assert page.locator('#showBeam').is_checked()
         assert page.evaluate('C.direct_field.model')=='HARMONIC_SCALAR_GREEN_RECTANGULAR_APERTURE'
