@@ -52,7 +52,7 @@ Laisser ces positions vides permet de vérifier le geste et les rayons, mais pas
 
 Ouvrir **3 · Scan manuel**. Le tableau de bord comprend le tube principal déroulé, la vue coupe/3D, l’A-scan pédagogique et la projection XY de l’éventail de rayons.
 
-Sur la vue déroulée, saisir le symbole de sonde en maintenant le bouton gauche. Déplacer la sonde sur une première ligne de balayage, décaler légèrement, puis revenir sur une ligne parallèle, et répéter : c’est le mouvement en créneaux. Le tracé bleu montre le chemin du point de sonde. Le bouton Créneaux ▶ démontre le parcours paramétré ; Pause arrête la lecture et permet de reprendre à la main. Ce tracé de surface ne constitue pas une démonstration de couverture de tout le volume.
+Sur la vue déroulée, saisir le symbole de sonde en maintenant le bouton gauche. Déplacer la sonde sur une première ligne de balayage, décaler légèrement, puis revenir sur une ligne parallèle, et répéter : c’est le mouvement en créneaux. Le tracé bleu montre le chemin du point de sonde. Le bouton Créneaux ▶ lance ou reprend le parcours paramétré ; Pause arrête la lecture et permet de reprendre à la main. Inverser le parcours change le sens de lecture, y compris en cours de lecture, sans tourner la sonde. Tourner sonde 180° change seulement son orientation. À une extrémité, une nouvelle lecture repart du début dans le sens sélectionné. Ce tracé de surface ne constitue pas une démonstration de couverture de tout le volume.
 
 Sur une réponse pédagogique, arrêter le déplacement, puis effectuer une faible rotation avec la molette au voisinage du palpeur, ou les boutons −1° et +1°. Observer la réponse de la porte et le maximum mémorisé. Les réponses actuelles sont heuristiques et ne permettent pas une caractérisation physique validée.
 
@@ -73,3 +73,5 @@ La géométrie du piquage et le scan manuel sont raccordés. Les rayons sont tra
 En TRAINING, les réponses d’indications sont pédagogiques et non étalonnées. En REAL_EXAM_PREPARATION, aucune acquisition n’est connectée et aucun signal synthétique n’est affiché comme une mesure réelle. CAD/TCG, cascade, Kirchhoff, Born et GTD restent à raccorder. Le choix d’un nom de modèle ne l’exécute pas.
 
 Le livrable actuel est un démonstrateur de formation en développement, pas un simulateur de qualification ni un système d’examen opérationnel terminé.
+
+L’encart Streamlit « Help agents write better apps » / Install est destiné aux outils de développement. Aucune installation n’est nécessaire pour utiliser le twin. Fermer avec la croix ou « Don’t show again ».

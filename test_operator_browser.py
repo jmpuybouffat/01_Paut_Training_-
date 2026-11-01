@@ -34,6 +34,15 @@ def main():
         assert page.evaluate('heading')!=before
         page.locator('#plus').click();page.locator('#demo').click();page.wait_for_timeout(350);page.locator('#pause').click()
         assert page.evaluate('playIndex')>0 and page.evaluate('timer') is None
+        previous=page.evaluate('lastPlanIndex');orientation=page.evaluate('heading')
+        page.locator('#reverseScan').click()
+        assert page.evaluate('playDirection')==-1
+        assert page.evaluate('heading')==orientation,'Scan reversal rotated probe'
+        page.locator('#demo').click();page.wait_for_timeout(90);page.locator('#pause').click()
+        assert page.evaluate('lastPlanIndex')<previous,'Raster did not move backward'
+        page.locator('#reverseScan').click()
+        assert page.evaluate('playDirection')==1
+        print('Raster reverse/resume independent of probe orientation: OK')
         page.locator('#instructor').check();page.locator('#record').click()
         assert page.evaluate('samples.length')==1
         with page.expect_download() as d: page.locator('#download').click()
