@@ -87,3 +87,15 @@ En TRAINING, les réponses d’indications sont pédagogiques et non étalonnée
 Le livrable actuel est un démonstrateur de formation en développement, pas un simulateur de qualification ni un système d’examen opérationnel terminé.
 
 L’encart Streamlit « Help agents write better apps » / Install est destiné aux outils de développement. Aucune installation n’est nécessaire pour utiliser le twin. Fermer avec la croix ou « Don’t show again ».
+
+## Échos de base et parcours skip — complément
+
+Le mode élève laisse les sources cachées, mais affiche les signaux pédagogiques de géométrie et d’indications dans l’A-scan. Les profils de racine et de sommet sont déduits des intersections paramétriques du nozzle ; leur rétrodiffusion est représentée par une heuristique non étalonnée, pas par un calcul élastodynamique de ces profils. Une indication peut contribuer sur plusieurs legs si les trajets passent à proximité.
+
+Convention affichée : leg 1 vers la face interne = ½ skip ; leg 2 vers la face externe = 1 skip ; leg 3 vers la face interne = 1½ skip ; leg 4 vers la face externe = 2 skips. Les repères gris du temps de vol correspondent à un aller-retour hypothétique jusqu’à ces positions. Ils ne créent pas automatiquement des échos de fond ou de surface.
+
+Pour les réponses de racine, sommet et indications, le modèle pédagogique suppose une rétrodiffusion sur le chemin réciproque et calcule le temps avec deux fois le parcours jusqu’à la cible. Un retour spéculaire de paroi n’est accepté que lorsque le rayon revient dans la zone de réception du palpeur avec une direction compatible ; son temps utilise le parcours complet déjà tracé, sans le doubler une seconde fois.
+
+La porte initiale s’étend automatiquement pour laisser examiner les doubles skips aux angles élevés. L’opérateur choisit ensuite la porte et ses bornes. Le passage entre vue de coupe et vue 3D utilise les mêmes segments. La géométrie complète de soudure, les coefficients physiques et les conversions de modes restent à développer.
+
+La zone de préparation interdit le placement du palpeur ; elle n’est pas considérée entièrement vide pour la propagation. Le tracé s’arrête dans l’alésage du nozzle, aux limites du tube ou au terme du nombre de legs modélisés. C’est une approximation de domaine, sans solide CAO soudé validé.
