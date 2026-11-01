@@ -1,0 +1,17 @@
+Subject: Technical review request — pedagogical nozzle UT twin and interpretation of geometry echoes
+
+Hello John,
+
+I am preparing an evaluation of a nozzle UT training twin. The current stage focuses on the relationship between surface probe motion, direct/reflected geometric paths, geometry echoes and the displayed A-scan, with hidden reference targets in student mode.
+
+I would particularly value your comments on the teaching interpretation of root/cap responses, the direct/skip/double-skip conventions, and the assumptions that should be changed before progressing to a more physically complete response model.
+
+Evaluation package:
+https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_EVALUATION_FR_EN.zip
+
+The package includes the English guide and a test protocol. Current amplitudes and root/cap backscatter are heuristic and uncalibrated. The harmonic scalar aperture field is a reduced direct-field calculation, not a validated CIVA-equivalent elastic model. Born, Kirchhoff and GTD flaw-response engines are not connected. The motion-demo targets are artificial main-wall placements rather than actual weld-face flaws.
+
+The immediate goal is to identify the highest-priority technical and pedagogical corrections, without confusing visual explanation with validated inspection capability.
+
+Best regards,
+Jean-Michel

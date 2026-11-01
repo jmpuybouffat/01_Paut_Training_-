@@ -8,79 +8,99 @@ import json
 from scan_access import scan_status
 from acoustic_field import scalar_aperture_cut
 from joint_profiles import faceted_joint_profiles
+from i18n import translate_rows, column_label, display_value, status_label
 from scan import plan_scan, beam_segment
 from geometry import validate_dimensions, preparation
 from libraries import PROBES, INDICATIONS, MWB_PROBES, PROJECT_INDICATIONS, gesture_demo_indications
 
 st.set_page_config(page_title='BYTE NDT | NOZZLE REV0.4', layout='wide')
-lang=st.sidebar.radio('Langue / Language',['FR','EN'],horizontal=True)
+lang=st.sidebar.radio('Langue / Language',['FR','EN'],horizontal=True,key='control_lang')
 def T(fr,en): return fr if lang=='FR' else en
+language_changed=st.session_state.get('_previous_ui_language',lang)!=lang
+st.session_state['_previous_ui_language']=lang
+
+def localized_editor(name,defaults,**options):
+ store='canonical_table_'+name;widget='editor_'+name+'_'+lang;base='editor_base_'+name+'_'+lang
+ if store not in st.session_state:st.session_state[store]=defaults.to_dict('records')
+ if language_changed or base not in st.session_state:
+  if widget in st.session_state:del st.session_state[widget]
+  st.session_state[base]=translate_rows(st.session_state[store],lang)
+ frame=pd.DataFrame(st.session_state[base],columns=defaults.columns)
+ for column in frame.columns:
+  if column.endswith(('_mm','_deg')):frame[column]=pd.to_numeric(frame[column],errors='coerce').astype(float)
+ config={column:column_label(column,lang) for column in frame.columns}
+ if 'access' in frame.columns:config['access']=st.column_config.SelectboxColumn(column_label('access',lang),options=[display_value('access',v,lang) for v in ['UNASSESSED','TO_ASSESS','INACCESSIBLE']],required=True)
+ result=st.data_editor(frame,key=widget,column_config=config,**options)
+ records=translate_rows(result.to_dict('records'),lang,canonical=True)
+ st.session_state[store]=records
+ return pd.DataFrame(records,columns=defaults.columns)
+
 @st.cache_data(show_spinner=False)
 def cached_direct_field(frequency,speed,width,height):
  return scalar_aperture_cut(frequency,speed,width,height,include_volume=True)
 def render_dashboard(html,height):
  if callable(getattr(st,'iframe',None)): st.iframe(html,height=height,width='stretch')
  else: components.html(html,height=height,scrolling=True)
-workflow=st.sidebar.selectbox('Usage / Use',['TRAINING','REAL_EXAM_PREPARATION'])
-training_scenario=st.sidebar.selectbox(T('Pièce de formation','Training specimen'),['DEMO_GESTE_PAROI','PIECE_PERSONNALISEE'],index=0 if workflow=='TRAINING' else 1,disabled=workflow!='TRAINING')
+workflow=st.sidebar.selectbox(T('Usage','Use'),['TRAINING','REAL_EXAM_PREPARATION'],format_func=lambda v:{'TRAINING':T('Formation','Training'),'REAL_EXAM_PREPARATION':T('Préparation d’examen réel','Real examination preparation')}[v],key='control_workflow')
+training_scenario=st.sidebar.selectbox(T('Pièce de formation','Training specimen'),['DEMO_GESTE_PAROI','PIECE_PERSONNALISEE'],index=0 if workflow=='TRAINING' else 1,disabled=workflow!='TRAINING',format_func=lambda v:{'DEMO_GESTE_PAROI':T('Démo de balayage en paroi','Main-wall scan demo'),'PIECE_PERSONNALISEE':T('Pièce personnalisée','Custom specimen')}[v],key='control_training_scenario')
 if workflow!='TRAINING': training_scenario='PIECE_PERSONNALISEE'
 if training_scenario=='DEMO_GESTE_PAROI': st.sidebar.caption(T('Cinq cibles artificielles en paroi principale. Leurs positions ne représentent pas les flancs de soudure.','Five artificial targets in the main wall. Their positions do not represent weld faces.'))
 st.sidebar.caption(T('Parcours : 1 Pièce 3D → 2 Réglages → 3 Scan manuel → 4 Notice.','Workflow: 1 3D specimen → 2 Setup → 3 Manual scan → 4 Guide.'))
 st.sidebar.caption(T('Monoélément. Examen : préparation du dossier, procédure non validée.','Single element. Examination: dossier preparation, procedure not validated.'))
-mouse_mode=st.sidebar.selectbox(T('Souris 3D','3D mouse'),['orbit','turntable','pan'])
+mouse_mode=st.sidebar.selectbox(T('Souris 3D','3D mouse'),['orbit','turntable','pan'],format_func=lambda v:{'orbit':T('Rotation libre','Orbit'),'turntable':T('Rotation stable','Turntable'),'pan':T('Déplacement','Pan')}[v],key='control_mouse_mode')
 if 'camera_revision' not in st.session_state: st.session_state.camera_revision=0
-if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view')): st.session_state.camera_revision+=1
+if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view'),key='control_f7cb21d880d6'): st.session_state.camera_revision+=1
 with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — inactive')):
- scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Kirchhoff','Born','GTD'],disabled=True)
+ scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Kirchhoff','Born','GTD'],disabled=True,key='control_scattering')
  st.sidebar.caption(T('Diffusion/diffraction non implémentées. La carte de champ utilise un Green scalaire direct distinct.','Scattering/diffraction not implemented. The field map uses a separate scalar direct Green model.'))
- procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'')
+ procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'',key='control_procedure_revision')
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
 st.title('BYTE NDT — NOZZLE GEOMETRY TWIN — REV0.4')
-st.caption(T('Correctif ergonomie : piquage 3D en premier, réglages et scan séparés.','Usability correction: nozzle 3D first, setup and scan separated.'))
+st.caption(T('Version ÉVALUATION FR/EN — scan borné et champ coloré.','FR/EN EVALUATION build — bounded scan and coloured field.'))
 st.caption(T('Nozzle traversant • Pénétration complète • Préparation chanfreinée • Référence géométrique provisoire','Set-through nozzle • Full penetration • Bevel preparation • Provisional geometry reference'))
 piece_tab,setup_tab,scan_tab,guide_tab=st.tabs([T('1 · Piquage 3D','1 · Nozzle 3D'),T('2 · Réglages de la pièce','2 · Specimen setup'),T('3 · Scan manuel','3 · Manual scan'),T('4 · Mode d’emploi','4 · User guide')])
 with guide_tab.expander(T('Écran opérateur du premier twin — scan manuel, faisceau et rayons','Original twin operator screen — manual scan, beam and rays'),expanded=False):
  st.info(T('Fonctions reprises du twin FORMATION ALPHA : modèle historique de tôle soudée de 25 mm, 3 indications. Cette vue est indépendante des paramètres nozzle et des 5 indications de la pièce test. Référence historique, distincte du scan nozzle de l’onglet 3.','Restored FORMATION ALPHA functions: historical 25 mm welded-plate model, 3 indications. This view is independent of nozzle parameters and the 5 test-piece indications. Historical reference, separate from the nozzle scan in tab 3.'))
- render_dashboard(Path(__file__).with_name('operator_view.html').read_text(encoding='utf-8'),height=2100)
+ render_dashboard(Path(__file__).with_name('operator_view.html').read_text(encoding='utf-8').replace("setLanguage('fr');","setLanguage('en');" if lang=='EN' else "setLanguage('fr');"),height=2100)
 with st.sidebar:
  st.header(T('Tubes et intersection','Pipes and intersection'))
- D1=st.slider(T('Diamètre extérieur tube principal (mm)','Main pipe OD (mm)'),100.,1200.,400.,10.)
- t1=st.slider(T('Épaisseur tube principal (mm)','Main pipe thickness (mm)'),3.,60.,20.,1.)
- D2=st.slider(T('Diamètre extérieur nozzle (mm)','Nozzle OD (mm)'),30.,600.,160.,5.)
- t2=st.slider(T('Épaisseur nozzle (mm)','Nozzle thickness (mm)'),2.,50.,12.,1.)
- angle=st.slider(T('Angle entre axes (°)','Axis angle (°)'),25.,155.,63.,1.)
- offset=st.slider(T('Décalage transversal (mm)','Transverse offset (mm)'),-120.,120.,0.,5.)
- length=st.slider(T('Longueur tube principal (mm)','Main pipe length (mm)'),300.,1800.,800.,20.)
- nlen=st.slider(T('Longueur nozzle extérieure (mm)','External nozzle length (mm)'),100.,800.,320.,10.)
+ D1=st.slider(T('Diamètre extérieur tube principal (mm)','Main pipe OD (mm)'),100.,1200.,400.,10.,key='control_D1')
+ t1=st.slider(T('Épaisseur tube principal (mm)','Main pipe thickness (mm)'),3.,60.,20.,1.,key='control_t1')
+ D2=st.slider(T('Diamètre extérieur nozzle (mm)','Nozzle OD (mm)'),30.,600.,160.,5.,key='control_D2')
+ t2=st.slider(T('Épaisseur nozzle (mm)','Nozzle thickness (mm)'),2.,50.,12.,1.,key='control_t2')
+ angle=st.slider(T('Angle entre axes (°)','Axis angle (°)'),25.,155.,63.,1.,key='control_angle')
+ offset=st.slider(T('Décalage transversal (mm)','Transverse offset (mm)'),-120.,120.,0.,5.,key='control_offset')
+ length=st.slider(T('Longueur tube principal (mm)','Main pipe length (mm)'),300.,1800.,800.,20.,key='control_length')
+ nlen=st.slider(T('Longueur nozzle extérieure (mm)','External nozzle length (mm)'),100.,800.,320.,10.,key='control_nlen')
  st.header(T('Préparation du joint — hypothèses','Joint preparation — assumptions'))
- bevel=st.slider(T('Angle de chanfrein (°)','Bevel angle (°)'),0.,70.,35.,1.)
- gap=st.slider(T('Jeu nominal à la racine (mm)','Nominal root gap (mm)'),0.,8.,2.,.5)
- land=st.slider(T('Talon (mm)','Root land (mm)'),0.,12.,2.,.5)
- width=st.slider(T('Largeur nominale du cordon (mm)','Nominal weld width (mm)'),2.,50.,14.,1.)
- reinf=st.slider(T('Surépaisseur (mm)','Reinforcement (mm)'),0.,12.,3.,.5)
+ bevel=st.slider(T('Angle de chanfrein (°)','Bevel angle (°)'),0.,70.,35.,1.,key='control_bevel')
+ gap=st.slider(T('Jeu nominal à la racine (mm)','Nominal root gap (mm)'),0.,8.,2.,.5,key='control_gap')
+ land=st.slider(T('Talon (mm)','Root land (mm)'),0.,12.,2.,.5,key='control_land')
+ width=st.slider(T('Largeur nominale du cordon (mm)','Nominal weld width (mm)'),2.,50.,14.,1.,key='control_width')
+ reinf=st.slider(T('Surépaisseur (mm)','Reinforcement (mm)'),0.,12.,3.,.5,key='control_reinf')
  with st.expander(T('Racine et sommet — profils facettés de formation','Root and cap — faceted training profiles')):
-  faceted_enabled=st.checkbox(T('Profils irréguliers','Irregular profiles'),True)
-  root_roughness=st.number_input(T('Irrégularité racine (mm)','Root irregularity (mm)'),0.,3.,.8,.1)
-  cap_roughness=st.number_input(T('Irrégularité sommet (mm)','Cap irregularity (mm)'),0.,4.,1.,.1)
-  facet_count=st.number_input(T('Facettes autour du joint','Facets around joint'),8,96,24,1)
-  profile_seed=st.number_input(T('Identifiant du profil reproductible','Repeatable profile identifier'),0,100000,17,1)
+  faceted_enabled=st.checkbox(T('Profils irréguliers','Irregular profiles'),True,key='control_faceted_enabled')
+  root_roughness=st.number_input(T('Irrégularité racine (mm)','Root irregularity (mm)'),0.,3.,.8,.1,key='control_root_roughness')
+  cap_roughness=st.number_input(T('Irrégularité sommet (mm)','Cap irregularity (mm)'),0.,4.,1.,.1,key='control_cap_roughness')
+  facet_count=st.number_input(T('Facettes autour du joint','Facets around joint'),8,96,24,1,key='control_facet_count')
+  profile_seed=st.number_input(T('Identifiant du profil reproductible','Repeatable profile identifier'),0,100000,17,1,key='control_profile_seed')
   st.caption(T('Hypothèses de formation, pas une surface mesurée. Les amplitudes restent heuristiques.','Training assumptions, not measured surfaces. Amplitudes remain heuristic.'))
  with st.expander(T('Microstructure — description pour étape suivante','Microstructure — description for next stage')):
-  grain_form=st.selectbox(T('Morphologie des grains','Grain morphology'),['EQUIAXED','COLUMNAR','MIXED'])
-  grain_size=st.number_input(T('Taille nominale des grains (mm)','Nominal grain size (mm)'),.01,10.,1.,.1)
-  grain_orientation=st.number_input(T('Orientation préférentielle (°)','Preferred orientation (°)'),-180.,180.,0.,1.)
+  grain_form=st.selectbox(T('Morphologie des grains','Grain morphology'),['EQUIAXED','COLUMNAR','MIXED'],format_func=lambda v:{'EQUIAXED':T('Équiaxes','Equiaxed'),'COLUMNAR':T('Colonnaires','Columnar'),'MIXED':T('Mixtes','Mixed')}[v],key='control_grain_form')
+  grain_size=st.number_input(T('Taille nominale des grains (mm)','Nominal grain size (mm)'),.01,10.,1.,.1,key='control_grain_size')
+  grain_orientation=st.number_input(T('Orientation préférentielle (°)','Preferred orientation (°)'),-180.,180.,0.,1.,key='control_grain_orientation')
   st.caption(T('Métadonnées uniquement : aucun calcul anisotrope ni diffusion par les grains.','Metadata only: no anisotropic propagation or grain scattering calculation.'))
  st.header(T('Matériau (indicatif)','Material (indicative)'))
- mat=st.selectbox(T('Matériau','Material'),['Acier carbone','Inox austénitique','Aluminium','Personnalisé'],format_func=lambda x: {'Acier carbone':T('Acier carbone','Carbon steel'),'Inox austénitique':T('Inox austénitique','Austenitic steel'),'Aluminium':'Aluminium','Personnalisé':T('Personnalisé','Custom')}[x])
+ mat=st.selectbox(T('Matériau','Material'),['Acier carbone','Inox austénitique','Aluminium','Personnalisé'],format_func=lambda x: {'Acier carbone':T('Acier carbone','Carbon steel'),'Inox austénitique':T('Inox austénitique','Austenitic steel'),'Aluminium':'Aluminium','Personnalisé':T('Personnalisé','Custom')}[x],key='control_mat')
  presets={'Acier carbone':(5920,3240,7850),'Inox austénitique':(5790,3100,7900),'Aluminium':(6320,3130,2700),'Personnalisé':(5900,3200,7800)}
  vl0,vs0,rho0=presets[mat]
- vl=st.number_input('VL (m/s)',1000,9000,vl0,10)
- vs=st.number_input('VT (m/s)',500,6000,vs0,10)
- rho=st.number_input('ρ (kg/m³)',1000,15000,rho0,50)
+ vl=st.number_input('VL (m/s)',1000,9000,vl0,10,key='control_vl')
+ vs=st.number_input('VT (m/s)',500,6000,vs0,10,key='control_vs')
+ rho=st.number_input('ρ (kg/m³)',1000,15000,rho0,50,key='control_rho')
  st.header(T('Affichage','Display'))
- inner=st.checkbox(T('Parois internes','Inner walls'),True)
- frames=st.checkbox(T('Normales et tangentes','Normals and tangents'),False)
- show_edges=st.checkbox(T('Courbes préparatoires illustratives','Illustrative preparation curves'),True)
+ inner=st.checkbox(T('Parois internes','Inner walls'),True,key='control_inner')
+ frames=st.checkbox(T('Normales et tangentes','Normals and tangents'),False,key='control_frames')
+ show_edges=st.checkbox(T('Courbes préparatoires illustratives','Illustrative preparation curves'),True,key='control_show_edges')
 
 errors=validate_dimensions(D1,t1,D2,t2,offset,land)
 if errors:
@@ -193,7 +213,7 @@ if joint_profiles:
  for name,color in [('cap','#dc8053'),('root','#28a398')]:
   if name=='root' and not inner: continue
   mesh=joint_profiles['meshes'][name];v=np.asarray(mesh['vertices_mm']);tri=np.asarray(mesh['triangles'])
-  fig.add_trace(go.Mesh3d(x=v[:,0],y=v[:,1],z=v[:,2],i=tri[:,0],j=tri[:,1],k=tri[:,2],flatshading=True,color=color,opacity=.8,name=T('Profil facetté ','Faceted profile ')+name))
+  fig.add_trace(go.Mesh3d(x=v[:,0],y=v[:,1],z=v[:,2],i=tri[:,0],j=tri[:,1],k=tri[:,2],flatshading=True,color=color,opacity=.8,name=T('Profil facetté ','Faceted profile ')+({'cap':T('sommet','cap'),'root':T('racine','root')}[name])))
 else:
  surface(cap[...,0],cap[...,1],cap[...,2],T('Profil de renfort illustratif','Illustrative reinforcement profile'),'#dc8053',.8)
 
@@ -207,7 +227,7 @@ with piece_tab:
 with setup_tab:
  st.subheader(T('Sondes MWB / compactes — accès au balayage','MWB / compact probes — scanning access'))
  st.info(T('Référence MWB et dimensions fabricant à renseigner. Ce contrôle compare les encombrements saisis ; il ne valide ni le contact courbe ni la couverture acoustique.','Enter MWB reference and manufacturer dimensions. This check compares entered clearances; it validates neither curved contact nor acoustic coverage.'))
- mwb_index=st.selectbox(T('Configuration MWB','MWB configuration'),range(len(MWB_PROBES)),index=next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45),format_func=lambda i:MWB_PROBES[i]['name'])
+ mwb_index=st.selectbox(T('Configuration MWB','MWB configuration'),range(len(MWB_PROBES)),index=next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45),format_func=lambda i:MWB_PROBES[i]['name'],key='control_mwb_index')
  mwb=MWB_PROBES[mwb_index]
  probe_data=dict(mwb,elements=1,active_elements=1)
  st.caption(T('Krautkrämer MWB : pastille 8 × 9 mm. La page catalogue fournie confirme les versions 2 MHz (N = 15 mm) et le croquis Type 23. Caractéristiques complètes 4/5 MHz à confirmer. Ces données ne transforment pas l’éventail illustratif en calcul de champ.','Krautkrämer MWB: 8 × 9 mm aperture. The supplied catalogue page confirms 2 MHz versions (N = 15 mm) and the Type 23 sketch. Full 4/5 MHz specifications remain to confirm. These data do not turn the illustrative fan into a field calculation.'))
@@ -215,27 +235,27 @@ with setup_tab:
  st.download_button(T('Exporter la bibliothèque MWB','Export MWB library'),json.dumps(MWB_PROBES,ensure_ascii=False,indent=2),'NOZZLE_REV0_4_MWB.json','application/json')
  probe_reference=st.text_input(T('Référence sonde / sabot','Probe / wedge reference'),mwb['name'],key=f'mwb_reference_{mwb_index}')
  st.caption(T('Déclarer chaque zone inaccessible et sa cause. Une zone non évaluée ne compte pas comme accessible ; un encombrement compatible ne prouve pas la couverture UT.','Declare each inaccessible zone and its reason. An unassessed zone does not count as accessible; a fitting footprint does not prove UT coverage.'))
- scan_rows=st.data_editor(pd.DataFrame([{'zone':'Zone 1','access':'UNASSESSED','reason':'','azimuth_start_deg':np.nan,'azimuth_end_deg':np.nan,'z_start_mm':np.nan,'z_end_mm':np.nan,'available_length_mm':0.,'available_width_mm':0.,'probe_length_mm':0.,'probe_width_mm':0.,'travel_mm':0.,'margin_mm':0.}]),num_rows='dynamic',hide_index=True,key='scan_access',column_config={'access':st.column_config.SelectboxColumn(T('Accès','Access'),options=['UNASSESSED','TO_ASSESS','INACCESSIBLE'],required=True)})
+ scan_rows=localized_editor('scan_access',pd.DataFrame([{'zone':'Zone 1','access':'UNASSESSED','reason':'','azimuth_start_deg':np.nan,'azimuth_end_deg':np.nan,'z_start_mm':np.nan,'z_end_mm':np.nan,'available_length_mm':0.,'available_width_mm':0.,'probe_length_mm':0.,'probe_width_mm':0.,'travel_mm':0.,'margin_mm':0.}]),num_rows='dynamic',hide_index=True)
  scan_rows['assessment']=[scan_status(row) for row in scan_rows.to_dict('records')]
  for _,zone in scan_rows.iterrows():
-  message=str(zone['zone'])+': '+zone['assessment']
+  message=str(zone['zone'])+': '+status_label(zone['assessment'],lang)
   if zone['assessment']=='INACCESSIBLE':
    st.warning(message+' — '+str(zone['reason']))
    if not str(zone['reason']).strip(): st.caption(T('Préciser la cause de l’inaccessibilité.','Specify the reason for inaccessibility.'))
   else: st.write(message)
- st.caption(T('Les limites angulaires et axiales sont enregistrées pour repérer les zones ; aucune détection automatique de collision ni de couverture complète.','Angular and axial bounds are recorded to locate zones; no automatic collision detection or complete coverage assessment.'))
+ st.caption(T('Les limites angulaires et axiales servent au scan borné. Le contrôle d’enveloppe est approché ; aucune collision CAO complète ni couverture acoustique complète n’est validée.','Angular and axial bounds drive the bounded scan. Footprint checking is approximate; complete CAD collision and acoustic coverage are not validated.'))
  st.download_button(T('Exporter les zones de balayage CSV','Export scan zones CSV'),scan_rows.assign(probe_reference=probe_reference).to_csv(index=False),'NOZZLE_REV0_4_SCAN_ZONES.csv','text/csv')
 
  st.subheader(T('Scan géométrique — tube principal','Geometric scan — main pipe'))
  st.caption(T('Trajet en méandre sur la surface extérieure. Les points sont planifiés, sans acquisition ni réponse UT. Zones non évaluées en orange, zones bloquées en rouge. Une zone inaccessible sans limites bloque tout le plan par précaution.','Serpentine path on the outer surface. Points are planned, without acquisition or UT response. Unassessed points are orange; blocked points red. An inaccessible zone without bounds blocks the entire plan conservatively.'))
- scan_a0=st.number_input(T('Azimut début (°)','Start azimuth (°)'),-360.,360.,-30.,1.)
- scan_a1=st.number_input(T('Azimut fin (°)','End azimuth (°)'),-360.,360.,30.,1.)
- scan_z0=st.number_input(T('Z début scan (mm)','Scan start Z (mm)'),-length/2,length/2,-min(100.,length/2),5.)
- scan_z1=st.number_input(T('Z fin scan (mm)','Scan end Z (mm)'),-length/2,length/2,min(100.,length/2),5.)
- scan_step=st.number_input(T('Pas de scan (mm)','Scan step (mm)'),1.,100.,10.,1.)
- scan_margin=st.number_input(T('Marge géométrique du sabot (mm)','Wedge geometric margin (mm)'),0.,20.,2.,.5)
+ scan_a0=st.number_input(T('Azimut début (°)','Start azimuth (°)'),-360.,360.,-30.,1.,key='control_scan_a0')
+ scan_a1=st.number_input(T('Azimut fin (°)','End azimuth (°)'),-360.,360.,30.,1.,key='control_scan_a1')
+ scan_z0=st.number_input(T('Z début scan (mm)','Scan start Z (mm)'),-length/2,length/2,-min(100.,length/2),5.,key='control_scan_z0')
+ scan_z1=st.number_input(T('Z fin scan (mm)','Scan end Z (mm)'),-length/2,length/2,min(100.,length/2),5.,key='control_scan_z1')
+ scan_step=st.number_input(T('Pas de scan (mm)','Scan step (mm)'),1.,100.,10.,1.,key='control_scan_step')
+ scan_margin=st.number_input(T('Marge géométrique du sabot (mm)','Wedge geometric margin (mm)'),0.,20.,2.,.5,key='control_scan_margin')
  st.caption(T('Limites du point d’entrée et enveloppe rectangulaire centrée 24 × 14 mm + marge. Position exacte du point d’émergence dans le sabot et contact courbe à confirmer.','Entry-point limits and centered 24 × 14 mm rectangle + margin. Actual exit-point offset and curved contact remain to confirm.'))
- scan_heading=st.number_input(T('Orientation du faisceau depuis +Z (°)','Beam heading from +Z (°)'),-180.,180.,0.,5.)
+ scan_heading=st.number_input(T('Orientation du faisceau depuis +Z (°)','Beam heading from +Z (°)'),-180.,180.,0.,5.,key='control_scan_heading')
  scan_points=[]
  try:
   scan_points=plan_scan(R,length,scan_a0,scan_a1,scan_z0,scan_z1,scan_step,scan_rows.to_dict('records'))
@@ -253,8 +273,8 @@ with setup_tab:
   for status,color in [('PLANNED','#1baf89'),('UNASSESSED','#e4a626'),('BLOCKED','#e03b42')]:
    subset=scan_table[scan_table.status==status]
    if len(subset): fig.add_trace(go.Scatter3d(x=subset.X_mm,y=subset.Y_mm,z=subset.Z_mm,mode='markers',marker=dict(color=color,size=3),name='Scan '+status))
-  st.write(T('Points du plan','Plan points'),len(scan_points),' · ',scan_table.status.value_counts().to_dict())
-  scan_index=st.slider(T('Position de la sonde dans le plan','Probe position in plan'),0,max(1,len(scan_points)-1),0,1)
+  st.write(T('Points du plan','Plan points'),len(scan_points),' · ',{status_label(k,lang):v for k,v in scan_table.status.value_counts().to_dict().items()})
+  scan_index=st.slider(T('Position de la sonde dans le plan','Probe position in plan'),0,max(1,len(scan_points)-1),0,1,key='control_scan_index')
   current=scan_points[min(scan_index,len(scan_points)-1)]
   st.write(T('Position sélectionnée','Selected position'),current)
   if current['status']=='PLANNED':
@@ -266,14 +286,14 @@ with setup_tab:
   else:
    st.warning(T('Position bloquée ou non évaluée : sonde et trajet non activés.','Blocked or unassessed position: probe and beam not activated.'))
   st.download_button(T('Exporter le plan de scan CSV','Export scan plan CSV'),scan_table.to_csv(index=False),'NOZZLE_REV0_4_SCAN_PLAN.csv','text/csv')
- st.caption(T('Le point d’entrée ne représente pas le volume du sabot. Pas de réflexion, collision CAO, amplitude, CAD/TCG ou classification cascade calculée.','Entry point does not represent wedge volume. No reflections, CAD collisions, amplitude, DAC/TCG or cascade classification calculated.'))
+ st.caption(T('Ce planificateur décrit le parcours. Le scan manuel, les rayons et le champ sont dans l’onglet 3. L’enveloppe approchée du sabot ne remplace pas son volume CAO ; CAD/TCG et cascade restent à raccorder.','This planner describes the path. Manual motion, rays and field are in tab 3. The approximate wedge footprint does not replace its CAD volume; DAC/TCG and cascade remain to be connected.'))
 
  st.subheader(T('Bibliothèque et placement des indications','Indication library and placement'))
  st.info(T('Paramètres de génération de pièces test : ajuster les dimensions et fixer les positions pour chaque variante. Les valeurs initiales sont des valeurs de départ.','Test-piece generation parameters: adjust dimensions and set positions for each variant. Initial values are starting values.'))
  specimen_name=st.text_input(T('Identifiant pièce test','Test piece identifier'),'DEMO_GESTE_PAROI_001' if training_scenario=='DEMO_GESTE_PAROI' else 'PIECE_TEST_001',key='name_'+training_scenario)
  project_defaults=gesture_demo_indications(t1) if training_scenario=='DEMO_GESTE_PAROI' else [dict(row,enabled=True,azimuth_deg=None,z_mm=None,depth_mm=None,orientation_deg=None) for row in PROJECT_INDICATIONS]
- if training_scenario=='DEMO_GESTE_PAROI': st.info(T('Scénario de geste prêt à balayer : cibles artificielles en paroi, sans placement sur les flancs réels. Choisir PIECE_PERSONNALISEE pour définir votre pièce.','Ready-to-scan motion scenario: artificial main-wall targets, not real bevel-face locations. Select PIECE_PERSONNALISEE to define your specimen.'))
- project_table=st.data_editor(pd.DataFrame(project_defaults).astype({k:'float64' for k in ['length_mm','width_mm','diameter_mm','azimuth_deg','z_mm','depth_mm','orientation_deg']}),hide_index=True,num_rows='fixed',disabled=['id','type'],key='project_parameters_'+training_scenario)
+ if training_scenario=='DEMO_GESTE_PAROI': st.info(T('Scénario de geste prêt à balayer : cibles artificielles en paroi, sans placement sur les flancs réels. Choisir Pièce personnalisée pour définir votre pièce.','Ready-to-scan motion scenario: artificial main-wall targets, not real bevel-face locations. Select Custom specimen to define your specimen.'))
+ project_table=localized_editor('project_'+training_scenario,pd.DataFrame(project_defaults).astype({k:'float64' for k in ['length_mm','width_mm','diameter_mm','azimuth_deg','z_mm','depth_mm','orientation_deg']}),hide_index=True,num_rows='fixed',disabled=['id','type'])
  project_indications=json.loads(project_table.to_json(orient='records'))
  invalid_project=False
  for row in project_indications:
@@ -317,9 +337,9 @@ with scan_tab:
 with setup_tab.expander(T('Exemples exploratoires et diagnostic — avancé','Exploratory examples and diagnostics — advanced')):
  st.caption(T('Placement 3D exploratoire ci-dessous : exemples indépendants du registre projet.','Exploratory 3D placement below: examples independent of the project register.'))
  st.caption(T('Positions dans la paroi principale : azimut autour de Z, profondeur radiale depuis la surface extérieure. Aucune amplitude UT ni critère d’acceptation.','Positions in main wall: azimuth around Z, radial depth from outer surface. No UT amplitude or acceptance criterion.'))
- kind=st.selectbox(T('Type d’indication','Indication type'),range(len(INDICATIONS)),format_func=lambda i:INDICATIONS[i]['name'])
+ kind=st.selectbox(T('Type d’indication','Indication type'),range(len(INDICATIONS)),format_func=lambda i:display_value('name',INDICATIONS[i]['name'],lang),key='control_kind')
  example=dict(INDICATIONS[kind],azimuth_deg=0.,z_mm=0.,depth_mm=t1/2,orientation_deg=0.)
- indications=st.data_editor(pd.DataFrame([example]),num_rows='dynamic',key=f'indications_{kind}',hide_index=True)
+ indications=localized_editor('exploratory_'+str(kind),pd.DataFrame([example]),num_rows='dynamic',hide_index=True)
  for idx,item in indications.iterrows():
   try:
    L,H,W=[float(item[k]) for k in ['length_mm','height_mm','width_mm']]
@@ -350,13 +370,13 @@ with setup_tab.expander(T('Exemples exploratoires et diagnostic — avancé','Ex
   st.write(T('**Joint retenu :** nozzle traversant, pleine pénétration, chanfrein de remplissage.','**Selected joint:** set-through nozzle, full penetration, fill bevel.'))
   st.write(T(f'Chanfrein {bevel}° · talon {land} mm · jeu {gap} mm · largeur {width} mm · surépaisseur {reinf} mm.',f'Bevel {bevel}° · land {land} mm · gap {gap} mm · width {width} mm · reinforcement {reinf} mm.'))
   st.caption(T('Le jeu, le talon, le chanfrein et le renfort pilotent une préparation radiale approchée, sans solide CAO validé.','Gap, land, bevel and reinforcement drive an approximate radial preparation, without a validated CAD solid.'))
-  st.write(f'{mat} · VL {vl} m/s · VT {vs} m/s · ρ {rho} kg/m³')
+  st.write(f"{ {'Acier carbone':T('Acier carbone','Carbon steel'),'Inox austénitique':T('Inox austénitique','Austenitic steel'),'Aluminium':'Aluminium','Personnalisé':T('Personnalisé','Custom')}[mat]} · VL {vl} m/s · VT {vs} m/s · ρ {rho} kg/m³")
   st.info(T('Valeurs matériaux indicatives. Vérification avec Jacques Marlier nécessaire.','Material values are indicative. Verification with Jacques Marlier is required.'))
 
 with guide_tab:
  st.subheader(T('Parcours opérateur complet','Complete operator workflow'))
- if lang=='FR': st.markdown(Path(__file__).with_name('GUIDE_OPERATEUR_FR.md').read_text(encoding='utf-8'))
- st.download_button(T('Télécharger le mode d’emploi complet','Download complete French guide'),Path(__file__).with_name('GUIDE_OPERATEUR_FR.md').read_bytes(),'GUIDE_OPERATEUR_NOZZLE_FR.md','text/markdown')
+ st.markdown(Path(__file__).with_name('GUIDE_OPERATEUR_'+lang+'.md').read_text(encoding='utf-8'))
+ st.download_button(T('Télécharger le mode d’emploi complet','Download complete user guide'),Path(__file__).with_name('GUIDE_OPERATEUR_'+lang+'.md').read_bytes(),'GUIDE_OPERATEUR_NOZZLE_'+lang+'.md','text/markdown')
  records=[]
  for label,pts in [('outer_intersection',outer),('nominal_root_inner_main_pipe',root)]:
   for i,p in enumerate(pts):
@@ -366,7 +386,7 @@ with guide_tab:
  parameters={'D_main_mm':D1,'t_main_mm':t1,'D_nozzle_mm':D2,'t_nozzle_mm':t2,'axis_angle_deg':angle,'offset_mm':offset,'length_main_mm':length,'length_nozzle_mm':nlen,'bevel_deg':bevel,'root_gap_mm':gap,'root_land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf,'material':mat,'VL_m_s':vl,'VT_m_s':vs,'density_kg_m3':rho,'status':'PROVISIONAL_NOT_VALIDATED'}
  st.download_button(T('Exporter fiche paramètres (CSV)','Export parameter sheet (CSV)'),pd.DataFrame([parameters]).to_csv(index=False).encode('utf-8'),'NOZZLE_REV0_4_JACQUES_MARLIER_PARAMETERS.csv','text/csv')
  with st.expander(T('📖 Notice d’emploi / limites','📖 User guide / limitations')):
-  st.markdown(T('''**But.** Préparer la géométrie d’un nozzle traversant pour la revue avec Jacques Marlier.\n\n**Mode opératoire.** Régler les diamètres, épaisseurs, angle et décalage ; observer la découpe visuelle du nozzle ; afficher les courbes extérieure et de racine ; exporter les courbes et la fiche paramètres. Rotation à la souris, zoom à la molette.\n\n**Courbes.** Rouge : intersection des deux surfaces extérieures. Turquoise : intersection de la surface extérieure du nozzle avec la surface intérieure du tube principal (racine nominale purement géométrique). Les deux courbes de bord en pointillés sont des décalages illustratifs, PAS des limites de fusion calculées.\n\n**Limites.** Pas de découpe CAO booléenne ni de soudure volumique ; l’ouverture et les surfaces peuvent présenter des discontinuités d’affichage. Le chanfrein, le jeu, le talon et la surépaisseur modifient les surfaces approchées. Les indications sont des marqueurs géométriques ; aucun faisceau UT n’est calculé. Les cas obliques/excentrés exigent une vérification CAO.\n\n**Validation.** Aucune qualification industrielle. Faire confirmer le dessin du joint, la coupe intérieure, la racine et les dimensions réelles avant de figer la REV0.4.''','''**Purpose.** Prepare a set-through nozzle geometry for review with Jacques Marlier.\n\n**Instructions.** Adjust diameters, thicknesses, angle and offset; inspect the visually trimmed nozzle; display the outer and root curves; export curves and the parameter sheet. Rotate with mouse and zoom with wheel.\n\n**Curves.** Red: intersection of the two outer surfaces. Turquoise: nozzle outer surface intersecting main pipe inner surface (purely geometric nominal root). Dashed edge curves are illustrative offsets, NOT computed fusion boundaries.\n\n**Limitations.** No CAD Boolean or solid weld; openings and surfaces may have display discontinuities. Bevel, gap, land and reinforcement alter the approximate surfaces. Geometric indication markers only; no UT beams. Oblique/offset cases require CAD verification.\n\n**Validation.** Not industrially qualified. Confirm joint drawing, internal cut, root and actual dimensions before freezing REV0.4.'''))
+  st.markdown(T('''**But.** Préparer la géométrie d’un nozzle traversant pour la revue avec Jacques Marlier.\n\n**Mode opératoire.** Régler les diamètres, épaisseurs, angle et décalage ; observer la découpe visuelle du nozzle ; afficher les courbes extérieure et de racine ; exporter les courbes et la fiche paramètres. Rotation à la souris, zoom à la molette.\n\n**Courbes.** Rouge : intersection des deux surfaces extérieures. Turquoise : intersection de la surface extérieure du nozzle avec la surface intérieure du tube principal (racine nominale purement géométrique). Les deux courbes de bord en pointillés sont des décalages illustratifs, PAS des limites de fusion calculées.\n\n**Limites.** Pas de découpe CAO booléenne ni de soudure volumique ; l’ouverture et les surfaces peuvent présenter des discontinuités d’affichage. Le chanfrein, le jeu, le talon et la surépaisseur modifient les surfaces approchées. La vue de pièce est géométrique. Le champ pédagogique et le champ direct scalaire se trouvent dans l’onglet 3 ; aucun champ élastique complet n’est calculé. Les cas obliques/excentrés exigent une vérification CAO.\n\n**Validation.** Aucune qualification industrielle. Faire confirmer le dessin du joint, la coupe intérieure, la racine et les dimensions réelles avant de figer la REV0.4.''','''**Purpose.** Prepare a set-through nozzle geometry for review with Jacques Marlier.\n\n**Instructions.** Adjust diameters, thicknesses, angle and offset; inspect the visually trimmed nozzle; display the outer and root curves; export curves and the parameter sheet. Rotate with mouse and zoom with wheel.\n\n**Curves.** Red: intersection of the two outer surfaces. Turquoise: nozzle outer surface intersecting main pipe inner surface (purely geometric nominal root). Dashed edge curves are illustrative offsets, NOT computed fusion boundaries.\n\n**Limitations.** No CAD Boolean or solid weld; openings and surfaces may have display discontinuities. Bevel, gap, land and reinforcement alter the approximate surfaces. This specimen view is geometric. The teaching field and scalar direct field are in tab 3; no complete elastic field is calculated. Oblique/offset cases require CAD verification.\n\n**Validation.** Not industrially qualified. Confirm joint drawing, internal cut, root and actual dimensions before freezing REV0.4.'''))
 
  with st.expander(T('📚 Lexique technique FR / EN','📚 Technical glossary FR / EN')):
   glossary=[
@@ -404,4 +424,4 @@ with guide_tab:
  7. Export JSON and CSV preparation sheets; these are not examination results.
  8. Next steps: document cascade using the applicable US 319 revision, calibration and criteria; integrate and verify Kirchhoff, Born and GTD separately. These engines are not implemented.'''))
 
- st.caption(T('Scan : saisir les limites des zones, choisir TO_ASSESS et renseigner les encombrements ; les points compatibles deviennent PLANNED. Choisir ensuite la position de sonde avec le curseur et exporter le plan. PLANNED ne signifie pas contrôlé.','Scan: enter zone bounds, select TO_ASSESS and fill footprint dimensions; compatible points become PLANNED. Select probe position with the slider and export the plan. PLANNED does not mean inspected.'))
+ st.caption(T('Scan : saisir les limites des zones, choisir Évaluer l’encombrement et renseigner les encombrements ; les points compatibles deviennent PLANNED. Choisir ensuite la position de sonde avec le curseur et exporter le plan. PLANNED ne signifie pas contrôlé.','Scan: enter zone bounds, select Assess footprint and fill footprint dimensions; compatible points become PLANNED. Select probe position with the slider and export the plan. PLANNED does not mean inspected.'))

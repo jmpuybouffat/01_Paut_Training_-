@@ -1,0 +1,22 @@
+Objet : Revue du geste opérateur et des arrêts géométriques — reprise RV du twin piquage
+
+Bonjour Fabien,
+
+La version d’évaluation du twin piquage rassemble le scan manuel sur la surface 3D, le raster borné, l’inversion de parcours et les arrêts opérateur. Un export JSON de scène RV décrit la géométrie paramétrique, les poses du palpeur, les trajectoires et les événements d’arrêt.
+
+Pour ta revue, je propose trois priorités :
+- Vérifier la lisibilité du geste, la distinction déplacement du palpeur / rotation de caméra et le comportement aux limites.
+- Examiner l’interface NOZZLE_VR_SCENE_V1 : unités en mm, repère direct, axe du tube Z, matrice locale-vers-monde et événements BYTE_NDT_MOTION_STOP.
+- Identifier les adaptations nécessaires au moteur RV et au modèle de collision souhaité.
+
+Paquet :
+https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_EVALUATION_FR_EN.zip
+
+Le contrôle du sabot utilise une enveloppe rectangulaire centrée approximative : il faudra confirmer le décalage réel du point d’émergence, le contact sur courbure et les collisions du volume complet. Le fichier VR_SCENE_SCHEMA.md décrit le contrat d’export ; LIMITES_SCAN.md décrit les arrêts. Il ne s’agit pas encore d’une application WebXR ou d’un maillage CAO soudé validé.
+
+Le champ coloré et l’A-scan sont utiles à l’explication pédagogique, avec leurs limites indiquées dans l’interface. L’export auteur contient les positions de référence des indications : il ne doit pas servir de corrigé accessible à l’élève.
+
+Peux-tu me proposer un retour sur l’ergonomie et les données nécessaires pour la reprise RV ?
+
+Bien cordialement,
+Jean-Michel
