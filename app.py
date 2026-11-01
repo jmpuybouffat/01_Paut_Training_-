@@ -31,7 +31,7 @@ mouse_mode=st.sidebar.selectbox(T('Souris 3D','3D mouse'),['orbit','turntable','
 if 'camera_revision' not in st.session_state: st.session_state.camera_revision=0
 if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view')): st.session_state.camera_revision+=1
 with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — inactive')):
- scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Kirchhoff','Born','GTD'])
+ scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Kirchhoff','Born','GTD'],disabled=True)
  st.sidebar.caption(T('Diffusion/diffraction non implémentées. La carte de champ utilise un Green scalaire direct distinct.','Scattering/diffraction not implemented. The field map uses a separate scalar direct Green model.'))
  procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'')
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
@@ -233,6 +233,8 @@ with setup_tab:
  scan_z0=st.number_input(T('Z début scan (mm)','Scan start Z (mm)'),-length/2,length/2,-min(100.,length/2),5.)
  scan_z1=st.number_input(T('Z fin scan (mm)','Scan end Z (mm)'),-length/2,length/2,min(100.,length/2),5.)
  scan_step=st.number_input(T('Pas de scan (mm)','Scan step (mm)'),1.,100.,10.,1.)
+ scan_margin=st.number_input(T('Marge géométrique du sabot (mm)','Wedge geometric margin (mm)'),0.,20.,2.,.5)
+ st.caption(T('Limites du point d’entrée et enveloppe rectangulaire centrée 24 × 14 mm + marge. Position exacte du point d’émergence dans le sabot et contact courbe à confirmer.','Entry-point limits and centered 24 × 14 mm rectangle + margin. Actual exit-point offset and curved contact remain to confirm.'))
  scan_heading=st.number_input(T('Orientation du faisceau depuis +Z (°)','Beam heading from +Z (°)'),-180.,180.,0.,5.)
  scan_points=[]
  try:
@@ -288,7 +290,7 @@ with setup_tab:
  pending=any(row[k] is None for row in project_indications if row['enabled'] for k in ['azimuth_deg','z_mm','depth_mm','orientation_deg'])
  st.caption(T('Les champs de position vides restent non définis dans l’export. Le placement sur les flancs nécessite encore une définition locale du joint.','Empty position fields remain undefined in the export. Placement on bevel faces still requires a local joint definition.'))
  specimen_config={'revision':'0.4','specimen_id':specimen_name,'status':'INVALID_PARAMETERS' if invalid_project else ('POSITIONS_PENDING' if pending else 'ILLUSTRATIVE_NOT_VALIDATED'),
-  'scan_plan':{'surface':'MAIN_PIPE_OD','azimuth_start_deg':scan_a0,'azimuth_end_deg':scan_a1,'z_start_mm':scan_z0,'z_end_mm':scan_z1,'step_mm':scan_step,'beam_heading_deg':scan_heading,'points':scan_points},'plugins':{'cascade':{'status':'NOT_CONNECTED'},'CAD_TCG':{'status':'NOT_CONNECTED'}},
+  'scan_plan':{'surface':'MAIN_PIPE_OD','azimuth_start_deg':scan_a0,'azimuth_end_deg':scan_a1,'z_start_mm':scan_z0,'z_end_mm':scan_z1,'step_mm':scan_step,'margin_mm':scan_margin,'beam_heading_deg':scan_heading,'points':scan_points},'plugins':{'cascade':{'status':'NOT_CONNECTED'},'CAD_TCG':{'status':'NOT_CONNECTED'}},
   'training_scenario':training_scenario,'placement_basis':'ARTIFICIAL_MAIN_WALL_NOT_WELD_FACES' if training_scenario=='DEMO_GESTE_PAROI' else 'USER_DEFINED','workflow':workflow,'acquisition':'MONO_ELEMENT','scattering':{'requested_model':scattering,'implemented':False},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED'},
   'geometry':{'main_OD_mm':D1,'main_thickness_mm':t1,'nozzle_OD_mm':D2,'nozzle_thickness_mm':t2,'axis_angle_deg':angle,'offset_mm':offset,'main_length_mm':length,'nozzle_length_mm':nlen},
   'joint':{'faceted_enabled':faceted_enabled,'root_roughness_mm':root_roughness,'cap_roughness_mm':cap_roughness,'facet_count':facet_count,'profile_seed':profile_seed,'bevel_deg':bevel,'gap_mm':gap,'land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf},

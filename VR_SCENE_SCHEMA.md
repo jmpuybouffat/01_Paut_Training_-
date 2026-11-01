@@ -29,3 +29,7 @@ Dans le document HTML, l’API locale `window.BYTE_NDT.getPose()`, `.getScene()`
 ## Géométrie et limites
 
 L’intégrateur reconstruit les cylindres et le repère de branche à partir des paramètres. Le modèle n’exporte pas de solide CAO booléen, de maillage de soudure validé ou de scène glTF complète. Les parcours sont calculés dans la paroi principale ; la propagation complète dans la branche et la soudure reste à développer.
+
+## Arrêts de mouvement
+
+`motion_limits` décrit le modèle d’enveloppe centrée et les événements d’arrêt. `stop_events` contient les motifs, l’azimut, Z, l’orientation et le temps écoulé du document. L’événement local `BYTE_NDT_MOTION_STOP` est émis à l’arrêt opérateur ou à la rencontre d’une limite. Cette interface sert à reprendre le comportement dans un moteur RV ; elle ne constitue pas un interverrouillage matériel ou une collision CAO complète.

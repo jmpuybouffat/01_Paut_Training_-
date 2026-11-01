@@ -111,3 +111,7 @@ La zone de préparation interdit le placement du palpeur ; elle n’est pas cons
 Dans la barre latérale, le panneau **Racine et sommet — profils facettés de formation** ajuste l’aspect grossier/brisé des bourrelets (amplitude, nombre de facettes et identifiant reproductible). Ce sont des hypothèses de pièce training. Les réponses géométriques tiennent compte des profils et d’une pondération heuristique d’incidence ; ce n’est pas un calcul complet de réflexion sur les faces.
 
 Le panneau **Microstructure — description pour étape suivante** enregistre morphologie, taille et orientation des grains. Ces données sont exportées, mais n’altèrent pas encore les vitesses, le champ ou l’A-scan. Lire RACINE_SOMMET_MICROSTRUCTURE.md pour les limites.
+
+## Arrêt sur limites
+
+La dernière version vérifie le manuel et le raster avec une enveloppe rectangulaire approchée du sabot. À un obstacle, la sonde s’arrête et le motif apparaît. Ne pas forcer le mouvement : inverser le parcours ou déplacer la sonde vers une zone libre. STOP/Pause ou Espace/Échap dans la vue active arrête le geste. Le raster ne reboucle pas automatiquement à la fin. Lire LIMITES_SCAN.md pour le modèle géométrique, les événements RV et les limites de cette vérification.
