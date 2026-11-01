@@ -22,6 +22,17 @@ def main():
         page=browser.new_page(viewport=dict(width=1400,height=1200));errors=[]
         page.on('pageerror',lambda e:errors.append(str(e)))
         page.set_content(template.replace('__CONFIG__',json.dumps(config)))
+        assert page.locator('#operatorSurface').input_value()=='3d'
+        assert not page.locator('#instructor').is_checked()
+        q=page.evaluate('surfaceProjection(point(az,z,R+2))')
+        old_pose=page.evaluate('[az,z]')
+        box=page.locator('#top').bounding_box()
+        cx=box['x']+q[0]/720*box['width'];cy=box['y']+q[1]/430*box['height']
+        page.mouse.move(cx,cy);page.mouse.down();page.mouse.move(cx+5,cy-12,steps=8);page.mouse.up();page.wait_for_timeout(80)
+        assert page.evaluate('[az,z]')!=old_pose,'Surface probe did not move'
+        assert abs(page.evaluate('Math.hypot(...point(az,z).slice(0,2))')-200)<1e-8
+        page.locator('#reset').click()
+        page.locator('#operatorSurface').select_option('unwrapped')
         assert page.evaluate('status(az,z)')=='PLANNED'
         assert page.evaluate('rayTrace().length')>=2
         assert page.evaluate('echoes(rayTrace()).length')>=1
@@ -76,6 +87,9 @@ def main():
         page.locator('#cameraReset').click();assert page.evaluate('cameraZoom')==1
         assert not errors,errors
         print('Synchronized nozzle 3D camera: drag, zoom and reset OK')
+        page.locator('#operatorSurface').select_option('3d')
+        surface_ms=page.evaluate('''()=>{const t=performance.now();for(let i=0;i<20;i++){heading=i;draw()}return (performance.now()-t)/20}''')
+        print(f'Surface 3D redraw: {surface_ms:.1f} ms; radial position constraint: OK')
         page.screenshot(path='/workspace/nozzle_operator_check.png',full_page=True)
         browser.close()
     print('Nozzle browser: cylindrical rays, five-indication registry, drag, wheel, raster, pause, sample, export, exclusions, examination mode: OK')

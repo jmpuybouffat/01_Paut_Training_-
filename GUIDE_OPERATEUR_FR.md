@@ -1,3 +1,9 @@
+## Scan de surface 3D — correctif de geste
+
+Dans l’écran manuel, la vue opérateur s’ouvre sur le piquage 3D. Choisir **Déplacer sonde**, saisir le symbole MWB avec le bouton gauche et glisser sur la surface du tube principal. Le point est contraint au cylindre. Les exclusions et l’ouverture arrêtent le déplacement. Pour tourner la pièce, choisir **Tourner pièce** ; la molette dans ce mode zoome. Revenir à **Déplacer sonde** pour scanner ; la molette au voisinage du palpeur règle alors l’orientation. **Déroulé** reste une aide secondaire. Les indications restent cachées sur la vue de surface ; la révélation des vues internes est réservée au mode instructeur.
+
+Les vues géométriques synchronisées ne constituent pas un champ ultrasonore physique. Green, Born, Kirchhoff et GTD restent à implémenter ; voir EXIGENCES_PHYSIQUE_ET_OPERATEUR.md. Les sections suivantes décrivant l’ancien geste sur déroulé restent applicables lorsque cette aide est sélectionnée.
+
 # BYTE NDT — utilisation du twin nozzle REV0.4
 
 Correctif ergonomique : quatre onglets. La vue du piquage est remise en premier ; le planificateur technique ne se confond plus avec le scan manuel.

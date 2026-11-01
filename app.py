@@ -20,7 +20,7 @@ mouse_mode=st.sidebar.selectbox(T('Souris 3D','3D mouse'),['orbit','turntable','
 if 'camera_revision' not in st.session_state: st.session_state.camera_revision=0
 if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view')): st.session_state.camera_revision+=1
 with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — inactive')):
- scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Kirchhoff','Born','GTD'])
+ scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Green','Kirchhoff','Born','GTD'])
  st.sidebar.caption(T('Modèles non implémentés : pas de calcul acoustique.','Models not implemented: no acoustic computation.'))
  procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'')
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
@@ -263,7 +263,9 @@ with scan_tab:
  st.markdown('<a id="nozzle-manual-scan"></a>',unsafe_allow_html=True)
  st.subheader(T('Scan manuel du nozzle — écran opérateur','Nozzle manual scan — operator dashboard'))
  st.caption(T('Le plan technique de l’onglet 2 et le geste manuel sont deux écrans distincts. Dans ce panneau, la sonde se déplace à la souris.','The technical plan in tab 2 and manual operation are separate screens. Move the probe with the mouse in this panel.'))
- if pending: st.warning(T('Les positions des indications ne sont pas encore fixées : le faisceau est visible mais ces indications ne produisent pas de réponse A-scan. Compléter l’onglet 2.','Indication positions are not set yet: the beam is visible but these indications produce no A-scan response. Complete tab 2.'))
+ if pending:
+  n_ready=sum(all(row[k] is not None for k in ['azimuth_deg','z_mm','depth_mm','orientation_deg']) for row in project_indications if row['enabled'])
+  st.warning(T(f'{n_ready} indication(s) positionnée(s). Les indications sans position complète ne génèrent pas de réponse pédagogique. Compléter l’onglet 2.',f'{n_ready} indication(s) positioned. Indications without a complete position generate no training response. Complete tab 2.'))
  operator_config=dict(specimen_config,language=lang)
  operator_json=json.dumps(operator_config,ensure_ascii=False,allow_nan=False).replace('<',chr(92)+'u003c')
  operator_html=Path(__file__).with_name('nozzle_operator.html').read_text(encoding='utf-8').replace('__CONFIG__',operator_json)
