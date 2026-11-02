@@ -34,3 +34,7 @@ Incidence directe et diffusion unique seulement. Pas de rebonds du champ diffus�
 Le test utilisateur sur le réalisme et la pertinence pédagogique reste requis. La présence d’un champ calculé ne constitue pas une qualification industrielle ni une validation équivalente CIVA.
 
 Le protocole utilisateur est désormais intégralement disponible en français et en anglais ; le panneau et son téléchargement suivent la langue sélectionnée.
+
+## Préparation Streamlit et communications
+
+Démarrage du serveur Streamlit réel contrôlé localement : chargement du témoin, calcul du champ dans l’iframe et affichage du protocole anglais après passage en EN. Le service public Community Cloud demande encore la création dans une session Streamlit du propriétaire ; aucun lien public de ce service n’est annoncé comme créé. Sept brouillons de mails sont préparés, sans aucun envoi.

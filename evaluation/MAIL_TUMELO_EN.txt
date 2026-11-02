@@ -1,0 +1,18 @@
+Subject: Byte NDT — helping us build momentum for the training and inspection twins
+
+Hi Tumelo,
+
+Byte NDT is moving its training and inspection twins towards service introduction. We now have a nozzle training demonstrator that lets an operator practise manual single-element scanning, follow the weld geometry, understand scan limits and inspect a first calculated scalar backscattered field.
+
+Demo: [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+
+The next steps include further work on the root-inspection twins and a phased-array nozzle version. Our intended service brings together inspection preparation, technical explanation and operator training.
+
+Your support in introducing Byte NDT to relevant training, inspection and industrial contacts would be very valuable. The most useful first step would be a small number of technical demonstrations with people who can give practical feedback and identify a suitable pilot use.
+
+We will be clear about what is available today and what remains in development. The current demonstrator is an evaluation tool, not an industrial examination qualification.
+
+Let me know which contacts or opportunities you think we should prioritise.
+
+Best regards,
+Jean-Michel

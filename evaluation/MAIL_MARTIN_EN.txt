@@ -1,0 +1,16 @@
+Subject: Byte NDT — service introduction of training and inspection twins
+
+Hi Martin,
+
+I wanted to let you know that Byte NDT is bringing its training twins and inspection twins into a service-introduction phase. The offer combines inspection expertise, digital preparation and training, with initial technical evaluations and pilot uses.
+
+The first nozzle demonstrator is available for review. It supports manual single-element scanning, probe orientation around the weld, geometric access limits and a first finite-surface scalar backscattered-field calculation.
+
+Demo: [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+
+The wider direction includes root-inspection twins, a phased-array nozzle version and tools for blade inspections. For blades, the objective is to develop the twin into an examination-preparation and execution-support tool, with traceable settings and a clear link to the relevant inspection procedure. This remains subject to the required technical and practical validation.
+
+I would like to discuss how we can structure an initial service collaboration and identify the first pilot customers. I would welcome your input on the commercial approach and the appropriate next steps for working together.
+
+Best regards,
+Jean-Michel

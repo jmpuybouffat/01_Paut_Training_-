@@ -1,0 +1,16 @@
+Objet : Byte NDT — présentation du twin de formation et perspectives de préparation des réglages PA
+
+Bonjour,
+
+Je souhaite vous présenter le twin de formation Byte NDT sur piquage. Le démonstrateur reproduit le geste manuel monoélément, l’orientation du palpeur autour de la soudure et les arrêts liés aux limites géométriques. Il propose un premier champ rétrodiffusé scalaire sur une indication finie, associé à la réception sur le palpeur.
+
+Démonstration : [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+
+Une version phased array est prévue. Notre objectif est de préparer des réglages traçables à partir de la géométrie et de la stratégie d’examen, puis d’étudier leur export dans un format exploitable par l’équipement. La génération et l’import de réglages compatibles avec un instrument précis nécessitent encore de définir ensemble les formats, contraintes et vérifications ; cette compatibilité n’est pas revendiquée dans la version actuelle.
+
+Je souhaiterais échanger avec vous sur les paramètres à exporter, les lois focales et les interfaces possibles avec vos solutions. Le twin serait alors un outil de préparation et d’explication, dans la continuité du contrôle exécuté sur l’équipement.
+
+La version actuelle reste un démonstrateur d’évaluation : le modèle acoustique est réduit et ne remplace pas la validation instrumentale.
+
+Bien cordialement,
+Jean-Michel

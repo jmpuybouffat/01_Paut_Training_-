@@ -7,6 +7,9 @@ Je vous propose une évaluation du prototype de formation UT sur piquage. Il per
 Cette version ajoute un champ rétrodiffusé calculé sur une surface d’indication finie, avec phase et réception intégrée sur l’ouverture MWB. Le calcul est une approximation scalaire monochromatique de Kirchhoff en incidence directe et diffusion unique : les rebonds du champ diffusé sur les parois, les conversions de modes et le solveur élastique complet ne sont pas implémentés. L’enveloppe A-scan utilise la réception scalaire, avec un temps de vol du centre. Il ne s’agit pas d’une validation CIVA ni d’une acquisition instrument.
 
 Application et protocoles FR/EN :
+Lien Streamlit : [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+
+Archive locale de secours :
 https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
 
 Après extraction : lancer LANCER_NOZZLE, ouvrir Scan manuel et cliquer Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz. Attendre le calcul, puis Zoom indication calculée. Le protocole complet se trouve dans ce même onglet, dans la langue choisie.

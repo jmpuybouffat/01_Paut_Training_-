@@ -5,6 +5,9 @@ Bonjour Fabien,
 La version permet maintenant le geste monoélément libre ou autour des axes principal/piquage, l’orientation locale et les arrêts d’encombrement. Elle ajoute un premier champ rétrodiffusé scalaire calculé depuis une surface finie et une réception intégrée sur l’ouverture MWB.
 
 Paquet complet :
+Lien Streamlit : [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+
+Archive locale de secours :
 https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
 
 Dans Scan manuel, cliquer Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz, attendre le calcul, puis Exporter scène RV. Le JSON contient les poses, matrices, traces, événements d’arrêt et scalar_scattering.field_samples_world (positions mondiales en mm et amplitude dB). Le schéma est décrit dans VR_SCENE_SCHEMA.md. Les protocoles de test sont disponibles en français et en anglais.

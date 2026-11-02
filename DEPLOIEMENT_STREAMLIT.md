@@ -1,18 +1,35 @@
-# Mise en ligne Streamlit Community Cloud
+# Publication Streamlit — priorité Marlier et Fabien
 
-Le dépôt contient une application Streamlit et un scénario pédagogique prêt à balayer. Une publication GitHub ne crée pas automatiquement une application Streamlit publique.
+Le code de la version RÉTRO SCALAIRE et les protocoles FR/EN sont publiés sur GitHub. Une publication GitHub ne crée pas automatiquement une application Streamlit publique.
 
-Dans votre compte Streamlit Community Cloud, créer une application avec :
+## Création dans le compte Streamlit Community Cloud
 
-- Repository : `jmpuybouffat/01_Paut_Training_-`
-- Branch : `main`
-- Main file path : `app.py`
-- Version Python recommandée : 3.12
+1. Ouvrir https://share.streamlit.io/ et se connecter au compte qui a accès au dépôt GitHub.
+2. Cliquer **Create app**, puis choisir le déploiement depuis GitHub (formulation susceptible de varier selon l’interface).
+3. Saisir :
 
-Aucun secret applicatif n’est requis pour ce démonstrateur. Le dossier `.streamlit` contient les réglages d’affichage et de télémétrie. Le fichier `requirements.txt` contient les dépendances directes ; `requirements-lock.txt` conserve les versions testées localement. Le service choisit normalement requirements.txt pour le déploiement.
+| Champ | Valeur |
+|---|---|
+| Repository | jmpuybouffat/01_Paut_Training_- |
+| Branch | main |
+| Main file path | app.py |
+| Python (Advanced settings) | 3.12 |
 
-Après publication, vérifier les quatre onglets et ouvrir **3 · Scan manuel**. Avec TRAINING / DEMO_GESTE_PAROI (MWB 45° / 4 MHz par défaut, 5 MHz sélectionnable) : les cinq cibles artificielles sont définies dans la paroi principale, le mode instructeur est décoché, l’A-scan fonctionne pour le scénario, et le faisceau pédagogique est activé. Cette démo n’est pas le placement physique de défauts sur les flancs de soudure.
+4. Aucun secret applicatif n’est requis. Choisir un sous-domaine disponible si le formulaire le propose, puis cliquer **Deploy**.
+5. Attendre le démarrage et copier l’adresse publique réellement fournie par Streamlit. Ne pas envoyer l’adresse localhost du PC.
 
-Essai fonctionnel : lancer Créneaux, mettre en Pause, déplacer la sonde sur la surface 3D, tourner par ±1°, vérifier le changement de réponse et les vues synchronisées, inverser le parcours et exporter un point. Vérifier que la vue élève ne révèle pas les positions et que le mode préparation examen ne génère pas de signal présenté comme une acquisition réelle.
+Cette création demande une session Streamlit/GitHub dans le navigateur de Jean-Michel. La session du compte n’est pas accessible depuis l’environnement de travail de l’assistant. Aucun lien public de cette nouvelle application n’est annoncé comme créé sans confirmation du service.
 
-Le déploiement requiert votre session Streamlit/GitHub dans votre navigateur. Le dépôt préparé ne prouve pas que la publication est faite ; aucun lien public de cette nouvelle application n’est revendiqué sans confirmation du service.
+## Contrôle avant partage
+
+- Vérifier la mention de version RÉTRO SCALAIRE.
+- Ouvrir 3 · Scan manuel et charger le test témoin rétrodiffusion — MWB 45° / 4 MHz. Cela remplace les réglages personnels.
+- Attendre le calcul ; vérifier surface finie, champ coloré, écho de centre voisin de 8,73 µs et commande Zoom indication calculée.
+- Passer en EN et ouvrir le protocole : son contenu complet doit être anglais.
+- Pour Fabien : Exporter scène RV ; vérifier les données scalar_scattering.field_samples_world et les poses. Ce sont des données pour un client RV, pas une interface immersive terminée.
+- Ouvrir le lien depuis un autre navigateur/une fenêtre privée pour contrôler son accessibilité.
+- Remplacer le marqueur [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION] dans les deux mails prioritaires. Aucun envoi automatique n’est réalisé.
+
+## Limites à transmettre
+
+Premier modèle scalaire monochromatique, incidence directe et diffusion unique sur surface finie, réception intégrée sur ouverture MWB. Pas de rebonds du champ diffusé sur les parois ni de solveur élastique complet. Les moteurs internes C1/C2 ne sont pas encore raccordés à cette application. Version PA et compatibilité de réglages instrument à venir. L’application ne réalise pas d’acquisition réelle.
