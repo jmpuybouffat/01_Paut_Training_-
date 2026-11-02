@@ -1,3 +1,7 @@
+# SCALAR BACKSCATTER build — start here
+
+Computed backscatter is now available in Manual scan. Use Load backscatter witness test, then Focus computed flaw. Settings, model, reception and limits: RETRODIFFUSION_SCALAIRE_FR_EN.md (French/English). Descriptions of heuristic A-scan and magenta paths below refer to the older teaching modes, not the new scalar calculation.
+
 # BYTE NDT — nozzle operator guide
 
 ## Start and choose the specimen

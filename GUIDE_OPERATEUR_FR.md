@@ -1,3 +1,7 @@
+# Version RÉTRO SCALAIRE — commencer ici
+
+Le champ rétrodiffusé calculé est désormais disponible dans Scan manuel. Utiliser le bouton Charger le test témoin rétrodiffusion. Réglages, modèle, réception et limites : RETRODIFFUSION_SCALAIRE_FR_EN.md. Les descriptions d’A-scan heuristique et de retour magenta ci-dessous concernent les anciens modes pédagogiques, toujours accessibles ; elles ne décrivent pas le nouveau calcul scalaire.
+
 ## Retrouver le champ coloré du premier modèle
 
 Onglet **3 · Scan manuel**, panneau **Champ coloré — propagation et réflexions pédagogiques**. Le choix initial **Champ avec réflexions — premier modèle** affiche la carte 0 à −40 dB et les parcours réfléchis, synchronisés au palpeur de surface et à l’A-scan. Le champ est pédagogique : il ne représente pas une mesure ni une simulation élastodynamique validée.

@@ -17,7 +17,7 @@ VALUES = {
  'access':{'UNASSESSED':('Non évalué','Unassessed'),'TO_ASSESS':('Évaluer l’encombrement','Assess footprint'),'INACCESSIBLE':('Inaccessible','Inaccessible')}
 }
 COLUMNS={
- 'id':('ID','ID'),'type':('Type','Type'),'name':('Nom','Name'),'shape':('Forme','Shape'),
+ 'normal_tilt_deg':('Inclinaison normale (°)','Normal tilt (°)'),'id':('ID','ID'),'type':('Type','Type'),'name':('Nom','Name'),'shape':('Forme','Shape'),
  'length_mm':('Longueur (mm)','Length (mm)'),'width_mm':('Largeur (mm)','Width (mm)'),
  'height_mm':('Hauteur (mm)','Height (mm)'),'diameter_mm':('Diamètre (mm)','Diameter (mm)'),
  'location':('Emplacement','Location'),'enabled':('Activée','Enabled'),

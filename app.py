@@ -29,10 +29,32 @@ def sidebar_language_select(label,options,*,key,**kwargs):
  st.session_state[store]=value
  return value
 
+def load_scattering_witness():
+ values={'D1':400.,'t1':20.,'D2':160.,'t2':12.,'angle':63.,'offset':0.,'length':800.,'nlen':320.,'bevel':35.,'gap':2.,'land':2.,'width':14.,'reinf':3.,'mat':'Acier carbone','vl':5920,'vs':3240,'rho':7850,'scan_a0':-50.,'scan_a1':-30.,'scan_z0':-100.,'scan_z1':-60.,'scan_step':10.,'scan_margin':2.,'scan_heading':0.,'mwb_index':next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45)}
+ for name,value in values.items():st.session_state['control_'+name]=value
+ for name,value in [('workflow','TRAINING'),('training_scenario','PIECE_PERSONNALISEE')]:
+  st.session_state['selection_control_'+name]=value
+  for language in ['FR','EN']:
+   widget='control_'+name+'_'+language
+   if widget in st.session_state:del st.session_state[widget]
+ rows=[dict(row,enabled=row['id']=='MF1',azimuth_deg=-50. if row['id']=='MF1' else None,z_mm=-90. if row['id']=='MF1' else None,depth_mm=10. if row['id']=='MF1' else None,orientation_deg=0. if row['id']=='MF1' else None) for row in PROJECT_INDICATIONS]
+ st.session_state['canonical_table_project_PIECE_PERSONNALISEE']=rows
+ st.session_state['canonical_table_scan_access']=[{'zone':'Zone 1','access':'UNASSESSED','reason':'','azimuth_start_deg':None,'azimuth_end_deg':None,'z_start_mm':None,'z_end_mm':None,'available_length_mm':0.,'available_width_mm':0.,'probe_length_mm':0.,'probe_width_mm':0.,'travel_mm':0.,'margin_mm':0.}]
+ for name in ['project_PIECE_PERSONNALISEE','scan_access']:
+  for language in ['FR','EN']:
+   for key in ['editor_'+name+'_'+language,'editor_base_'+name+'_'+language]:
+    if key in st.session_state:del st.session_state[key]
+ st.session_state['name_PIECE_PERSONNALISEE']='TEMOIN_RETRO_MF1_45_4'
+
 def localized_editor(name,defaults,**options):
  store='canonical_table_'+name;widget='editor_'+name+'_'+lang;base='editor_base_'+name+'_'+lang
  if store not in st.session_state:st.session_state[store]=defaults.to_dict('records')
- if language_changed or base not in st.session_state:
+ migrated=False
+ if name.startswith('project_'):
+  for row in st.session_state[store]:
+   if 'normal_tilt_deg' not in row:
+    row['normal_tilt_deg']=0. if row.get('id')=='INC1' else 45.;migrated=True
+ if language_changed or base not in st.session_state or migrated:
   if widget in st.session_state:del st.session_state[widget]
   st.session_state[base]=translate_rows(st.session_state[store],lang)
  frame=pd.DataFrame(st.session_state[base],columns=defaults.columns)
@@ -62,12 +84,12 @@ if 'camera_revision' not in st.session_state: st.session_state.camera_revision=0
 if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view'),key='control_f7cb21d880d6'): st.session_state.camera_revision+=1
 with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — inactive')):
  scattering=st.sidebar.selectbox(T('Modèle de diffusion prévu','Planned scattering model'),['Kirchhoff','Born','GTD'],disabled=True,key='control_scattering')
- st.sidebar.caption(T('Diffusion/diffraction non implémentées. La carte de champ utilise un Green scalaire direct distinct.','Scattering/diffraction not implemented. The field map uses a separate scalar direct Green model.'))
+ st.sidebar.caption(T('Extensions élastiques non implémentées. Le champ rétrodiffusé utilise une approximation scalaire de Kirchhoff dans Scan manuel ; Green direct est un modèle séparé.','Elastic extensions are not implemented. The backscattered field uses a scalar Kirchhoff approximation in Manual scan; direct Green is a separate model.'))
  procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'',key='control_procedure_revision')
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
 st.title('BYTE NDT — NOZZLE GEOMETRY TWIN — REV0.4')
 st.sidebar.caption(T('Pièce personnalisée : géométrie et indications à définir ; ce choix ne règle pas le geste. Le déplacement Libre ou selon un axe se choisit dans Scan manuel.','Custom specimen: define geometry and flaws; this does not select motion. Choose Free or axis-following in Manual scan.'))
-st.caption(T('Version GUIDE TESTS — axes, retour pédagogique et protocole utilisateur.','GUIDE TESTS build — axes, teaching return and user test protocol.'))
+st.caption(T('Version RÉTRO SCALAIRE — surface finie et réception MWB calculées.','SCALAR BACKSCATTER build — finite surface and computed MWB reception.'))
 st.caption(T('Nozzle traversant • Pénétration complète • Préparation chanfreinée • Référence géométrique provisoire','Set-through nozzle • Full penetration • Bevel preparation • Provisional geometry reference'))
 piece_tab,setup_tab,scan_tab,guide_tab=st.tabs([T('1 · Piquage 3D','1 · Nozzle 3D'),T('2 · Réglages de la pièce','2 · Specimen setup'),T('3 · Scan manuel','3 · Manual scan'),T('4 · Mode d’emploi','4 · User guide')])
 with guide_tab.expander(T('Écran opérateur du premier twin — scan manuel, faisceau et rayons','Original twin operator screen — manual scan, beam and rays'),expanded=False):
@@ -304,7 +326,7 @@ with setup_tab:
  specimen_name=st.text_input(T('Identifiant pièce test','Test piece identifier'),'DEMO_GESTE_PAROI_001' if training_scenario=='DEMO_GESTE_PAROI' else 'PIECE_TEST_001',key='name_'+training_scenario)
  project_defaults=gesture_demo_indications(t1) if training_scenario=='DEMO_GESTE_PAROI' else [dict(row,enabled=True,azimuth_deg=None,z_mm=None,depth_mm=None,orientation_deg=None) for row in PROJECT_INDICATIONS]
  if training_scenario=='DEMO_GESTE_PAROI': st.info(T('Scénario de geste prêt à balayer : cibles artificielles en paroi, sans placement sur les flancs réels. Choisir Pièce personnalisée pour définir votre pièce.','Ready-to-scan motion scenario: artificial main-wall targets, not real bevel-face locations. Select Custom specimen to define your specimen.'))
- project_table=localized_editor('project_'+training_scenario,pd.DataFrame(project_defaults).astype({k:'float64' for k in ['length_mm','width_mm','diameter_mm','azimuth_deg','z_mm','depth_mm','orientation_deg']}),hide_index=True,num_rows='fixed',disabled=['id','type'])
+ project_table=localized_editor('project_'+training_scenario,pd.DataFrame(project_defaults).astype({k:'float64' for k in ['length_mm','width_mm','diameter_mm','azimuth_deg','z_mm','depth_mm','orientation_deg','normal_tilt_deg']}),hide_index=True,num_rows='fixed',disabled=['id','type'])
  project_indications=json.loads(project_table.to_json(orient='records'))
  invalid_project=False
  for row in project_indications:
@@ -312,6 +334,8 @@ with setup_tab:
   required=['diameter_mm'] if row['id']=='INC1' else ['length_mm','width_mm']
   if any(row[k] is None or not np.isfinite(float(row[k])) or float(row[k])<=0 for k in required):
    st.error(T('Dimensions positives requises pour ','Positive dimensions required for ')+row['id']); invalid_project=True
+  if row.get('normal_tilt_deg') is not None and not 0<=float(row['normal_tilt_deg'])<=90:
+   st.error(T('Inclinaison normale hors 0–90° : ','Normal tilt outside 0–90°: ')+row['id']); invalid_project=True
   for k in ['azimuth_deg','z_mm','depth_mm','orientation_deg']:
    if row[k] is not None and not np.isfinite(float(row[k])): invalid_project=True
   if row['depth_mm'] is not None and not 0<=float(row['depth_mm'])<=t1:
@@ -319,19 +343,22 @@ with setup_tab:
   if row['z_mm'] is not None and abs(float(row['z_mm']))>length/2:
    st.error(T('Position Z hors tube : ','Z position outside pipe: ')+row['id']); invalid_project=True
  pending=any(row[k] is None for row in project_indications if row['enabled'] for k in ['azimuth_deg','z_mm','depth_mm','orientation_deg'])
+ st.caption(T('Inclinaison normale : angle entre normale du défaut plan et normale radiale du tube (45° par défaut). Orientation règle son azimut dans le plan tangent. Hypothèse à définir pour chaque défaut ; sans effet sur la sphère INC1.','Normal tilt: angle between planar flaw normal and pipe radial normal (default 45°). Orientation sets its tangent-plane azimuth. Define for each flaw; not used for spherical INC1.'))
  st.caption(T('Les champs de position vides restent non définis dans l’export. Le placement sur les flancs nécessite encore une définition locale du joint.','Empty position fields remain undefined in the export. Placement on bevel faces still requires a local joint definition.'))
  specimen_config={'revision':'0.4','specimen_id':specimen_name,'status':'INVALID_PARAMETERS' if invalid_project else ('POSITIONS_PENDING' if pending else 'ILLUSTRATIVE_NOT_VALIDATED'),
   'scan_plan':{'surface':'MAIN_PIPE_OD','azimuth_start_deg':scan_a0,'azimuth_end_deg':scan_a1,'z_start_mm':scan_z0,'z_end_mm':scan_z1,'step_mm':scan_step,'margin_mm':scan_margin,'beam_heading_deg':scan_heading,'points':scan_points},'plugins':{'cascade':{'status':'NOT_CONNECTED'},'CAD_TCG':{'status':'NOT_CONNECTED'}},
-  'training_scenario':training_scenario,'placement_basis':'ARTIFICIAL_MAIN_WALL_NOT_WELD_FACES' if training_scenario=='DEMO_GESTE_PAROI' else 'USER_DEFINED','workflow':workflow,'acquisition':'MONO_ELEMENT','scattering':{'requested_model':scattering,'implemented':False},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED'},
+  'training_scenario':training_scenario,'placement_basis':'ARTIFICIAL_MAIN_WALL_NOT_WELD_FACES' if training_scenario=='DEMO_GESTE_PAROI' else 'USER_DEFINED','workflow':workflow,'acquisition':'MONO_ELEMENT','scattering':{'requested_model':scattering,'implemented':False,'scalar_surface_model_available':True,'scalar_model':'FINITE_SURFACE_SCALAR_KIRCHHOFF_SINGLE_SCATTERING'},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED'},
   'geometry':{'main_OD_mm':D1,'main_thickness_mm':t1,'nozzle_OD_mm':D2,'nozzle_thickness_mm':t2,'axis_angle_deg':angle,'offset_mm':offset,'main_length_mm':length,'nozzle_length_mm':nlen},
   'joint':{'faceted_enabled':faceted_enabled,'root_roughness_mm':root_roughness,'cap_roughness_mm':cap_roughness,'facet_count':facet_count,'profile_seed':profile_seed,'bevel_deg':bevel,'gap_mm':gap,'land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf},
   'material':{'microstructure':{'morphology':grain_form,'grain_size_mm':grain_size,'preferred_orientation_deg':grain_orientation,'implemented_in_physics':False},'name':mat,'VL_m_s':vl,'VT_m_s':vs,'density_kg_m3':rho},
   'mwb':dict(mwb,reference=probe_reference),'scan_zones':json.loads(scan_rows.to_json(orient='records')),'indications':project_indications}
  st.download_button(T('Exporter la configuration de la pièce test JSON','Export test-piece configuration JSON'),json.dumps(specimen_config,ensure_ascii=False,indent=2,allow_nan=False),'NOZZLE_REV0_4_TEST_PIECE.json','application/json',disabled=invalid_project)
 with scan_tab:
- with st.expander(T('Protocole des tests — réglages et résultats attendus (FR)','Test protocol — settings and expected results (French)')):
-  protocol=Path(__file__).with_name('PROTOCOLE_UTILISATEUR_FR.md').read_text(encoding='utf-8')
-  st.download_button(T('Télécharger le protocole utilisateur','Download user test protocol'),protocol,'PROTOCOLE_UTILISATEUR_FR.md','text/markdown',key='download_user_test_protocol')
+ st.info(T('Champ rétrodiffusé : pour un essai reproductible, charger la cible témoin ci-dessous puis observer le champ calculé et l’enveloppe A-scan. Ce chargement remplace vos réglages de pièce et d’indications : exporter les données à conserver auparavant.','Backscattered field: load the witness target below for a repeatable test, then inspect the computed field and A-scan envelope. Loading replaces specimen/flaw settings: export data you wish to keep first.'))
+ st.button(T('Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz','Load backscatter witness test — MWB 45° / 4 MHz'),on_click=load_scattering_witness,key='load_backscatter_witness')
+ with st.expander(T('Protocole des tests — réglages et résultats attendus','Test protocol — settings and expected results')):
+  protocol=Path(__file__).with_name('PROTOCOLE_UTILISATEUR_'+lang+'.md').read_text(encoding='utf-8')
+  st.download_button(T('Télécharger le protocole utilisateur','Download user test protocol'),protocol,'PROTOCOLE_UTILISATEUR_'+lang+'.md','text/markdown',key='download_user_test_protocol')
   st.markdown(protocol)
  st.markdown('<a id="nozzle-manual-scan"></a>',unsafe_allow_html=True)
  st.subheader(T('Scan manuel du nozzle — écran opérateur','Nozzle manual scan — operator dashboard'))
@@ -345,7 +372,7 @@ with scan_tab:
  except ValueError as exc:
   st.error(T('Champ direct non calculé : ','Direct field not calculated: ')+str(exc))
   direct_field=None
- operator_config=dict(specimen_config,language=lang,direct_field=direct_field,joint_profiles=joint_profiles)
+ operator_config=dict(specimen_config,language=lang,default_field_view='scattered',direct_field=direct_field,joint_profiles=joint_profiles)
  operator_json=json.dumps(operator_config,ensure_ascii=False,allow_nan=False).replace('<',chr(92)+'u003c')
  operator_html=Path(__file__).with_name('nozzle_operator.html').read_text(encoding='utf-8').replace('__CONFIG__',operator_json)
  render_dashboard(operator_html,height=1400)

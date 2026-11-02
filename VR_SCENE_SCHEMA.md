@@ -33,3 +33,18 @@ L’intégrateur reconstruit les cylindres et le repère de branche à partir de
 ## Arrêts de mouvement
 
 `motion_limits` décrit le modèle d’enveloppe centrée et les événements d’arrêt. `stop_events` contient les motifs, l’azimut, Z, l’orientation et le temps écoulé du document. L’événement local `BYTE_NDT_MOTION_STOP` est émis à l’arrêt opérateur ou à la rencontre d’une limite. Cette interface sert à reprendre le comportement dans un moteur RV ; elle ne constitue pas un interverrouillage matériel ou une collision CAO complète.
+
+## Computed scalar backscatter extension — RÉTRO SCALAIRE
+
+When `beam.field_view == "scattered"`, `scalar_scattering` contains:
+
+- `model`, `scope`, `validated_elastic: false`;
+- `computation_pending`: do not render an old field or treat an empty pending array as a physical null;
+- `pose`: the pose associated with the computed field;
+- `reference_amplitude: 0.05` in arbitrary model units;
+- `field_samples_world`: `{p: [x,y,z], db}` points, positions in mm in the same world frame as the specimen;
+- `section`: selected-flaw section grid (`lo`, `hi`, azimuth, `nx`, `ny`, cells containing world position, dB and phase in radians);
+- `targets`: IDs, finite surface quadrature points/normals/areas, received complex amplitude, illuminated area;
+- `events`: relative scalar amplitude, phase and centre-path time in µs.
+
+The outgoing field is scalar direct-path single scattering without wall bounces. The JSON contains data for a VR client; it is not itself an immersive/WebXR application. Existing geometric ray segments are explicitly labelled as references, not sampled scattered-field paths. The existing right-handed frame and mm-to-metre conversion for a VR client remain unchanged.

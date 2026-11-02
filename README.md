@@ -1,3 +1,13 @@
+# Livraison RÉTRO SCALAIRE — champ calculé sur surface finie
+
+Le champ rétrodiffusé scalaire est maintenant calculé par intégration de facettes complexes, avec émission et réception sur ouverture MWB. Il est distinct de l’ancien trajet magenta et de l’ancienne carte pédagogique.
+
+Dans Scan manuel : **Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz**, attendre le calcul, puis **Zoom indication calculée**. Ce chargement remplace les réglages personnels ; exporter ceux à conserver auparavant.
+
+Documentation de référence : **RETRODIFFUSION_SCALAIRE_FR_EN.md**. Tests : **BILAN_VERIFICATIONS.md**. Limite majeure : modèle scalaire monochromatique en incidence directe et diffusion unique, sans rebonds sur parois ni couplage élastique complet. Les informations historiques ci-dessous décrivent aussi les anciens modes, conservés pour comparaison.
+
+Livraison pour évaluation du premier modèle scalaire. Aucun mail envoyé. Les brouillons décrivent les limites actuelles.
+
 ## Champ coloré rétabli depuis le premier twin
 
 Dans l’onglet 3, le panneau de champ ouvre désormais **Champ avec réflexions — premier modèle** : carte colorée en dB et enveloppe 3D le long des parcours, réflexions incluses. La carte reste pédagogique et non étalonnée, comme le premier modèle. Les modes **Volume 3D calculé** et **Coupe calculée** ajoutent un champ direct scalaire issu de l’intégrale complexe de Green sur une ouverture finie. Ces modèles réduits ne constituent pas un solveur CIVA élastodynamique. Lire **CHAMP_SCALAIRE.md**.
@@ -67,7 +77,7 @@ Le déploiement public https://byte-ndt-twin-formation-rev1.streamlit.app/ n’e
 - Scan manuel raccordé aux paramètres courants, déplacement avec capture du pointeur et conservation du point de saisie, rafraîchissement regroupé par image navigateur ; caméra distincte du palpeur.
 - Réflexions géométriques spéculaires sur les cylindres intérieur/extérieur du tube principal, arrêt aux extrémités et à l’enveloppe d’ouverture. Faisceau : éventail illustratif ±5°, pas un champ d’amplitude calculé. Propagation complète dans la branche, la préparation et le volume soudé non résolue.
 - En TRAINING, réponses des indications positionnées calculées par une heuristique géométrique non étalonnée ; aucune diffraction ou réponse matériau validée. En REAL_EXAM_PREPARATION, aucun signal synthétique présenté comme acquisition réelle : aucune acquisition n’est connectée.
-- Cascade et CAD/TCG : emplacements de modules non raccordés. Référence US 319/P15 et révision à vérifier avant intégration des critères. Kirchhoff, Born, GTD : choix futurs, moteurs non implémentés.
+- Cascade et CAD/TCG : emplacements de modules non raccordés. Référence US 319/P15 et révision à vérifier avant intégration des critères. Modèles élastiques Kirchhoff, Born, GTD : extensions futures non implémentées. Le nouveau champ utilise une approximation scalaire de Kirchhoff séparée.
 - Aucune validation de conformité industrielle ou de couverture complète. Les exemples 3D exploratoires de la vue Plotly restent indépendants du registre projet ; l’écran manuel utilise bien le registre des cinq indications.
 
 ## Vérification

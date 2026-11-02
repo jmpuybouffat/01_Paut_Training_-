@@ -1,32 +1,36 @@
-# Bilan de vérification — GUIDE TESTS
+# Bilan de vérification — RÉTRO SCALAIRE
 
-Révision de l’application au 2 novembre 2026. Vérifications logicielles automatisées, sans essai sur un instrument UT ni sur le PC de l’évaluateur.
+Livraison technique pour revue par l’utilisateur. Pas de diffusion aux évaluateurs ni de mail envoyé. Les vérifications portent sur la cohérence et le fonctionnement du modèle réduit, pas sur un instrument UT ou un examen industriel.
 
-## Résultats
+## Nouveau modèle
 
-- 20 tests Python/Streamlit réussis : géométrie, planification, champ scalaire direct, profils facettés, traductions, données éditées et exclusions conservées au changement de langue.
-- Scénario navigateur opérateur réussi : déplacement souris, orientation, arrêt, créneaux, inversion, portes, acquisition de points, exports, caméra et contrainte de contact sur le cylindre.
-- Scénario navigateur limites réussi : extrémités, encombrement du piquage, exclusion étroite, reprise après arrêt partiel, Échap, dépassement manuel avec motif SCAN_LIMIT.
-- Scénario navigateur axes/retour réussi : cercle à Z constant, contour autour de l’axe du piquage, orientation locale, remise à zéro de la correction, manipulation des vues, trajet réciproque lié à l’écho courant et suppression en préparation d’examen réel.
-- Scénario navigateur EN réussi : boutons, options, champ, labels d’indications et motif d’arrêt.
-- Scénario navigateur échos de géométrie réussi : retours heuristiques racine/sommet, absence de retour automatique pour un rebond oblique seul, trajet aller-retour à incidence normale, suppression des signaux synthétiques en préparation d’examen réel.
-- Vérification du protocole : géométrie 400/20 mm et piquage 160/12 mm à 63°, plan B −60/+60°, Z −300/+300 mm, recul 35 mm : tour de 144 pas sans arrêt parasite. Plan C, cible MF1 à Az −50°, Z −90 mm, profondeur 10 mm et sonde à Az −50°, Z −100 mm, orientation 0°, angle réfracté 45°, VT 3240 m/s : écho heuristique vers 8,73 µs.
+Surface plane finie pour MF/fissures, sphère réfléchissante pour INC1. Excitation cohérente par ouverture MWB, intégration complexe de Kirchhoff scalaire, puis réception moyennée sur la même ouverture. Pas de normalisation à chaque pose. Enveloppe A-scan issue de cette réception ; temps de centre géométrique. Travail asynchrone : les résultats d’une pose ancienne sont retirés, et l’enregistrement attend le résultat courant.
 
-## Corrections de cette livraison
+## Vérifications scientifiques et numériques
 
-- Dépassement manuel des bornes : arrêt expliqué, au lieu d’une simple limitation silencieuse des coordonnées.
-- Réinitialisation : correction d’orientation locale remise à zéro et orientation recalculée en suivi d’axe.
-- Listes Usage/Pièce/Souris : recréées au changement FR/EN en conservant leur valeur canonique, pour rafraîchir les libellés dans le navigateur.
-- Protocole utilisateur accessible dans Scan manuel, téléchargeable et inclus dans le paquet.
-- Brouillons d’évaluation dirigés vers la nouvelle archive ; aucun mail envoyé.
+Tests du noyau JavaScript, identique à celui embarqué dans le navigateur :
+- conservation de la surface quadraturée ;
+- convergence en raffinant les quadratures émission et surface ;
+- superposition complexe et annulation par opposition de phase ;
+- réciprocité émission/réception sur deux ouvertures finies ;
+- modification de la réception monostatique par inclinaison de la face ;
+- échelle dB fixe : doubler l’amplitude ajoute 6,02 dB ;
+- zéro de diffraction rectangulaire conforme à l’approximation analytique de Fraunhofer ;
+- éclairage d’un hémisphère avec normales propres pour une sphère ;
+- surface vide et entrées invalides.
 
-## Fonctions qui restent ouvertes
+## Vérifications de l’application
 
-- Champ acoustique rétrodiffusé par toute la surface du défaut : non implémenté. Le tracé magenta reste une illustration réciproque, pas un champ diffusé calculé.
-- Réponse physique complète aux indications, directivité du défaut, diffraction et conversions de modes : non validées.
-- Comparaison active Green/Born/Kirchhoff/GTD : non disponible ; sélecteur des modèles futurs désactivé.
-- Contact courbe exact, collisions CAO, propagation complète dans la branche et la soudure, couverture acoustique et procédure d’examen : à valider/développer.
-- Le champ direct de Green et la réponse A-scan restent des modèles distincts.
-- Le protocole utilisateur détaillé est en français, y compris dans son panneau explicitement marqué French en interface EN.
+- 22 tests Python/Streamlit : géométrie, plans, champ direct, profils, données/traductions et chargement du témoin avec normale de face.
+- Nouveau scénario Chromium : champ de coupe/volume non uniforme, données de facettes finies, couplage exact entre amplitude intégrée et événement A-scan, modifications d’orientation et de fréquence, référence fixe, gestion des portes, désactivation du défaut, préparation d’examen réel, absence de résultats périmés, calcul dans iframe sandbox et zoom sur la cible.
+- Scénarios existants : gestes/souris/roulettes, créneaux, arrêt, inversion, limites, zones exclues étroites, reprise après arrêt partiel, deux axes, correction angulaire, caméras, exports, FR/EN et anciens échos racine/sommet.
 
-Conclusion d’usage : paquet pour évaluation du geste et de l’explication pédagogique, pas une validation d’examen industriel. Le retour utilisateur sur le réalisme du geste reste nécessaire.
+Témoin : tube 400/20 mm, MWB 45°/4 MHz, VT 3240 m/s, MF1 6 × 3 mm à Az −50°, Z −90 mm, profondeur 10 mm, normale inclinée 45° ; sonde à Az −50°, Z −100 mm, orientation 0°. Résultat : temps de centre 8,73 µs, amplitude relative environ 0,0619 (−24,2 dB pour référence 0,05). Surface : 276 facettes à λ/3 ; coupe : 2584 cellules ; volume : 1547 points sur la grille retenue. Le champ n’est pas une image gaussienne reconstruite depuis l’amplitude de l’écho.
+
+## Limites ouvertes
+
+Incidence directe et diffusion unique seulement. Pas de rebonds du champ diffusé sur ID/OD, pas de diffraction élastique, conversions L/T, sabot/contact complet, contrastes d’inclusion, interaction entre défauts ou propagation complète soudure/branche. L’enveloppe graphique n’est pas une simulation large bande de la chaîne d’acquisition. Les échos heuristiques de racine/sommet ne sont pas mélangés à la nouvelle enveloppe scalaire.
+
+Le test utilisateur sur le réalisme et la pertinence pédagogique reste requis. La présence d’un champ calculé ne constitue pas une qualification industrielle ni une validation équivalente CIVA.
+
+Le protocole utilisateur est désormais intégralement disponible en français et en anglais ; le panneau et son téléchargement suivent la langue sélectionnée.

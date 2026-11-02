@@ -1,3 +1,5 @@
+> Mise à jour RÉTRO SCALAIRE : ce document décrit les gestes et l’ancien retour magenta. Le nouveau champ calculé et sa réception sont documentés dans RETRODIFFUSION_SCALAIRE_FR_EN.md.
+
 # Scan manuel monoélément — axes et retour / Single-element manual scan
 
 ## Français

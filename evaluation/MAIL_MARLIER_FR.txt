@@ -1,24 +1,17 @@
-Objet : Évaluation technique du prototype de formation UT — piquage, scan borné et lecture des échos
+Objet : Évaluation du twin UT monoélément sur piquage — geste, géométrie et premier champ rétrodiffusé scalaire
 
 Bonjour,
 
-Je vous propose une première évaluation du twin de formation UT sur piquage. Cette version permet le déplacement d’un palpeur monoélément MWB sur la surface 3D, le balayage manuel ou en créneaux avec limites géométriques, et l’observation synchronisée de l’A-scan, des trajets et du champ coloré pédagogique. Les indications restent cachées en mode élève ; le mode instructeur révèle les références du scénario.
+Je vous propose une évaluation du prototype de formation UT sur piquage. Il permet le scan manuel monoélément, le suivi autour de l’axe du tube principal ou du piquage, l’orientation locale du palpeur et l’arrêt aux limites géométriques.
 
-Je souhaiterais votre retour prioritaire sur :
-1. La géométrie de piquage, les profils de racine et de sommet et les zones réellement accessibles au sabot.
-2. La cohérence pédagogique des échos de géométrie et de leur lecture suivant les parcours direct, skip et double skip.
-3. Les corrections à privilégier pour expliquer l’examen à un opérateur.
+Cette version ajoute un champ rétrodiffusé calculé sur une surface d’indication finie, avec phase et réception intégrée sur l’ouverture MWB. Le calcul est une approximation scalaire monochromatique de Kirchhoff en incidence directe et diffusion unique : les rebonds du champ diffusé sur les parois, les conversions de modes et le solveur élastique complet ne sont pas implémentés. L’enveloppe A-scan utilise la réception scalaire, avec un temps de vol du centre. Il ne s’agit pas d’une validation CIVA ni d’une acquisition instrument.
 
-Le paquet et le protocole d’essai sont disponibles ici :
-https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_GUIDE_TESTS.zip
+Application et protocoles FR/EN :
+https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
 
-Pour un essai : extraire le paquet, lancer LANCER_NOZZLE, puis ouvrir l’onglet 3 en mode Formation / Démo de balayage en paroi. Les cinq cibles de démonstration ont des positions artificielles en paroi principale ; elles ne représentent pas un placement réel sur les flancs de soudure.
+Après extraction : lancer LANCER_NOZZLE, ouvrir Scan manuel et cliquer Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz. Attendre le calcul, puis Zoom indication calculée. Le protocole complet se trouve dans ce même onglet, dans la langue choisie.
 
-Le champ avec réflexions et les amplitudes A-scan sont pédagogiques et non étalonnés. Le champ direct scalaire calculé est un modèle réduit ; le couplage élastodynamique complet, la réponse physique aux indications et la validation industrielle restent à développer. Le prototype n’a pas d’acquisition réelle connectée.
-
-Quelques captures et un retour hiérarchisé sur les trois points ci-dessus nous aideraient à préparer la prochaine étape.
+Je souhaiterais votre retour sur le réalisme du geste autour de la soudure, les arrêts d’encombrement, la définition des faces d’indications et la pertinence de ce premier champ pour expliquer l’examen. Les cinq positions de la démo en paroi restent artificielles et ne représentent pas des flancs de soudure réels.
 
 Bien cordialement,
 Jean-Michel
-
-Protocole détaillé / Detailed French test protocol: PROTOCOLE_UTILISATEUR_FR.md (plans A/B/C, target MF1, expected results).

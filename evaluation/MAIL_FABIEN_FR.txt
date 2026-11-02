@@ -1,24 +1,17 @@
-Objet : Revue du geste opérateur et des arrêts géométriques — reprise RV du twin piquage
+Objet : Twin UT sur piquage — poses, arrêts et champ rétrodiffusé pour revue de l’intégration RV
 
 Bonjour Fabien,
 
-La version d’évaluation du twin piquage rassemble le scan manuel sur la surface 3D, le raster borné, l’inversion de parcours et les arrêts opérateur. Un export JSON de scène RV décrit la géométrie paramétrique, les poses du palpeur, les trajectoires et les événements d’arrêt.
+La version permet maintenant le geste monoélément libre ou autour des axes principal/piquage, l’orientation locale et les arrêts d’encombrement. Elle ajoute un premier champ rétrodiffusé scalaire calculé depuis une surface finie et une réception intégrée sur l’ouverture MWB.
 
-Pour ta revue, je propose trois priorités :
-- Vérifier la lisibilité du geste, la distinction déplacement du palpeur / rotation de caméra et le comportement aux limites.
-- Examiner l’interface NOZZLE_VR_SCENE_V1 : unités en mm, repère direct, axe du tube Z, matrice locale-vers-monde et événements BYTE_NDT_MOTION_STOP.
-- Identifier les adaptations nécessaires au moteur RV et au modèle de collision souhaité.
+Paquet complet :
+https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
 
-Paquet :
-https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_GUIDE_TESTS.zip
+Dans Scan manuel, cliquer Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz, attendre le calcul, puis Exporter scène RV. Le JSON contient les poses, matrices, traces, événements d’arrêt et scalar_scattering.field_samples_world (positions mondiales en mm et amplitude dB). Le schéma est décrit dans VR_SCENE_SCHEMA.md. Les protocoles de test sont disponibles en français et en anglais.
 
-Le contrôle du sabot utilise une enveloppe rectangulaire centrée approximative : il faudra confirmer le décalage réel du point d’émergence, le contact sur courbure et les collisions du volume complet. Le fichier VR_SCENE_SCHEMA.md décrit le contrat d’export ; LIMITES_SCAN.md décrit les arrêts. Il ne s’agit pas encore d’une application WebXR ou d’un maillage CAO soudé validé.
+Je souhaiterais vérifier avec toi la reprise de ces poses et points de champ dans ton environnement RV, le contrôle du geste, les retours d’arrêt et l’échelle spatiale. L’export est un jeu de données ; cette application n’est pas encore un client immersif/WebXR.
 
-Le champ coloré et l’A-scan sont utiles à l’explication pédagogique, avec leurs limites indiquées dans l’interface. L’export auteur contient les positions de référence des indications : il ne doit pas servir de corrigé accessible à l’élève.
-
-Peux-tu me proposer un retour sur l’ergonomie et les données nécessaires pour la reprise RV ?
+Le modèle de champ reste scalaire monochromatique, en incidence directe et diffusion unique, sans rebonds sur parois ni solution élastique complète. Il est fourni pour évaluation pédagogique, pas pour une décision industrielle.
 
 Bien cordialement,
 Jean-Michel
-
-Protocole détaillé / Detailed French test protocol: PROTOCOLE_UTILISATEUR_FR.md (plans A/B/C, target MF1, expected results).

@@ -27,6 +27,9 @@ PROJECT_INDICATIONS = [
  {'id':'FCT2','type':'Fissure de choc thermique','length_mm':4.,'width_mm':2.,'diameter_mm':None,'location':'À préciser'}
 ]
 
+for row in PROJECT_INDICATIONS:
+ row['normal_tilt_deg']=45. if row['id']!='INC1' else 0.
+
 PROBES = [dict(name=row['name'],frequency_MHz=row['frequency_MHz'],elements=1,pitch_mm=1.,active_elements=1,wedge_angle_deg=0.,mode='T',refracted_angle_deg=row['refracted_angle_deg']) for row in MWB_PROBES]
 
 # Source nominale du premier twin ; pastille commune selon l’utilisateur.

@@ -7,7 +7,7 @@ I would appreciate your review of a working ultrasonic-training prototype for a 
 My main questions are whether the surface motion is understandable, whether the geometry/skip references help explain the examination, and which changes would make the exercise more effective for operator training.
 
 Evaluation package:
-https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_GUIDE_TESTS.zip
+https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
 
 An English user guide and a short test protocol are included. The motion-demo targets have artificial main-wall positions, not real weld-face locations. Field/reflection weights and A-scan amplitudes are teaching approximations. The separate calculated scalar direct field is not a complete elastic solver; flaw scattering and full weld propagation remain development items. No industrial qualification or real acquisition is claimed.
 
@@ -16,4 +16,6 @@ A short prioritized response, with screenshots where useful, would help us prepa
 Best regards,
 Jean-Michel
 
-Protocole détaillé / Detailed French test protocol: PROTOCOLE_UTILISATEUR_FR.md (plans A/B/C, target MF1, expected results).
+Full English test protocol: PROTOCOLE_UTILISATEUR_EN.md (plans A/B/C, MF1 target, expected results).
+
+Technical update: finite-surface scalar backscatter and integrated MWB reception are now available. This is a harmonic Kirchhoff approximation with direct illumination and single scattering, without wall-bounce scattering or a complete elastic solution. See RETRODIFFUSION_SCALAIRE_FR_EN.md. Heuristic A-scan descriptions refer to the older modes.

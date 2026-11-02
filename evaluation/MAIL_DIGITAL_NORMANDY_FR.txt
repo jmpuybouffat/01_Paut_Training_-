@@ -7,7 +7,7 @@ Je souhaite vous présenter un prototype de twin de formation au contrôle ultra
 L’évaluation proposée porte sur la compréhension du geste opérateur, la qualité de l’explication et les possibilités de reprise en réalité virtuelle. Une interface d’export JSON est préparée pour les poses, la scène et les événements d’arrêt.
 
 Paquet d’évaluation et protocole :
-https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_GUIDE_TESTS.zip
+https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
 
 Il s’agit d’un prototype pédagogique en développement. Les réponses ne sont pas étalonnées pour une décision industrielle ; le moteur élastodynamique complet et la réponse physique aux indications restent à développer. L’objectif de cette première revue est d’identifier les usages pertinents, les priorités ergonomiques et les prochaines étapes d’intégration.
 
@@ -16,4 +16,6 @@ Je serais disponible pour une démonstration commentée suivie d’un retour str
 Bien cordialement,
 Jean-Michel
 
-Protocole détaillé / Detailed French test protocol: PROTOCOLE_UTILISATEUR_FR.md (plans A/B/C, target MF1, expected results).
+Protocoles complets : PROTOCOLE_UTILISATEUR_FR.md et PROTOCOLE_UTILISATEUR_EN.md.
+
+Mise à jour technique : le paquet propose désormais un champ rétrodiffusé scalaire sur surface finie avec réception MWB intégrée. C’est une approximation monochromatique de Kirchhoff en incidence directe et diffusion unique, sans rebonds sur parois ni solution élastique complète. Voir RETRODIFFUSION_SCALAIRE_FR_EN.md. Les passages concernant l’A-scan heuristique décrivent les anciens modes.

@@ -100,6 +100,7 @@ def main():
         print(f'Mean redraw: {timing:.1f} ms; no grab jump; release outside canvas: OK')
         assert not errors,errors
         page.locator('#rayView').select_option('3d')
+        page.locator('#section').scroll_into_view_if_needed()
         camera=page.locator('#section').bounding_box()
         cx=camera['x']+camera['width']/2;cy=camera['y']+camera['height']/2
         old=page.evaluate('[cameraYaw,cameraPitch]')

@@ -1,6 +1,6 @@
 # Protocole utilisateur — scan manuel monoélément
 
-Version AXES ET RETOUR. Objectif : vérifier le geste, les limites, la synchronisation et le retour illustratif. Ce protocole ne valide pas un examen UT ni un champ rétrodiffusé calculé.
+Version RÉTRO SCALAIRE. Objectif : vérifier le geste, les limites, la synchronisation et le modèle réduit de diffusion. Ce protocole ne valide pas un examen UT industriel. Pour commencer le nouveau champ : voir RETRODIFFUSION_SCALAIRE_FR_EN.md et le bouton Charger le test témoin dans Scan manuel.
 
 ## 1. Préparation commune
 
@@ -138,23 +138,26 @@ Dans la barre latérale : choisir Pièce personnalisée. Garder la géométrie c
 | MF1 position Z | −90 mm |
 | MF1 profondeur | 10 mm |
 | MF1 orientation | 0° |
+| MF1 inclinaison normale | 45° |
 | MF2, INC1, FCT1, FCT2 activées | Non |
 
 Les cellules de position sont initialement vides en personnalisé : les renseigner toutes pour MF1. Le champ Emplacement est descriptif ; les coordonnées numériques déterminent la cible. Cette position n’est pas un flanc de soudure réel.
 
-Dans Scan manuel : Libre, Réinitialiser, Orientation locale 0°. Vérifier Az −50°, Z −100 mm, MWB 45° / 4 MHz. Cocher Instructeur. Porte A, Début 0, Fin 20 µs, seuil 0,01, gain 3.
+Dans Scan manuel : Libre, Réinitialiser, Orientation locale 0°. Vérifier Az −50°, Z −100 mm, MWB 45° / 4 MHz. Choisir l’ancien Champ avec réflexions — premier modèle pour ce test heuristique, puis cocher Instructeur. Porte A, Début 0, Fin 20 µs, seuil 0,01, gain 3.
 
 Attendu : écho MF1 voisin de 8,7 µs avec VT = 3240 m/s, selon le modèle heuristique actuel. Ne pas comparer à une mesure étalonnée. Tourner de quelques degrés et déplacer légèrement la sonde : la réponse doit varier. Pour comparer les positions, observer le signal courant ; le Maximum mémorisé conserve volontairement une valeur passée.
 
-## 11. Test 9 — retour sur indication, et limite de cette version
+## 11. Test 9 — champ rétrodiffusé calculé
 
-Réglages : conserver la cible témoin et la pose initiale du test 8. Cocher Retour indication pédagogique.
+Exporter d’abord les données à conserver. Dans Scan manuel, cliquer **Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz**. Il remplace géométrie, plan, zones et indications. Le mode Champ rétrodiffusé calculé — scalaire est sélectionné.
 
-Attendu : tracé magenta vers la sonde, avec amplitude et temps du même événement courant que l’A-scan, dans la porte A. Tourner légèrement la sonde ; le retour doit suivre le nouveau trajet. Décocher l’option pour retrouver l’exercice aveugle.
+Attendre la fin du calcul, puis cliquer Zoom indication calculée. Porte A 0–20 µs, seuil 0,01, gain 3 ; seuil du champ −40 dB. Attendu : surface finie rose, lobes colorés, réception scalaire sur l’ouverture ; écho MF1 vers 8,73 µs, amplitude relative voisine de 0,062 dans ce modèle. La référence dB reste fixe, même si la pose change.
 
-Changer temporairement la porte à Début 30, Fin 40 µs : le retour de MF1 direct ne doit plus être sélectionné. Restaurer 0–20 µs. Désactiver MF1 dans le tableau : aucun retour d’indication ne doit être disponible. Réactiver après essai.
+Tester l’orientation de sonde, puis l’inclinaison de la normale de MF1 (45° puis 80° dans l’onglet 2), et la fréquence (4 puis 5 MHz). Le champ et la réception doivent changer. Pendant un calcul, aucun champ de l’ancienne pose n’est conservé et Enregistrer point est désactivé.
 
-**Champ rétrodiffusé sur toute la surface de l’indication : NON IMPLÉMENTÉ, NON VALIDABLE dans cette version.** Le magenta illustre un retour réciproque sur le trajet incident. Il ne montre pas un calcul du champ diffusé, de la directivité du défaut ou des conversions de modes. Les tests précédents ne doivent pas être présentés comme une validation de ces fonctions. Ce besoin reste essentiel et ouvert.
+Une porte à 30–40 µs écarte l’écho direct de MF1, mais ne modifie pas le champ monochromatique. MF1 désactivée : pas de réponse d’indication. Les données de géométrie racine/sommet ne sont pas mélangées à cet A-scan scalaire.
+
+Le calcul inclut une diffusion scalaire sur surface finie, avec phase et ouverture émission/réception. **La diffusion élastique complète et ses rebonds sur les parois ne sont pas implémentés.** Voir RETRODIFFUSION_SCALAIRE_FR_EN.md pour les formules, réglages et limites. L’ancien retour magenta reste uniquement un trajet illustratif dans l’ancien mode pédagogique.
 
 ## 12. Test 10 — coupe, champ et caméra
 
@@ -184,4 +187,4 @@ Attendu : aucun signal synthétique présenté comme signal réel, aucun retour 
 
 Pour chaque essai : numéro du test, réussi / anomalie / non essayé, plan A/B/C, sonde, trajectoire, Az/Z/θ, résultat observé, motif d’arrêt, capture si utile. Indiquer la version AXES ET RETOUR.
 
-Le champ rétrodiffusé reste une ligne distincte : fonction attendue, non disponible. Ne pas cocher « réussi » sur ce point à partir du seul retour magenta.
+Évaluer séparément le champ scalaire calculé et le besoin restant de diffusion élastique avec rebonds sur les parois. Le seul retour magenta ne valide aucun de ces calculs.
