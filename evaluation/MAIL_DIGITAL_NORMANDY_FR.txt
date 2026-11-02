@@ -1,16 +1,22 @@
-Objet : Byte NDT — démonstration des twins de formation et préparation d’un échange sur les usages immersifs
+Objet : Twins de formation sur vos pièces — proposition Byte NDT et évolution vers la réalité virtuelle
 
-Bonjour,
+Bonjour Monsieur Simond,
 
-Byte NDT prépare la mise en service d’une offre de jumeaux numériques pour la formation et la préparation des contrôles non destructifs. Le premier démonstrateur sur piquage permet de travailler le geste manuel monoélément, l’orientation du palpeur autour de la soudure, les limites d’accès et l’explication visuelle de la réponse ultrasonore.
+Je souhaite vous présenter l’offre de twins de formation que développe Byte NDT : des jumeaux numériques adaptés à vos pièces de formation, à vos scénarios d’examen et aux gestes que vous souhaitez enseigner.
 
-La version actuelle inclut un premier champ rétrodiffusé scalaire calculé sur une indication finie, avec réception intégrée sur la sonde. C’est un modèle pédagogique réduit, sans les rebonds du champ diffusé sur les parois ni un solveur élastique complet. Les protocoles utilisateurs sont disponibles en français et en anglais.
+L’objectif est de permettre aux stagiaires de préparer le contrôle, de pratiquer le positionnement et l’orientation du palpeur, de comprendre les limites d’accès et de relier leur geste aux réponses ultrasonores. Le formateur peut accompagner l’exercice, expliquer les phénomènes et comparer les démarches des apprenants.
 
-Lien de démonstration : https://byte-ndt-nozzle-formation.streamlit.app/
+Un premier démonstrateur sur piquage est accessible ici :
+https://byte-ndt-nozzle-formation.streamlit.app/
 
-Nous souhaitons échanger séparément avec vous sur les usages en formation, l’ergonomie et les perspectives immersives. Le démonstrateur exporte déjà les poses, les limites et des points de champ pour étudier une intégration RV ; l’interface immersive reste un travail d’intégration.
+Il illustre la démarche en contrôle monoélément, avec un protocole français/anglais et un premier modèle scalaire de champ rétrodiffusé. C’est un support de démonstration de l’approche, à adapter ensuite à vos pièces et à vos besoins pédagogiques.
 
-Cette démarche s’inscrit dans le développement d’une société de services associant expertise du contrôle, préparation d’examen et formation. Un retour sur les usages prioritaires et les partenaires pertinents nous aiderait à organiser la prochaine étape.
+La proposition est de réaliser pour vous des twins de formation personnalisés, avec une progression vers la réalité virtuelle : commencer sur PC, définir les exercices et leurs objectifs, puis intégrer le geste et les interactions dans un environnement immersif. La version actuelle prépare cette évolution par l’export des poses et des données de champ ; le module immersif reste à développer et à intégrer.
+
+Je vous propose un échange pour choisir une première pièce représentative, préciser les compétences à travailler et définir le périmètre d’une prestation pilote. Sur cette base, nous pourrons vous soumettre une proposition technique et commerciale pour ce premier twin, puis envisager une gamme adaptée à vos formations.
+
+Seriez-vous disponible pour une courte démonstration et cet échange ?
 
 Bien cordialement,
-Jean-Michel
+Jean-Michel Puybouffat
+Byte NDT

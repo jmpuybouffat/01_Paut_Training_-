@@ -13,3 +13,7 @@ Brouillons préparés, aucun mail envoyé. Les destinataires/adresses exacts et 
 | 6 | Lecœur Électronique | Présentation du twin et discussion des futurs exports de réglages PA | MAIL_LECOEUR_FR.txt |
 
 Disponible : scan monoélément, axes, limites, premier champ scalaire calculé et export de données RV. Prévu/à intégrer : version nozzle PA, compatibilité de réglages avec des instruments précis, client immersif, moteurs internes C1/C2 et diffusion élastique avec rebonds. Les brouillons conservent cette distinction.
+
+## Mise à jour des priorités
+
+Jean-Michel indique avoir envoyé les mails à Jacques Marlier et Fabien. Édouard Foucher, responsable formation, est également destinataire du message formation, avec la trajectoire vers la RV. Priorité suivante : Monsieur Yves Simond, Digital Normandy Training, pour une offre commerciale de twins de formation adaptés à leurs pièces, puis une évolution immersive. Le brouillon MAIL_DIGITAL_NORMANDY_FR.txt est recentré sur une première prestation pilote à chiffrer ; aucun envoi à Monsieur Simond n’a été effectué par l’assistant.
