@@ -115,3 +115,7 @@ Le panneau **Microstructure — description pour étape suivante** enregistre mo
 ## Arrêt sur limites
 
 La dernière version vérifie le manuel et le raster avec une enveloppe rectangulaire approchée du sabot. À un obstacle, la sonde s’arrête et le motif apparaît. Ne pas forcer le mouvement : inverser le parcours ou déplacer la sonde vers une zone libre. STOP/Pause ou Espace/Échap dans la vue active arrête le geste. Le raster ne reboucle pas automatiquement à la fin. Lire LIMITES_SCAN.md pour le modèle géométrique, les événements RV et les limites de cette vérification.
+
+
+## Axes et retour sur indication
+Voir AXES_ET_RETOUR_FR_EN.md pour les trois gestes, la manipulation des vues et les limites du retour pédagogique.

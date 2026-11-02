@@ -56,7 +56,8 @@ with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — i
  procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'',key='control_procedure_revision')
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
 st.title('BYTE NDT — NOZZLE GEOMETRY TWIN — REV0.4')
-st.caption(T('Version ÉVALUATION FR/EN — scan borné et champ coloré.','FR/EN EVALUATION build — bounded scan and coloured field.'))
+st.sidebar.caption(T('Pièce personnalisée : géométrie et indications à définir ; ce choix ne règle pas le geste. Le déplacement Libre ou selon un axe se choisit dans Scan manuel.','Custom specimen: define geometry and flaws; this does not select motion. Choose Free or axis-following in Manual scan.'))
+st.caption(T('Version AXES ET RETOUR — suivi du piquage et retour pédagogique.','AXES AND RETURN build — nozzle contour and teaching return.'))
 st.caption(T('Nozzle traversant • Pénétration complète • Préparation chanfreinée • Référence géométrique provisoire','Set-through nozzle • Full penetration • Bevel preparation • Provisional geometry reference'))
 piece_tab,setup_tab,scan_tab,guide_tab=st.tabs([T('1 · Piquage 3D','1 · Nozzle 3D'),T('2 · Réglages de la pièce','2 · Specimen setup'),T('3 · Scan manuel','3 · Manual scan'),T('4 · Mode d’emploi','4 · User guide')])
 with guide_tab.expander(T('Écran opérateur du premier twin — scan manuel, faisceau et rayons','Original twin operator screen — manual scan, beam and rays'),expanded=False):

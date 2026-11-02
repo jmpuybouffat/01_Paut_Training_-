@@ -13,7 +13,7 @@ with sync_playwright() as pw:
  result=page.evaluate('''()=>{const found={};for(const p of C.scan_plan.points){az=p.azimuth_deg;z=p.z_mm;rayCache=new Map();for(const e of geometryBackscatterEchoes(rayTrace())){if(!found[e.id]||e.amp>found[e.id].amp)found[e.id]={amp:e.amp,t:e.t,leg:e.leg,az,z}}}return found}''')
  print('Geometry scans:',result)
  assert 'GEOMETRY_root' in result and 'GEOMETRY_cap' in result,result
- page.evaluate('az=-50;z=-150;heading=0;C.mwb.refracted_angle_deg=45;rayCache=new Map()')
+ page.evaluate('az=-25;z=-130;heading=0;C.mwb.refracted_angle_deg=45;rayCache=new Map()')
  assert page.evaluate('specularReceptionEchoes(rayTrace()).length')==0,'Angled wall bounce created artificial pulse'
  page.evaluate('C.mwb.refracted_angle_deg=0;rayCache=new Map()')
  echoes=page.evaluate('specularReceptionEchoes(rayTrace())')

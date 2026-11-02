@@ -49,3 +49,7 @@ Grain morphology, nominal size and preferred orientation are descriptive metadat
 Export the specimen configuration in tab 2 and the manual scan from the operator panel before reloading or changing Streamlit settings. Manual trajectories are held in the browser component and are not retained across reloads. **Export VR scene** provides the common coordinate system, probe poses, geometry and motion-stop events. Authoring exports include target reference data; they are not secure blind-exam files.
 
 Use **Instructor** only to reveal the answers for explanation. **Real examination preparation** has no connected acquisition and does not show synthetic signals as real measurements. Localized labels do not change the canonical data keys used by the simulator and exported files.
+
+
+## Axis-following and flaw return
+See AXES_ET_RETOUR_FR_EN.md for motion controls, live views and teaching-return limitations.
