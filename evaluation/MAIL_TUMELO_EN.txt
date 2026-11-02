@@ -4,7 +4,7 @@ Hi Tumelo,
 
 Byte NDT is moving its training and inspection twins towards service introduction. We now have a nozzle training demonstrator that lets an operator practise manual single-element scanning, follow the weld geometry, understand scan limits and inspect a first calculated scalar backscattered field.
 
-Demo: [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+Demo: https://byte-ndt-nozzle-formation.streamlit.app/
 
 The next steps include further work on the root-inspection twins and a phased-array nozzle version. Our intended service brings together inspection preparation, technical explanation and operator training.
 

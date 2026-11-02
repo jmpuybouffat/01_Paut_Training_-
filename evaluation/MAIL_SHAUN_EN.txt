@@ -6,7 +6,7 @@ A short update on Byte NDT: we are moving the training-twin offer towards servic
 
 The nozzle demonstrator now supports manual single-element scanning, probe orientation around the branch, geometric stops and a first computed scalar backscattered field from a finite flaw surface. It includes English instructions and a repeatable witness test.
 
-Demo: [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+Demo: https://byte-ndt-nozzle-formation.streamlit.app/
 
 For root inspections, the direction is a practical inspection twin that follows the inspection workflow and operator actions as closely as possible to work on the machine. The existing C1/C2 applications provide the starting point; the connection to the internal acoustic engines and the relevant hardware workflow must remain explicit.
 

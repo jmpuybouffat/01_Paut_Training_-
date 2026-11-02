@@ -6,7 +6,7 @@ Byte NDT prépare la mise en service d’une offre de jumeaux numériques pour l
 
 La version actuelle inclut un premier champ rétrodiffusé scalaire calculé sur une indication finie, avec réception intégrée sur la sonde. C’est un modèle pédagogique réduit, sans les rebonds du champ diffusé sur les parois ni un solveur élastique complet. Les protocoles utilisateurs sont disponibles en français et en anglais.
 
-Lien de démonstration : [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+Lien de démonstration : https://byte-ndt-nozzle-formation.streamlit.app/
 
 Nous souhaitons échanger séparément avec vous sur les usages en formation, l’ergonomie et les perspectives immersives. Le démonstrateur exporte déjà les poses, les limites et des points de champ pour étudier une intégration RV ; l’interface immersive reste un travail d’intégration.
 

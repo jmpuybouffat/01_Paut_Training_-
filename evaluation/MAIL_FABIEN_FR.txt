@@ -1,20 +1,19 @@
-Objet : Twin UT sur piquage — poses, arrêts et champ rétrodiffusé pour revue de l’intégration RV
+Objet : Byte NDT — twin piquage en ligne et données disponibles pour l’intégration RV
 
 Bonjour Fabien,
 
-La version permet maintenant le geste monoélément libre ou autour des axes principal/piquage, l’orientation locale et les arrêts d’encombrement. Elle ajoute un premier champ rétrodiffusé scalaire calculé depuis une surface finie et une réception intégrée sur l’ouverture MWB.
+Le twin de formation sur piquage est maintenant en ligne :
+https://byte-ndt-nozzle-formation.streamlit.app/
 
-Paquet complet :
-Lien Streamlit : [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+Tu peux y tester le déplacement manuel monoélément, le suivi autour de l’axe du piquage, l’orientation de la sonde et les arrêts aux limites géométriques. Un premier champ rétrodiffusé scalaire sur surface finie est également calculé, avec sa réception sur le palpeur.
 
-Archive locale de secours :
-https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
+Pour un essai reproductible, ouvrir « 3 · Scan manuel », puis « Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz ». Attendre le calcul, puis utiliser « Zoom indication calculée ».
 
-Dans Scan manuel, cliquer Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz, attendre le calcul, puis Exporter scène RV. Le JSON contient les poses, matrices, traces, événements d’arrêt et scalar_scattering.field_samples_world (positions mondiales en mm et amplitude dB). Le schéma est décrit dans VR_SCENE_SCHEMA.md. Les protocoles de test sont disponibles en français et en anglais.
+Le bouton « Exporter scène RV » fournit le JSON avec les poses et matrices de la sonde, les traces et événements d’arrêt, ainsi que les points du champ calculé en coordonnées mondiales, en millimètres. Le champ est disponible sous scalar_scattering.field_samples_world ; le schéma est décrit dans VR_SCENE_SCHEMA.md.
 
-Je souhaiterais vérifier avec toi la reprise de ces poses et points de champ dans ton environnement RV, le contrôle du geste, les retours d’arrêt et l’échelle spatiale. L’export est un jeu de données ; cette application n’est pas encore un client immersif/WebXR.
+Cette version fournit les données pour ton intégration RV ; elle n’est pas encore un client immersif. Le calcul acoustique reste limité à un modèle scalaire en incidence directe et diffusion unique, sans rebonds du champ diffusé sur les parois.
 
-Le modèle de champ reste scalaire monochromatique, en incidence directe et diffusion unique, sans rebonds sur parois ni solution élastique complète. Il est fourni pour évaluation pédagogique, pas pour une décision industrielle.
+Je te propose de vérifier en priorité la reprise des coordonnées, l’échelle, la manipulation de la sonde et le retour d’arrêt dans ton environnement.
 
-Bien cordialement,
+Bien à toi,
 Jean-Michel

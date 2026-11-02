@@ -1,6 +1,6 @@
 # Ordre de préparation des communications
 
-Brouillons préparés, aucun mail envoyé. Les destinataires/adresses exacts et les pièces à joindre restent à renseigner par Jean-Michel. Remplacer le marqueur de lien uniquement par l’URL Streamlit effectivement créée et contrôlée.
+Brouillons préparés, aucun mail envoyé. Les destinataires/adresses exacts et les pièces à joindre restent à renseigner par Jean-Michel. URL publique confirmée par Jean-Michel et intégrée dans les brouillons : https://byte-ndt-nozzle-formation.streamlit.app/
 
 | Priorité | Destinataire | Objectif | Brouillon |
 |---|---|---|---|

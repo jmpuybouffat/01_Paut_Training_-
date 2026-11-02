@@ -1,20 +1,17 @@
-Objet : Évaluation du twin UT monoélément sur piquage — geste, géométrie et premier champ rétrodiffusé scalaire
+Objet : Byte NDT — twin de formation sur piquage disponible pour évaluation
 
 Bonjour,
 
-Je vous propose une évaluation du prototype de formation UT sur piquage. Il permet le scan manuel monoélément, le suivi autour de l’axe du tube principal ou du piquage, l’orientation locale du palpeur et l’arrêt aux limites géométriques.
+Le twin de formation Byte NDT sur piquage est maintenant accessible en ligne :
+https://byte-ndt-nozzle-formation.streamlit.app/
 
-Cette version ajoute un champ rétrodiffusé calculé sur une surface d’indication finie, avec phase et réception intégrée sur l’ouverture MWB. Le calcul est une approximation scalaire monochromatique de Kirchhoff en incidence directe et diffusion unique : les rebonds du champ diffusé sur les parois, les conversions de modes et le solveur élastique complet ne sont pas implémentés. L’enveloppe A-scan utilise la réception scalaire, avec un temps de vol du centre. Il ne s’agit pas d’une validation CIVA ni d’une acquisition instrument.
+Il permet de travailler le geste manuel monoélément, l’orientation du palpeur autour de la soudure et les arrêts liés aux limites géométriques. La sonde, les vues du faisceau et l’A-scan sont synchronisés.
 
-Application et protocoles FR/EN :
-Lien Streamlit : [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+Cette version ajoute un premier champ rétrodiffusé calculé sur une indication de surface finie, avec prise en compte de la phase et réception intégrée sur l’ouverture du palpeur. Le modèle reste scalaire, en incidence directe et diffusion unique ; les rebonds du champ diffusé sur les parois et le couplage élastique complet ne sont pas encore intégrés.
 
-Archive locale de secours :
-https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_RETRO_SCALAIRE.zip
+Pour commencer, ouvrir « 3 · Scan manuel », puis « Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz ». Après le calcul, utiliser « Zoom indication calculée ». Le protocole détaillé est disponible en français et en anglais.
 
-Après extraction : lancer LANCER_NOZZLE, ouvrir Scan manuel et cliquer Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz. Attendre le calcul, puis Zoom indication calculée. Le protocole complet se trouve dans ce même onglet, dans la langue choisie.
-
-Je souhaiterais votre retour sur le réalisme du geste autour de la soudure, les arrêts d’encombrement, la définition des faces d’indications et la pertinence de ce premier champ pour expliquer l’examen. Les cinq positions de la démo en paroi restent artificielles et ne représentent pas des flancs de soudure réels.
+Je souhaiterais votre retour sur le réalisme du geste, les limites d’accès et la clarté de l’explication des réponses. Cette évaluation permettra de prioriser les ajustements avant d’élargir l’usage en formation.
 
 Bien cordialement,
 Jean-Michel

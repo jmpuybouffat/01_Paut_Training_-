@@ -1,3 +1,9 @@
+# Adresse publique communiquée par Jean-Michel
+
+https://byte-ndt-nozzle-formation.streamlit.app/
+
+Déploiement confirmé par Jean-Michel. Aucun mail envoyé par l’assistant.
+
 # Publication Streamlit — priorité Marlier et Fabien
 
 Le code de la version RÉTRO SCALAIRE et les protocoles FR/EN sont publiés sur GitHub. Une publication GitHub ne crée pas automatiquement une application Streamlit publique.

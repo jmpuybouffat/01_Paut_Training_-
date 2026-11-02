@@ -4,7 +4,7 @@ Bonjour,
 
 Je souhaite vous présenter le twin de formation Byte NDT sur piquage. Le démonstrateur reproduit le geste manuel monoélément, l’orientation du palpeur autour de la soudure et les arrêts liés aux limites géométriques. Il propose un premier champ rétrodiffusé scalaire sur une indication finie, associé à la réception sur le palpeur.
 
-Démonstration : [LIEN STREAMLIT À INSÉRER APRÈS PUBLICATION]
+Démonstration : https://byte-ndt-nozzle-formation.streamlit.app/
 
 Une version phased array est prévue. Notre objectif est de préparer des réglages traçables à partir de la géométrie et de la stratégie d’examen, puis d’étudier leur export dans un format exploitable par l’équipement. La génération et l’import de réglages compatibles avec un instrument précis nécessitent encore de définir ensemble les formats, contraintes et vérifications ; cette compatibilité n’est pas revendiquée dans la version actuelle.
 
