@@ -10,7 +10,7 @@ Je souhaiterais votre retour prioritaire sur :
 3. Les corrections à privilégier pour expliquer l’examen à un opérateur.
 
 Le paquet et le protocole d’essai sont disponibles ici :
-https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_EVALUATION_FR_EN.zip
+https://github.com/jmpuybouffat/01_Paut_Training_-/raw/refs/heads/main/downloads/BYTE_NDT_NOZZLE_REV0_4_GUIDE_TESTS.zip
 
 Pour un essai : extraire le paquet, lancer LANCER_NOZZLE, puis ouvrir l’onglet 3 en mode Formation / Démo de balayage en paroi. Les cinq cibles de démonstration ont des positions artificielles en paroi principale ; elles ne représentent pas un placement réel sur les flancs de soudure.
 
@@ -20,3 +20,5 @@ Quelques captures et un retour hiérarchisé sur les trois points ci-dessus nous
 
 Bien cordialement,
 Jean-Michel
+
+Protocole détaillé / Detailed French test protocol: PROTOCOLE_UTILISATEUR_FR.md (plans A/B/C, target MF1, expected results).

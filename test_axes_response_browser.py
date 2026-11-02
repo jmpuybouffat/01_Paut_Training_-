@@ -29,6 +29,9 @@ def main():
   assert abs(page.evaluate('Math.hypot(...point(az,z).slice(0,2))')-200)<1e-8
   page.locator('#plus').click()
   assert abs(page.evaluate('Number(document.getElementById("headingTrim").value)')-1)<1e-8
+  page.locator('#reset').click()
+  assert page.evaluate('Number(document.getElementById("headingTrim").value)')==0
+  assert abs(page.evaluate('heading-motionHeading(az,z)'))<1e-8
   page.evaluate('startRaster()');assert page.evaluate('timer') is None
   page.locator('#motionAxis').select_option('free')
   page.evaluate('az=-50;z=-100;heading=0;draw()')

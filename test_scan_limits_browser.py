@@ -43,6 +43,14 @@ def main():
   page.evaluate('z=150')
   width2=page.evaluate('stableSectionBounds().hi-stableSectionBounds().lo')
   assert abs(width1-width2)<1e-8
+  # Attempt beyond the planned edge must stop the drag and explain why.
+  page.evaluate('az=-50;z=-200;heading=0;draw()')
+  p=page.evaluate('map(az,z)');q=page.evaluate('map(80,-200)');box=page.locator('#top').bounding_box()
+  page.mouse.move(box['x']+p[0]/720*box['width'],box['y']+p[1]/430*box['height']);page.mouse.down()
+  page.mouse.move(box['x']+q[0]/720*box['width'],box['y']+q[1]/430*box['height'],steps=12);page.mouse.up()
+  assert page.evaluate('az')<=60
+  assert page.evaluate('motionEvents[motionEvents.length-1].reason')=='SCAN_LIMIT'
+  assert page.evaluate('drag') is False
   assert not errors,errors
   browser.close()
  print('Manual/raster footprint limits, thin excluded region, pipe end, nozzle, Escape and stable mono view: OK')

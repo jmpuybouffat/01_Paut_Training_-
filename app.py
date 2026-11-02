@@ -19,6 +19,16 @@ def T(fr,en): return fr if lang=='FR' else en
 language_changed=st.session_state.get('_previous_ui_language',lang)!=lang
 st.session_state['_previous_ui_language']=lang
 
+def sidebar_language_select(label,options,*,key,**kwargs):
+ # Recreate the browser widget on language changes; preserve its canonical value.
+ store='selection_'+key;widget=key+'_'+lang
+ if language_changed and widget in st.session_state:del st.session_state[widget]
+ previous=st.session_state.get(store)
+ if previous in options:kwargs['index']=list(options).index(previous)
+ value=st.sidebar.selectbox(label,options,key=widget,**kwargs)
+ st.session_state[store]=value
+ return value
+
 def localized_editor(name,defaults,**options):
  store='canonical_table_'+name;widget='editor_'+name+'_'+lang;base='editor_base_'+name+'_'+lang
  if store not in st.session_state:st.session_state[store]=defaults.to_dict('records')
@@ -41,13 +51,13 @@ def cached_direct_field(frequency,speed,width,height):
 def render_dashboard(html,height):
  if callable(getattr(st,'iframe',None)): st.iframe(html,height=height,width='stretch')
  else: components.html(html,height=height,scrolling=True)
-workflow=st.sidebar.selectbox(T('Usage','Use'),['TRAINING','REAL_EXAM_PREPARATION'],format_func=lambda v:{'TRAINING':T('Formation','Training'),'REAL_EXAM_PREPARATION':T('Préparation d’examen réel','Real examination preparation')}[v],key='control_workflow')
-training_scenario=st.sidebar.selectbox(T('Pièce de formation','Training specimen'),['DEMO_GESTE_PAROI','PIECE_PERSONNALISEE'],index=0 if workflow=='TRAINING' else 1,disabled=workflow!='TRAINING',format_func=lambda v:{'DEMO_GESTE_PAROI':T('Démo de balayage en paroi','Main-wall scan demo'),'PIECE_PERSONNALISEE':T('Pièce personnalisée','Custom specimen')}[v],key='control_training_scenario')
+workflow=sidebar_language_select(T('Usage','Use'),['TRAINING','REAL_EXAM_PREPARATION'],format_func=lambda v:{'TRAINING':T('Formation','Training'),'REAL_EXAM_PREPARATION':T('Préparation d’examen réel','Real examination preparation')}[v],key='control_workflow')
+training_scenario=sidebar_language_select(T('Pièce de formation','Training specimen'),['DEMO_GESTE_PAROI','PIECE_PERSONNALISEE'],index=0 if workflow=='TRAINING' else 1,disabled=workflow!='TRAINING',format_func=lambda v:{'DEMO_GESTE_PAROI':T('Démo de balayage en paroi','Main-wall scan demo'),'PIECE_PERSONNALISEE':T('Pièce personnalisée','Custom specimen')}[v],key='control_training_scenario')
 if workflow!='TRAINING': training_scenario='PIECE_PERSONNALISEE'
 if training_scenario=='DEMO_GESTE_PAROI': st.sidebar.caption(T('Cinq cibles artificielles en paroi principale. Leurs positions ne représentent pas les flancs de soudure.','Five artificial targets in the main wall. Their positions do not represent weld faces.'))
 st.sidebar.caption(T('Parcours : 1 Pièce 3D → 2 Réglages → 3 Scan manuel → 4 Notice.','Workflow: 1 3D specimen → 2 Setup → 3 Manual scan → 4 Guide.'))
 st.sidebar.caption(T('Monoélément. Examen : préparation du dossier, procédure non validée.','Single element. Examination: dossier preparation, procedure not validated.'))
-mouse_mode=st.sidebar.selectbox(T('Souris 3D','3D mouse'),['orbit','turntable','pan'],format_func=lambda v:{'orbit':T('Rotation libre','Orbit'),'turntable':T('Rotation stable','Turntable'),'pan':T('Déplacement','Pan')}[v],key='control_mouse_mode')
+mouse_mode=sidebar_language_select(T('Souris 3D','3D mouse'),['orbit','turntable','pan'],format_func=lambda v:{'orbit':T('Rotation libre','Orbit'),'turntable':T('Rotation stable','Turntable'),'pan':T('Déplacement','Pan')}[v],key='control_mouse_mode')
 if 'camera_revision' not in st.session_state: st.session_state.camera_revision=0
 if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view'),key='control_f7cb21d880d6'): st.session_state.camera_revision+=1
 with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — inactive')):
@@ -57,7 +67,7 @@ with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — i
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
 st.title('BYTE NDT — NOZZLE GEOMETRY TWIN — REV0.4')
 st.sidebar.caption(T('Pièce personnalisée : géométrie et indications à définir ; ce choix ne règle pas le geste. Le déplacement Libre ou selon un axe se choisit dans Scan manuel.','Custom specimen: define geometry and flaws; this does not select motion. Choose Free or axis-following in Manual scan.'))
-st.caption(T('Version AXES ET RETOUR — suivi du piquage et retour pédagogique.','AXES AND RETURN build — nozzle contour and teaching return.'))
+st.caption(T('Version GUIDE TESTS — axes, retour pédagogique et protocole utilisateur.','GUIDE TESTS build — axes, teaching return and user test protocol.'))
 st.caption(T('Nozzle traversant • Pénétration complète • Préparation chanfreinée • Référence géométrique provisoire','Set-through nozzle • Full penetration • Bevel preparation • Provisional geometry reference'))
 piece_tab,setup_tab,scan_tab,guide_tab=st.tabs([T('1 · Piquage 3D','1 · Nozzle 3D'),T('2 · Réglages de la pièce','2 · Specimen setup'),T('3 · Scan manuel','3 · Manual scan'),T('4 · Mode d’emploi','4 · User guide')])
 with guide_tab.expander(T('Écran opérateur du premier twin — scan manuel, faisceau et rayons','Original twin operator screen — manual scan, beam and rays'),expanded=False):
@@ -319,6 +329,10 @@ with setup_tab:
   'mwb':dict(mwb,reference=probe_reference),'scan_zones':json.loads(scan_rows.to_json(orient='records')),'indications':project_indications}
  st.download_button(T('Exporter la configuration de la pièce test JSON','Export test-piece configuration JSON'),json.dumps(specimen_config,ensure_ascii=False,indent=2,allow_nan=False),'NOZZLE_REV0_4_TEST_PIECE.json','application/json',disabled=invalid_project)
 with scan_tab:
+ with st.expander(T('Protocole des tests — réglages et résultats attendus (FR)','Test protocol — settings and expected results (French)')):
+  protocol=Path(__file__).with_name('PROTOCOLE_UTILISATEUR_FR.md').read_text(encoding='utf-8')
+  st.download_button(T('Télécharger le protocole utilisateur','Download user test protocol'),protocol,'PROTOCOLE_UTILISATEUR_FR.md','text/markdown',key='download_user_test_protocol')
+  st.markdown(protocol)
  st.markdown('<a id="nozzle-manual-scan"></a>',unsafe_allow_html=True)
  st.subheader(T('Scan manuel du nozzle — écran opérateur','Nozzle manual scan — operator dashboard'))
  st.caption(T('Le plan technique de l’onglet 2 et le geste manuel sont deux écrans distincts. Dans ce panneau, la sonde se déplace à la souris.','The technical plan in tab 2 and manual operation are separate screens. Move the probe with the mouse in this panel.'))

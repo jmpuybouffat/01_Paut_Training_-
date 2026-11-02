@@ -98,3 +98,6 @@ Version ÉVALUATION FR/EN : types/emplacements et en-têtes de tableaux traduits
 
 
 Version AXES ET RETOUR : trois modes de geste monoélément, orientation locale, coupe/champ manipulables et retour réciproque pédagogique sur indication. Documentation : AXES_ET_RETOUR_FR_EN.md.
+
+
+Version GUIDE TESTS : protocole utilisateur détaillé dans Scan manuel, plans reproductibles A/B/C, arrêt manuel explicite aux bornes, remise à zéro de la correction angulaire et rafraîchissement des listes FR/EN. Voir PROTOCOLE_UTILISATEUR_FR.md et BILAN_VERIFICATIONS.md.
