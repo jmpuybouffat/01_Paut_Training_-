@@ -1,5 +1,7 @@
 # BYTE NDT — Welded plate P03 🇬🇧
 
+The complete illustrated manual is **USER_MANUAL_EN_P03.pdf** (also supplied as HTML). **STREAMLIT_DEMARRAGE_FR_EN.html** provides the three service-creation fields.
+
 1. Extract the entire ZIP.
 2. Open **OUVRIR_APPLICATION.html** in Chrome or Edge. No installation or Internet connection is required.
 3. Choose a language and SE, MWB or PA. Use **Witness pose**, then **Calculate** to record a response.

@@ -1,5 +1,7 @@
 # BYTE NDT — Tôle soudée P03 🇫🇷
 
+Le manuel illustré complet est **MANUEL_FR_P03.pdf** (également en HTML). La fiche **STREAMLIT_DEMARRAGE_FR_EN.html** reprend les trois champs de création du service.
+
 1. Extraire **tout le ZIP** dans un dossier.
 2. Double-cliquer sur **OUVRIR_APPLICATION.html**. L’application s’ouvre dans Chrome ou Edge, sans installation et sans connexion Internet.
 3. Choisir 🇫🇷 ou 🇬🇧, puis SE, MWB ou PA. « Position témoin » propose une pose d’exercice. Cliquer « Calculer » pour enregistrer la réponse.
