@@ -1,13 +1,88 @@
 {
   "schema": "BYTE_NDT_WELDED_PLATE_V1",
   "units": "mm",
-  "plate": {"length_x":245.0,"width_y":250.0,"thickness_z":10.0,"weld_axis_y":125.0},
-  "joint": {"profile":"SYMMETRIC_DOUBLE_V","bevel_face_angle_deg":45.0,"land":1.25,"land_variation_min":1.0,"land_variation_max":1.5,"gap":1.0},
-  "caps": {"width":18.0,"height":2.5,"profile":"CIRCULAR_SEGMENT","both_faces":true},
-  "haz": {"width_from_cap_toe":10.0,"acoustic_properties_assigned":false},
-  "ripples": {"enabled":true,"pitch":3.0,"groove_width":0.12,"depth":0.08,"arc_bow":1.0,"status":"PROPOSED_ILLUSTRATIVE_FINISH_NOT_MEASURED"},
-  "coordinate_system": {"handedness":"RIGHT","origin":"PLATE_CORNER_BOTTOM_FACE","x":"LONGITUDINAL_WELD_DIRECTION","y":"TRANSVERSE","z":"THICKNESS_UPWARD"},
-  "acquisition_plan": {"methods":["DUAL_CRYSTAL_SE_0_DEG","MWB_45_60_70","PA_1D_32_ELEMENTS_5_MHZ"],"sector_min_deg":35.0,"sector_max_deg":70.0,"spatial_step_x":2.0,"angular_step_deg":null,"pa_pitch_mm":null,"pa_wedge_reference":null,"material":null},
-  "languages":["FR","EN"],
-  "unconfirmed":["MATERIAL_AND_ACOUSTIC_PROPERTIES","SE_AND_MWB_MANUFACTURER_REFERENCES","PA_AND_WEDGE_MANUFACTURER_REFERENCES","PA_ANGULAR_STEP","AIR_LAYER_OPENING_AND_WIDTH_INTERPRETATION","FLAW_LOCATIONS_AND_SAWTOOTH_DETAIL"]
+  "plate": {
+    "length_x": 245.0,
+    "width_y": 250.0,
+    "thickness_z": 10.0,
+    "weld_axis_y": 125.0
+  },
+  "joint": {
+    "profile": "SYMMETRIC_DOUBLE_V",
+    "bevel_face_angle_deg": 45.0,
+    "land": 1.25,
+    "land_variation_min": 1.0,
+    "land_variation_max": 1.5,
+    "gap": 1.0
+  },
+  "caps": {
+    "width": 18.0,
+    "height": 2.5,
+    "profile": "CIRCULAR_SEGMENT",
+    "both_faces": true
+  },
+  "haz": {
+    "width_from_cap_toe": 10.0,
+    "acoustic_properties_assigned": true
+  },
+  "ripples": {
+    "enabled": true,
+    "pitch": 3.0,
+    "groove_width": 0.12,
+    "depth": 0.08,
+    "arc_bow": 1.0,
+    "status": "PROPOSED_ILLUSTRATIVE_FINISH_NOT_MEASURED"
+  },
+  "coordinate_system": {
+    "handedness": "RIGHT",
+    "origin": "PLATE_CORNER_BOTTOM_FACE",
+    "x": "LONGITUDINAL_WELD_DIRECTION",
+    "y": "TRANSVERSE",
+    "z": "THICKNESS_UPWARD"
+  },
+  "acquisition_plan": {
+    "methods": [
+      "DUAL_CRYSTAL_SE_0_DEG",
+      "MWB_45_60_70",
+      "PA_1D_32_ELEMENTS_5_MHZ"
+    ],
+    "sector_min_deg": 35.0,
+    "sector_max_deg": 70.0,
+    "spatial_step_x": 2.0,
+    "angular_step_deg": 2,
+    "pa_pitch_mm": 0.5,
+    "pa_wedge_reference": null,
+    "material": "A42_NOMINAL",
+    "pa_candidate_manufacturers": [
+      "Imasonic"
+    ],
+    "pa_elevation_mm": 12,
+    "pa_manufacturer": "Imasonic",
+    "pa_reference": null,
+    "pa_wedge": {
+      "nominal_refracted_shear_angle_deg": 55,
+      "reference": null,
+      "status": "REFERENCE_AND_GEOMETRY_TO_CONFIRM"
+    }
+  },
+  "languages": [
+    "FR",
+    "EN"
+  ],
+  "unconfirmed": [
+    "SE_AND_MWB_MANUFACTURER_REFERENCES",
+    "PA_AND_WEDGE_MANUFACTURER_REFERENCES",
+    "PA_ANGULAR_STEP",
+    "AIR_LAYER_OPENING_AND_WIDTH_INTERPRETATION",
+    "FLAW_LOCATIONS_AND_SAWTOOTH_DETAIL"
+  ],
+  "material": {
+    "label": "Carbon steel type A42 — nominal training properties",
+    "VL_m_s": 5920,
+    "VT_m_s": 3240,
+    "density_kg_m3": 7850,
+    "same_properties_base_weld_haz": true,
+    "status": "NOMINAL_NOT_MEASURED",
+    "illustrative_filler": "AWS A5.1 E7018"
+  }
 }

@@ -24,7 +24,7 @@
     },
     "haz": {
       "width_from_cap_toe": 10.0,
-      "acoustic_properties_assigned": false
+      "acoustic_properties_assigned": true
     },
     "ripples": {
       "enabled": true,
@@ -50,23 +50,42 @@
       "sector_min_deg": 35.0,
       "sector_max_deg": 70.0,
       "spatial_step_x": 2.0,
-      "angular_step_deg": null,
-      "pa_pitch_mm": null,
+      "angular_step_deg": 2,
+      "pa_pitch_mm": 0.5,
       "pa_wedge_reference": null,
-      "material": null
+      "material": "A42_NOMINAL",
+      "pa_candidate_manufacturers": [
+        "Imasonic"
+      ],
+      "pa_elevation_mm": 12,
+      "pa_manufacturer": "Imasonic",
+      "pa_reference": null,
+      "pa_wedge": {
+        "nominal_refracted_shear_angle_deg": 55,
+        "reference": null,
+        "status": "REFERENCE_AND_GEOMETRY_TO_CONFIRM"
+      }
     },
     "languages": [
       "FR",
       "EN"
     ],
     "unconfirmed": [
-      "MATERIAL_AND_ACOUSTIC_PROPERTIES",
       "SE_AND_MWB_MANUFACTURER_REFERENCES",
       "PA_AND_WEDGE_MANUFACTURER_REFERENCES",
       "PA_ANGULAR_STEP",
       "AIR_LAYER_OPENING_AND_WIDTH_INTERPRETATION",
       "FLAW_LOCATIONS_AND_SAWTOOTH_DETAIL"
-    ]
+    ],
+    "material": {
+      "label": "Carbon steel type A42 — nominal training properties",
+      "VL_m_s": 5920,
+      "VT_m_s": 3240,
+      "density_kg_m3": 7850,
+      "same_properties_base_weld_haz": true,
+      "status": "NOMINAL_NOT_MEASURED",
+      "illustrative_filler": "AWS A5.1 E7018"
+    }
   },
   "derived": {
     "length": 245.0,

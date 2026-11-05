@@ -49,4 +49,6 @@ Both languages cover the whole user flow. Stable canonical keys and shared coord
 
 ## En attente / Pending
 
-Matériau et propriétés acoustiques, références SE/MWB/PA/sabot, ouverture des défauts, interprétation de la largeur 0,5 mm, détails de dentelure/stries, positions finales, pas angulaire et focalisation. La présente version livre la base CAO vérifiée et la visualisation, avant l’application opérateur acoustique.
+P01 fournit maintenant une première application opérateur scalaire, une trame de procédure, le mode préparation examen et une interface de poses caméra pour Fabien, sans casque. Voir handoff/DEMARRER_FR.md et handoff/FABIEN_CAMERA_FR_EN.md pour les fonctions et limites vérifiées. Acier type A42 nominal : VL5920, VT3240 m/s, densité7850 ; mêmes valeurs tôle/soudure/ZAT. PA Imasonic 32 éléments 5 MHz, pitch0,5 mm, élévation12 mm, sabot nominal55° T ; propagation dans le sabot non calculée. Restent à préciser : références exactes des sondes/sabot, géométrie et vitesse du sabot, ouverture des défauts et détails des scénarios. Le raccordement de la détection caméra et sa calibration restent à réaliser avec Fabien.
+
+P01 now supplies a reduced scalar operator prototype, an exercise procedure/report, exam-preparation mode and a camera-pose interface without a headset. Nominal A42 properties and selected PA concept are configured. Exact hardware references, wedge propagation and camera detection/calibration remain pending. See the bilingual handoff documents for verified scope and limitations.
