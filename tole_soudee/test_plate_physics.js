@@ -3,7 +3,7 @@ const P=require('./plate_physics.js');
 const c={geometry:{length_x:245,width_y:250,thickness_z:10,weld_axis_y:125},caps:{width:18},scan:{margin_mm:1},material:{VL_m_s:5920,VT_m_s:3240},indications:[],reflections:true,inclusion_contrast:.1,amplitude_reference:.05};
 const pose={x:105,y:111,heading:90,face:'TOP'};
 const se={kind:'SE',mode:'L',frequency_MHz:4,angle_deg:0,body_length_mm:8,body_width_mm:10,exit_offset_mm:0,active_width_mm:2,active_height_mm:6,separation_mm:3,cross_depth_mm:5};
-assert(P.bounds(c,pose,se).ok);assert(!P.bounds(c,{...pose,y:125},se).ok);assert(!P.bounds(c,{...pose,x:1},se).ok);
+assert(P.bounds(c,pose,se).ok);const polygon=P.bounds(c,pose,se).corners;const signedArea=polygon.reduce((s,q,i)=>{const n=polygon[(i+1)%4];return s+q[0]*n[1]-n[0]*q[1];},0)/2;assert(Math.abs(signedArea-(8+2)*(10+2))<1e-8,'Non-crossing footprint with full area');assert(!P.bounds(c,{...pose,y:125},se).ok);assert(!P.bounds(c,{...pose,x:1},se).ok);
 const rays=P.ray(c,pose,45,100);assert(Math.abs(rays[0].b[1]-121)<1e-9);assert.equal(rays[0].b[2],0);assert.equal(rays[1].b[2],10);
 const inclusion={id:'I',enabled:true,type:'SPHERICAL_INCLUSION_REFERENCE',diameter_mm:.5,x_mm:105,y_mm:111,z_mm:3,rx_deg:0,ry_deg:0,rz_deg:0};c.indications=[inclusion];
 const prep=P.prepare(c,pose,se),res=P.evaluate(prep,0),echo=res.events.find(e=>e.path==='DD');assert(echo.amplitude>0);assert(Math.abs(echo.time_us-2*Math.hypot(7,1.5)/5.92)<1e-10);

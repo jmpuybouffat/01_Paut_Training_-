@@ -14,18 +14,18 @@ def package():
     for p in sorted((ROOT/'cad_exports').rglob('*')):
         if p.is_file():add('CAO/'+p.relative_to(ROOT/'cad_exports').as_posix(),p)
     add('SOURCE/plate_app.py',REPO/'plate_app.py');add('SOURCE/requirements.txt',REPO/'requirements.txt')
-    for name in ['build_operator.py','operator_template.html','plate_physics.js','parameters.json','cad_model.py','make_viewer.py','requirements-cad.txt','test_plate_physics.js','test_operator_browser.py','test_cad_model.py','test_viewer_browser.py','test_plate_streamlit.py']:
+    for name in ['build_operator.py','operator_template.html','plate_physics.js','manual_controls.js','parameters.json','cad_model.py','make_viewer.py','requirements-cad.txt','test_plate_physics.js','test_operator_browser.py','test_manual_browser.py','test_cad_model.py','test_viewer_browser.py','test_plate_streamlit.py']:
         add('SOURCE/tole_soudee/'+name,ROOT/name)
     add('SOURCE/tole_soudee/operator.html',ROOT/'operator.html')
     add('SOURCE/tole_soudee/cad_exports/geometrie_pour_rv.json',ROOT/'cad_exports/geometrie_pour_rv.json')
     files['THIRD_PARTY.txt']=b'Plotly.js is bundled in the HTML files. Copyright Plotly, Inc. Distributed under the MIT license; see the embedded Plotly.js license header. CadQuery/OCP are optional offline CAD generation dependencies, not required to run the HTML.\n'
     manifest=[{'file':name,'bytes':len(data),'sha256':digest(data)} for name,data in sorted(files.items())]
-    files['MANIFESTE_P01.json']=json.dumps(manifest,indent=2,ensure_ascii=False).encode()
-    target=REPO/'downloads/BYTE_NDT_TOLE_FORMATION_P01_FR_EN.zip'
+    files['MANIFESTE_P02.json']=json.dumps(manifest,indent=2,ensure_ascii=False).encode()
+    target=REPO/'downloads/BYTE_NDT_TOLE_FORMATION_P02_FR_EN.zip'
     with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
-        for name,data in files.items():z.writestr('BYTE_NDT_TOLE_P01/'+name,data)
+        for name,data in files.items():z.writestr('BYTE_NDT_TOLE_P02/'+name,data)
     with zipfile.ZipFile(target) as z:
         assert z.testzip() is None
-        for row in manifest:assert digest(z.read('BYTE_NDT_TOLE_P01/'+row['file']))==row['sha256']
+        for row in manifest:assert digest(z.read('BYTE_NDT_TOLE_P02/'+row['file']))==row['sha256']
     print(f'{target.name}: {len(files)} files, {target.stat().st_size} bytes; all checksums PASS')
 if __name__=='__main__':package()

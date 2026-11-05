@@ -39,9 +39,9 @@ La pose est celle du **point d’émergence à la surface acier**, pas celle du 
 
 Input is the steel-interface emergence point, not the marker/probe-body centre. The integrator must supply the marker-to-emergence rigid transform and actual wedge dimensions.
 
-TOP : position Z10, Euler [0,0,cap]. BOTTOM : Z0, Euler [180,0,cap]. Les rotations suivent Rz Ry Rx. P01 accepte une tolérance de 0,5 mm en Z et 3° autour de la pose de contact ; la pose acoustique est ensuite contrainte au plan de contact. Une vraie simulation de couplage partiel ou de sonde inclinée n’est pas implémentée.
+TOP : position Z10, Euler [0,0,cap]. BOTTOM : Z0, Euler [180,0,cap]. Les rotations suivent Rz Ry Rx. P02 accepte une tolérance de 0,5 mm en Z et 3° autour de la pose de contact ; la pose acoustique est ensuite contrainte au plan de contact. Une vraie simulation de couplage partiel ou de sonde inclinée n’est pas implémentée.
 
-Rejects: source caméra non activée, créneaux en cours, séquence ancienne, confiance <0,7, données invalides, levée/inclinaison excessive, bord de tôle ou bourrelet. Les horodatages sont conservés par l’appelant ; la numérotation protège contre les doublons. Fabien doit gérer les pertes de suivi et les délais de transmission. Appeler séquentiellement en attendant la promesse ; les anciens calculs sont annulés quand une pose plus récente arrive. P01 calcule sur demande, pas à une cadence vidéo garantie.
+Rejects: source caméra non activée, créneaux en cours, séquence ancienne, confiance <0,7, données invalides, levée/inclinaison excessive, bord de tôle ou bourrelet. Les horodatages sont conservés par l’appelant ; la numérotation protège contre les doublons. Fabien doit gérer les pertes de suivi et les délais de transmission. Appeler séquentiellement en attendant la promesse ; les anciens calculs sont annulés quand une pose plus récente arrive. P02 calcule sur demande, pas à une cadence vidéo garantie.
 
 Rejected inputs include disabled camera source, raster running, stale sequence, confidence below 0.7, invalid values, lift/tilt or geometric collision. Acoustic contact is planar; no partial-coupling solver. Await each promise for sequential acquisition. New poses cancel older calculations; no guaranteed video frame rate.
 

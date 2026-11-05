@@ -1,13 +1,13 @@
-# BYTE NDT — Tôle soudée P01 🇫🇷
+# BYTE NDT — Tôle soudée P02 🇫🇷
 
 1. Extraire **tout le ZIP** dans un dossier.
 2. Double-cliquer sur **OUVRIR_APPLICATION.html**. L’application s’ouvre dans Chrome ou Edge, sans installation et sans connexion Internet.
 3. Choisir 🇫🇷 ou 🇬🇧, puis SE, MWB ou PA. « Position témoin » propose une pose d’exercice. Cliquer « Calculer » pour enregistrer la réponse.
-4. Pour palper librement, cliquer dans le plan X–Y, modifier X/Y/orientation ou utiliser « Avancer X +2 mm ». Le trait bleu représente l’encombrement provisoire du sabot, marge comprise. Une collision suspend le calcul et l’enregistrement.
+4. Pour palper librement, maintenir le bouton gauche de la souris dans le plan et glisser en X et Y. Le sabot et le faisceau suivent le geste ; les réponses calculées sont indexées par leur pose X/Y. Le champ complet est recalculé au relâchement. Les boutons X−/X+/Y−/Y+, le pas réglable et les flèches du clavier (plan sélectionné) permettent les petits mouvements. « Zoom soudure » facilite le réglage transversal ; « Tôle entière » restitue la vue globale. Le trait bleu représente l’encombrement provisoire du sabot, marge comprise. Une collision suspend le calcul et l’enregistrement.
 5. Les créneaux progressent selon X par pas de 2 mm, puis s’indexent en Y. Arrêt et effacement sont disponibles. Inverser l’orientation et placer le sabot de l’autre côté pour examiner depuis les deux rives.
 6. « Préparation examen » masque les indications et la position témoin. Renseigner opérateur, référentiel et rapport. Exporter la session et le rapport. Il s’agit d’un exercice local, pas d’un examen sécurisé ou d’une qualification officielle.
 
-Le calcul initial n’est pas enregistré. Chaque « Calculer », clic de palpage ou pose de créneau ajoute une acquisition. Changer de langue conserve les acquisitions. Changer de mode formation/examen efface les acquisitions pour éviter de mélanger les exercices.
+Le calcul initial n’est pas enregistré. Chaque calcul de palpage terminé ou pose de créneau ajoute une acquisition. Pendant un glissement, les positions intermédiaires sont regroupées si le calcul est occupé ; ce prototype ne garantit pas une cadence vidéo ni un pas de 2 mm en mode libre. Le pas de 2 mm concerne les créneaux. Changer de langue conserve les acquisitions. Changer de mode formation/examen efface les acquisitions pour éviter de mélanger les exercices.
 
 ## Ce qui est livré
 
@@ -32,3 +32,7 @@ Avant un usage de préparation de certification, faire valider le scénario, la 
 ## Pour Fabien
 
 Le dossier **FABIEN_CAMERA** contient le contrat de données, sans casque. La détection par caméra et la calibration image/tôle sont à raccorder à son système ; elles ne sont pas implémentées par ce fichier. Le panneau de liaison permet de tester une pose JSON déjà calibrée. Aucune compétence de programmation n’est demandée au stagiaire.
+
+## Corrections de palpage P02
+
+Le contour du sabot est rectangulaire (ordre des sommets corrigé). La coupe dédiée montre la préparation **en X** et les deux bourrelets ; la coupe du faisceau superpose le même profil au trajet réfléchi. Le V éventuel de la ligne bleue est le trajet de propagation, pas un chanfrein en V. La géométrie STEP en X reste la référence.
