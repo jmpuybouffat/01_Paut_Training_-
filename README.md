@@ -1,3 +1,6 @@
+> **REV0.5 — MWB / PA32** : les manuels illustrés français/anglais sont dans `nozzle_documentation` et dans l’onglet **4 · Mode d’emploi**. Le PA32/5MHz ajoute les champs incident/rétrodiffusé, le S-scan et le B-scan des points enregistrés. Les notes REV0.4 plus bas restent l’historique monoélément.
+> **REV0.5 — MWB / PA32**: illustrated FR/EN manuals are in `nozzle_documentation` and tab **4 · User guide**. PA adds phased incident/backscattered fields, S-scan and recorded-point B-scan. REV0.4 notes below describe the single-element history.
+
 # Livraison RÉTRO SCALAIRE — champ calculé sur surface finie
 
 Le champ rétrodiffusé scalaire est maintenant calculé par intégration de facettes complexes, avec émission et réception sur ouverture MWB. Il est distinct de l’ancien trajet magenta et de l’ancienne carte pédagogique.

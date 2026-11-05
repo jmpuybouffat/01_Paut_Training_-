@@ -13,11 +13,15 @@ from scan import plan_scan, beam_segment
 from geometry import validate_dimensions, preparation
 from libraries import PROBES, INDICATIONS, MWB_PROBES, PROJECT_INDICATIONS, gesture_demo_indications
 
-st.set_page_config(page_title='BYTE NDT | NOZZLE REV0.4', layout='wide')
-lang=st.sidebar.radio('Langue / Language',['FR','EN'],horizontal=True,key='control_lang')
+st.set_page_config(page_title='BYTE NDT | NOZZLE REV0.5 MWB PA', layout='wide')
+lang=st.sidebar.radio('Langue / Language',['FR','EN'],horizontal=True,key='control_lang',format_func=lambda value:'🇫🇷 Français' if value=='FR' else '🇬🇧 English')
 def T(fr,en): return fr if lang=='FR' else en
 language_changed=st.session_state.get('_previous_ui_language',lang)!=lang
 st.session_state['_previous_ui_language']=lang
+
+def download_without_reset(*args,**kwargs):
+ kwargs.setdefault('on_click','ignore')
+ return st.download_button(*args,**kwargs)
 
 def sidebar_language_select(label,options,*,key,**kwargs):
  # Recreate the browser widget on language changes; preserve its canonical value.
@@ -30,7 +34,7 @@ def sidebar_language_select(label,options,*,key,**kwargs):
  return value
 
 def load_scattering_witness():
- values={'D1':400.,'t1':20.,'D2':160.,'t2':12.,'angle':63.,'offset':0.,'length':800.,'nlen':320.,'bevel':35.,'gap':2.,'land':2.,'width':14.,'reinf':3.,'mat':'Acier carbone','vl':5920,'vs':3240,'rho':7850,'scan_a0':-50.,'scan_a1':-30.,'scan_z0':-100.,'scan_z1':-60.,'scan_step':10.,'scan_margin':2.,'scan_heading':0.,'mwb_index':next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45)}
+ values={'acquisition':'MWB','D1':400.,'t1':20.,'D2':160.,'t2':12.,'angle':63.,'offset':0.,'length':800.,'nlen':320.,'bevel':35.,'gap':2.,'land':2.,'width':14.,'reinf':3.,'mat':'Acier carbone','vl':5920,'vs':3240,'rho':7850,'scan_a0':-50.,'scan_a1':-30.,'scan_z0':-100.,'scan_z1':-60.,'scan_step':10.,'scan_margin':2.,'scan_heading':0.,'mwb_index':next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45)}
  for name,value in values.items():st.session_state['control_'+name]=value
  for name,value in [('workflow','TRAINING'),('training_scenario','PIECE_PERSONNALISEE')]:
   st.session_state['selection_control_'+name]=value
@@ -45,6 +49,15 @@ def load_scattering_witness():
    for key in ['editor_'+name+'_'+language,'editor_base_'+name+'_'+language]:
     if key in st.session_state:del st.session_state[key]
  st.session_state['name_PIECE_PERSONNALISEE']='TEMOIN_RETRO_MF1_45_4'
+ st.session_state['witness_revision']=st.session_state.get('witness_revision',0)+1
+
+def load_array_witness():
+ load_scattering_witness()
+ st.session_state['control_acquisition']='PA_32'
+ st.session_state['control_pa_angle']=45.
+ st.session_state['control_pa_step']=2.
+ st.session_state['control_pa_focus']=30.
+ st.session_state['control_scan_step']=2.
 
 def localized_editor(name,defaults,**options):
  store='canonical_table_'+name;widget='editor_'+name+'_'+lang;base='editor_base_'+name+'_'+lang
@@ -78,7 +91,7 @@ training_scenario=sidebar_language_select(T('Pièce de formation','Training spec
 if workflow!='TRAINING': training_scenario='PIECE_PERSONNALISEE'
 if training_scenario=='DEMO_GESTE_PAROI': st.sidebar.caption(T('Cinq cibles artificielles en paroi principale. Leurs positions ne représentent pas les flancs de soudure.','Five artificial targets in the main wall. Their positions do not represent weld faces.'))
 st.sidebar.caption(T('Parcours : 1 Pièce 3D → 2 Réglages → 3 Scan manuel → 4 Notice.','Workflow: 1 3D specimen → 2 Setup → 3 Manual scan → 4 Guide.'))
-st.sidebar.caption(T('Monoélément. Examen : préparation du dossier, procédure non validée.','Single element. Examination: dossier preparation, procedure not validated.'))
+st.sidebar.caption(T('MWB / PA 32. Examen : préparation du dossier, aucune acquisition réelle connectée.','MWB / PA 32. Examination: dossier preparation, no real acquisition connected.'))
 mouse_mode=sidebar_language_select(T('Souris 3D','3D mouse'),['orbit','turntable','pan'],format_func=lambda v:{'orbit':T('Rotation libre','Orbit'),'turntable':T('Rotation stable','Turntable'),'pan':T('Déplacement','Pan')}[v],key='control_mouse_mode')
 if 'camera_revision' not in st.session_state: st.session_state.camera_revision=0
 if st.sidebar.button(T('Réinitialiser la vue 3D','Reset 3D view'),key='control_f7cb21d880d6'): st.session_state.camera_revision+=1
@@ -87,9 +100,9 @@ with st.sidebar.expander(T('Modules futurs — non actifs','Future modules — i
  st.sidebar.caption(T('Extensions élastiques non implémentées. Le champ rétrodiffusé utilise une approximation scalaire de Kirchhoff dans Scan manuel ; Green direct est un modèle séparé.','Elastic extensions are not implemented. The backscattered field uses a scalar Kirchhoff approximation in Manual scan; direct Green is a separate model.'))
  procedure_revision=st.sidebar.text_input(T('Révision US 319 à vérifier','US 319 revision to verify'),'',key='control_procedure_revision')
 if workflow=='REAL_EXAM_PREPARATION': st.warning(T('Préparation seulement : procédure US 319 et cascade à documenter et valider.','Preparation only: US 319 procedure and cascade require documentation and validation.'))
-st.title('BYTE NDT — NOZZLE GEOMETRY TWIN — REV0.4')
+st.title('BYTE NDT — NOZZLE GEOMETRY TWIN — REV0.5 · MWB / PA32')
 st.sidebar.caption(T('Pièce personnalisée : géométrie et indications à définir ; ce choix ne règle pas le geste. Le déplacement Libre ou selon un axe se choisit dans Scan manuel.','Custom specimen: define geometry and flaws; this does not select motion. Choose Free or axis-following in Manual scan.'))
-st.caption(T('Version RÉTRO SCALAIRE — surface finie et réception MWB calculées.','SCALAR BACKSCATTER build — finite surface and computed MWB reception.'))
+st.caption(T('REV0.5 MWB/PA32 — champs scalaires et réception cohérente calculés.','REV0.5 MWB/PA32 — computed scalar fields and coherent reception.'))
 st.caption(T('Nozzle traversant • Pénétration complète • Préparation chanfreinée • Référence géométrique provisoire','Set-through nozzle • Full penetration • Bevel preparation • Provisional geometry reference'))
 piece_tab,setup_tab,scan_tab,guide_tab=st.tabs([T('1 · Piquage 3D','1 · Nozzle 3D'),T('2 · Réglages de la pièce','2 · Specimen setup'),T('3 · Scan manuel','3 · Manual scan'),T('4 · Mode d’emploi','4 · User guide')])
 with guide_tab.expander(T('Écran opérateur du premier twin — scan manuel, faisceau et rayons','Original twin operator screen — manual scan, beam and rays'),expanded=False):
@@ -258,15 +271,24 @@ with piece_tab:
  st.plotly_chart(reference_fig,width='stretch',key='nozzle_reference',config={'scrollZoom':True,'displayModeBar':True,'displaylogo':False})
  st.info(T('Passer à 2 · Réglages pour préparer la pièce, puis à 3 · Scan manuel pour balayer.','Open 2 · Setup to prepare the specimen, then 3 · Manual scan to scan.'))
 with setup_tab:
- st.subheader(T('Sondes MWB / compactes — accès au balayage','MWB / compact probes — scanning access'))
+ st.subheader(T('Sondes MWB / PA — accès au balayage','MWB / PA probes — scanning access'))
  st.info(T('Référence MWB et dimensions fabricant à renseigner. Ce contrôle compare les encombrements saisis ; il ne valide ni le contact courbe ni la couverture acoustique.','Enter MWB reference and manufacturer dimensions. This check compares entered clearances; it validates neither curved contact nor acoustic coverage.'))
- mwb_index=st.selectbox(T('Configuration MWB','MWB configuration'),range(len(MWB_PROBES)),index=next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45),format_func=lambda i:MWB_PROBES[i]['name'],key='control_mwb_index')
- mwb=MWB_PROBES[mwb_index]
- probe_data=dict(mwb,elements=1,active_elements=1)
- st.caption(T('Krautkrämer MWB : pastille 8 × 9 mm. La page catalogue fournie confirme les versions 2 MHz (N = 15 mm) et le croquis Type 23. Caractéristiques complètes 4/5 MHz à confirmer. Ces données ne transforment pas l’éventail illustratif en calcul de champ.','Krautkrämer MWB: 8 × 9 mm aperture. The supplied catalogue page confirms 2 MHz versions (N = 15 mm) and the Type 23 sketch. Full 4/5 MHz specifications remain to confirm. These data do not turn the illustrative fan into a field calculation.'))
+ mwb_index=st.selectbox(T('Configuration MWB','MWB configuration'),range(len(MWB_PROBES)),index=next(i for i,p in enumerate(MWB_PROBES) if p['frequency_MHz']==4 and p['refracted_angle_deg']==45),format_func=lambda i:MWB_PROBES[i]['name'],key='control_mwb_index',disabled=st.session_state.get('control_acquisition','MWB')=='PA_32')
+ acquisition_mode=st.radio('Méthode / Method',['MWB','PA_32'],format_func=lambda v:'MWB' if v=='MWB' else 'PA32 · 5 MHz',horizontal=True,key='control_acquisition')
+ mwb=dict(MWB_PROBES[mwb_index])
+ pa_profile=None
+ if acquisition_mode=='PA_32':
+  pa_angle=st.number_input(T('Angle PA sélectionné (°)','Selected PA angle (°)'),35.,70.,45.,1.,key='control_pa_angle')
+  pa_step=st.number_input(T('Pas angulaire PA (°)','PA angular step (°)'),1.,5.,2.,1.,key='control_pa_step')
+  pa_focus=st.number_input(T('Focalisation PA — trajet dans l’acier (mm)','PA focus — path in steel (mm)'),10.,100.,30.,1.,key='control_pa_focus')
+  pa_profile=dict(elements=32,frequency_MHz=5.,pitch_mm=.5,element_width_mm=.45,elevation_mm=12.,focus_mm=pa_focus,sector_min_deg=35.,sector_max_deg=70.,angular_step_deg=pa_step,selected_angle_deg=pa_angle,manufacturer='Imasonic',wedge_nominal_shear_deg=55.,wedge_reference=None,source_model='EQUIVALENT_STEEL_INTERFACE_NO_WEDGE_PROPAGATION')
+  mwb.update(name='PA32_5MHz_IMASONIC_EQUIVALENT',frequency_MHz=5.,refracted_angle_deg=pa_angle,active_width_mm=15.95,active_height_mm=12.,body_length_mm=30.,body_width_mm=14.)
+  st.caption(T('PA linéaire 32 éléments, pitch 0,5 mm, élévation 12 mm ; sabot nominal 55° T. Géométrie et contact du sabot à confirmer. Phase et réception calculées sur une ouverture équivalente dans l’acier ; pas de propagation dans le sabot.','32-element linear PA, 0.5 mm pitch, 12 mm elevation; nominal 55° T wedge. Exact wedge/contact pending. Phase and reception use a steel-interface equivalent aperture; no wedge propagation.'))
+ probe_data=dict(mwb,elements=32 if pa_profile else 1,active_elements=32 if pa_profile else 1)
+ if not pa_profile:st.caption(T('Krautkrämer MWB : pastille 8 × 9 mm. La page catalogue fournie confirme les versions 2 MHz (N = 15 mm) et le croquis Type 23. Caractéristiques complètes 4/5 MHz à confirmer. Ces données ne transforment pas l’éventail illustratif en calcul de champ.','Krautkrämer MWB: 8 × 9 mm aperture. The supplied catalogue page confirms 2 MHz versions (N = 15 mm) and the Type 23 sketch. Full 4/5 MHz specifications remain to confirm. These data do not turn the illustrative fan into a field calculation.'))
  st.write(T('Angle réfracté nominal','Nominal refracted angle'),mwb['refracted_angle_deg'],'° ·',mwb['frequency_MHz'],'MHz')
- st.download_button(T('Exporter la bibliothèque MWB','Export MWB library'),json.dumps(MWB_PROBES,ensure_ascii=False,indent=2),'NOZZLE_REV0_4_MWB.json','application/json')
- probe_reference=st.text_input(T('Référence sonde / sabot','Probe / wedge reference'),mwb['name'],key=f'mwb_reference_{mwb_index}')
+ download_without_reset(T('Exporter la bibliothèque MWB','Export MWB library'),json.dumps(MWB_PROBES,ensure_ascii=False,indent=2),'NOZZLE_REV0_5_MWB.json','application/json')
+ probe_reference=st.text_input(T('Référence sonde / sabot','Probe / wedge reference'),mwb['name'],key=f'mwb_reference_{mwb_index}' if not pa_profile else 'pa_reference')
  st.caption(T('Déclarer chaque zone inaccessible et sa cause. Une zone non évaluée ne compte pas comme accessible ; un encombrement compatible ne prouve pas la couverture UT.','Declare each inaccessible zone and its reason. An unassessed zone does not count as accessible; a fitting footprint does not prove UT coverage.'))
  scan_rows=localized_editor('scan_access',pd.DataFrame([{'zone':'Zone 1','access':'UNASSESSED','reason':'','azimuth_start_deg':np.nan,'azimuth_end_deg':np.nan,'z_start_mm':np.nan,'z_end_mm':np.nan,'available_length_mm':0.,'available_width_mm':0.,'probe_length_mm':0.,'probe_width_mm':0.,'travel_mm':0.,'margin_mm':0.}]),num_rows='dynamic',hide_index=True)
  scan_rows['assessment']=[scan_status(row) for row in scan_rows.to_dict('records')]
@@ -277,7 +299,7 @@ with setup_tab:
    if not str(zone['reason']).strip(): st.caption(T('Préciser la cause de l’inaccessibilité.','Specify the reason for inaccessibility.'))
   else: st.write(message)
  st.caption(T('Les limites angulaires et axiales servent au scan borné. Le contrôle d’enveloppe est approché ; aucune collision CAO complète ni couverture acoustique complète n’est validée.','Angular and axial bounds drive the bounded scan. Footprint checking is approximate; complete CAD collision and acoustic coverage are not validated.'))
- st.download_button(T('Exporter les zones de balayage CSV','Export scan zones CSV'),scan_rows.assign(probe_reference=probe_reference).to_csv(index=False),'NOZZLE_REV0_4_SCAN_ZONES.csv','text/csv')
+ download_without_reset(T('Exporter les zones de balayage CSV','Export scan zones CSV'),scan_rows.assign(probe_reference=probe_reference).to_csv(index=False),'NOZZLE_REV0_5_SCAN_ZONES.csv','text/csv')
 
  st.subheader(T('Scan géométrique — tube principal','Geometric scan — main pipe'))
  st.caption(T('Trajet en méandre sur la surface extérieure. Les points sont planifiés, sans acquisition ni réponse UT. Zones non évaluées en orange, zones bloquées en rouge. Une zone inaccessible sans limites bloque tout le plan par précaution.','Serpentine path on the outer surface. Points are planned, without acquisition or UT response. Unassessed points are orange; blocked points red. An inaccessible zone without bounds blocks the entire plan conservatively.'))
@@ -318,7 +340,7 @@ with setup_tab:
     curve(np.vstack([start,end]),T('Premier trajet géométrique','First geometric leg'),'#192bdb')
   else:
    st.warning(T('Position bloquée ou non évaluée : sonde et trajet non activés.','Blocked or unassessed position: probe and beam not activated.'))
-  st.download_button(T('Exporter le plan de scan CSV','Export scan plan CSV'),scan_table.to_csv(index=False),'NOZZLE_REV0_4_SCAN_PLAN.csv','text/csv')
+  download_without_reset(T('Exporter le plan de scan CSV','Export scan plan CSV'),scan_table.to_csv(index=False),'NOZZLE_REV0_5_SCAN_PLAN.csv','text/csv')
  st.caption(T('Ce planificateur décrit le parcours. Le scan manuel, les rayons et le champ sont dans l’onglet 3. L’enveloppe approchée du sabot ne remplace pas son volume CAO ; CAD/TCG et cascade restent à raccorder.','This planner describes the path. Manual motion, rays and field are in tab 3. The approximate wedge footprint does not replace its CAD volume; DAC/TCG and cascade remain to be connected.'))
 
  st.subheader(T('Bibliothèque et placement des indications','Indication library and placement'))
@@ -345,20 +367,21 @@ with setup_tab:
  pending=any(row[k] is None for row in project_indications if row['enabled'] for k in ['azimuth_deg','z_mm','depth_mm','orientation_deg'])
  st.caption(T('Inclinaison normale : angle entre normale du défaut plan et normale radiale du tube (45° par défaut). Orientation règle son azimut dans le plan tangent. Hypothèse à définir pour chaque défaut ; sans effet sur la sphère INC1.','Normal tilt: angle between planar flaw normal and pipe radial normal (default 45°). Orientation sets its tangent-plane azimuth. Define for each flaw; not used for spherical INC1.'))
  st.caption(T('Les champs de position vides restent non définis dans l’export. Le placement sur les flancs nécessite encore une définition locale du joint.','Empty position fields remain undefined in the export. Placement on bevel faces still requires a local joint definition.'))
- specimen_config={'revision':'0.4','specimen_id':specimen_name,'status':'INVALID_PARAMETERS' if invalid_project else ('POSITIONS_PENDING' if pending else 'ILLUSTRATIVE_NOT_VALIDATED'),
+ specimen_config={'revision':'0.5','specimen_id':specimen_name,'status':'INVALID_PARAMETERS' if invalid_project else ('POSITIONS_PENDING' if pending else 'ILLUSTRATIVE_NOT_VALIDATED'),
   'scan_plan':{'surface':'MAIN_PIPE_OD','azimuth_start_deg':scan_a0,'azimuth_end_deg':scan_a1,'z_start_mm':scan_z0,'z_end_mm':scan_z1,'step_mm':scan_step,'margin_mm':scan_margin,'beam_heading_deg':scan_heading,'points':scan_points},'plugins':{'cascade':{'status':'NOT_CONNECTED'},'CAD_TCG':{'status':'NOT_CONNECTED'}},
-  'training_scenario':training_scenario,'placement_basis':'ARTIFICIAL_MAIN_WALL_NOT_WELD_FACES' if training_scenario=='DEMO_GESTE_PAROI' else 'USER_DEFINED','workflow':workflow,'acquisition':'MONO_ELEMENT','scattering':{'requested_model':scattering,'implemented':False,'scalar_surface_model_available':True,'scalar_model':'FINITE_SURFACE_SCALAR_KIRCHHOFF_SINGLE_SCATTERING'},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED'},
+  'training_scenario':training_scenario,'placement_basis':'ARTIFICIAL_MAIN_WALL_NOT_WELD_FACES' if training_scenario=='DEMO_GESTE_PAROI' else 'USER_DEFINED','workflow':workflow,'acquisition':'PHASED_ARRAY_32' if pa_profile else 'MONO_ELEMENT','pa':pa_profile,'scattering':{'requested_model':scattering,'implemented':False,'scalar_surface_model_available':True,'scalar_model':'SCALAR_PHASED_ARRAY_KIRCHHOFF_SINGLE_SCATTERING' if pa_profile else 'FINITE_SURFACE_SCALAR_KIRCHHOFF_SINGLE_SCATTERING'},'procedure':{'reference':'US 319','revision':procedure_revision,'cascade_status':'DOCUMENT_REQUIRED_NOT_VALIDATED','data_source':'SYNTHETIC_TRAINING_ONLY' if workflow=='TRAINING' else 'NO_INSTRUMENT_CONNECTED_PREPARATION'},
   'geometry':{'main_OD_mm':D1,'main_thickness_mm':t1,'nozzle_OD_mm':D2,'nozzle_thickness_mm':t2,'axis_angle_deg':angle,'offset_mm':offset,'main_length_mm':length,'nozzle_length_mm':nlen},
   'joint':{'faceted_enabled':faceted_enabled,'root_roughness_mm':root_roughness,'cap_roughness_mm':cap_roughness,'facet_count':facet_count,'profile_seed':profile_seed,'bevel_deg':bevel,'gap_mm':gap,'land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf},
   'material':{'microstructure':{'morphology':grain_form,'grain_size_mm':grain_size,'preferred_orientation_deg':grain_orientation,'implemented_in_physics':False},'name':mat,'VL_m_s':vl,'VT_m_s':vs,'density_kg_m3':rho},
   'mwb':dict(mwb,reference=probe_reference),'scan_zones':json.loads(scan_rows.to_json(orient='records')),'indications':project_indications}
- st.download_button(T('Exporter la configuration de la pièce test JSON','Export test-piece configuration JSON'),json.dumps(specimen_config,ensure_ascii=False,indent=2,allow_nan=False),'NOZZLE_REV0_4_TEST_PIECE.json','application/json',disabled=invalid_project)
+ download_without_reset(T('Exporter la configuration de la pièce test JSON','Export test-piece configuration JSON'),json.dumps(specimen_config,ensure_ascii=False,indent=2,allow_nan=False),'NOZZLE_REV0_5_TEST_PIECE.json','application/json',disabled=invalid_project)
 with scan_tab:
  st.info(T('Champ rétrodiffusé : pour un essai reproductible, charger la cible témoin ci-dessous puis observer le champ calculé et l’enveloppe A-scan. Ce chargement remplace vos réglages de pièce et d’indications : exporter les données à conserver auparavant.','Backscattered field: load the witness target below for a repeatable test, then inspect the computed field and A-scan envelope. Loading replaces specimen/flaw settings: export data you wish to keep first.'))
  st.button(T('Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz','Load backscatter witness test — MWB 45° / 4 MHz'),on_click=load_scattering_witness,key='load_backscatter_witness')
+ st.button(T('Charger le test témoin PA 32 éléments / 5 MHz','Load PA 32-element / 5 MHz witness test'),on_click=load_array_witness,key='load_pa_witness')
  with st.expander(T('Protocole des tests — réglages et résultats attendus','Test protocol — settings and expected results')):
   protocol=Path(__file__).with_name('PROTOCOLE_UTILISATEUR_'+lang+'.md').read_text(encoding='utf-8')
-  st.download_button(T('Télécharger le protocole utilisateur','Download user test protocol'),protocol,'PROTOCOLE_UTILISATEUR_'+lang+'.md','text/markdown',key='download_user_test_protocol')
+  download_without_reset(T('Télécharger le protocole utilisateur','Download user test protocol'),protocol,'PROTOCOLE_UTILISATEUR_'+lang+'.md','text/markdown',key='download_user_test_protocol')
   st.markdown(protocol)
  st.markdown('<a id="nozzle-manual-scan"></a>',unsafe_allow_html=True)
  st.subheader(T('Scan manuel du nozzle — écran opérateur','Nozzle manual scan — operator dashboard'))
@@ -368,14 +391,14 @@ with scan_tab:
   st.warning(T(f'{n_ready} indication(s) positionnée(s). Les indications sans position complète ne génèrent pas de réponse pédagogique. Compléter l’onglet 2.',f'{n_ready} indication(s) positioned. Indications without a complete position generate no training response. Complete tab 2.'))
  try:
   with st.spinner(T('Calcul du champ direct scalaire…','Computing scalar direct field…')):
-   direct_field=cached_direct_field(mwb['frequency_MHz'],vs,mwb['active_width_mm'],mwb['active_height_mm'])
+   direct_field=None if pa_profile else cached_direct_field(mwb['frequency_MHz'],vs,mwb['active_width_mm'],mwb['active_height_mm'])
  except ValueError as exc:
   st.error(T('Champ direct non calculé : ','Direct field not calculated: ')+str(exc))
   direct_field=None
- operator_config=dict(specimen_config,language=lang,default_field_view='scattered',direct_field=direct_field,joint_profiles=joint_profiles)
+ operator_config=dict(specimen_config,language=lang,reset_token=st.session_state.get('witness_revision',0),default_field_view='scattered',direct_field=direct_field,joint_profiles=joint_profiles)
  operator_json=json.dumps(operator_config,ensure_ascii=False,allow_nan=False).replace('<',chr(92)+'u003c')
  operator_html=Path(__file__).with_name('nozzle_operator.html').read_text(encoding='utf-8').replace('__CONFIG__',operator_json)
- render_dashboard(operator_html,height=1400)
+ render_dashboard(operator_html,height=2100)
 with setup_tab.expander(T('Exemples exploratoires et diagnostic — avancé','Exploratory examples and diagnostics — advanced')):
  st.caption(T('Placement 3D exploratoire ci-dessous : exemples indépendants du registre projet.','Exploratory 3D placement below: examples independent of the project register.'))
  st.caption(T('Positions dans la paroi principale : azimut autour de Z, profondeur radiale depuis la surface extérieure. Aucune amplitude UT ni critère d’acceptation.','Positions in main wall: azimuth around Z, radial depth from outer surface. No UT amplitude or acceptance criterion.'))
@@ -400,7 +423,7 @@ with setup_tab.expander(T('Exemples exploratoires et diagnostic — avancé','Ex
    pts=center+np.sin(v)[...,None]*np.cos(a)[...,None]*direction*L/2+np.sin(v)[...,None]*np.sin(a)[...,None]*transverse*W/2+np.cos(v)[...,None]*normal*H/2
   surface(pts[...,0],pts[...,1],pts[...,2],str(item['name'])+f' #{idx+1}','#eb2275',1.)
  st.caption(T('Les indications sont des marqueurs locaux ; leur confinement exact et leur relation à la soudure ne sont pas validés.','Indications are local markers; exact containment and relation to the weld are not validated.'))
- st.download_button(T('Exporter sondes et indications JSON','Export probes and indications JSON'),json.dumps({'revision':'0.4','probe':probe_data,'indications':indications.to_dict('records'),'status':'ILLUSTRATIVE_NOT_VALIDATED'},ensure_ascii=False,indent=2),'NOZZLE_REV0_4_LIBRARIES.json','application/json')
+ download_without_reset(T('Exporter sondes et indications JSON','Export probes and indications JSON'),json.dumps({'revision':'0.5','probe':probe_data,'indications':indications.to_dict('records'),'status':'ILLUSTRATIVE_NOT_VALIDATED'},ensure_ascii=False,indent=2),'NOZZLE_REV0_5_LIBRARIES.json','application/json')
  fig.update_layout(height=690,margin=dict(l=0,r=0,t=0,b=0),uirevision=f'camera-{st.session_state.camera_revision}',scene=dict(uirevision=f'camera-{st.session_state.camera_revision}',dragmode=mouse_mode,aspectmode='data',xaxis_title='X (mm)',yaxis_title='Y (mm)',zaxis_title='Z (mm)'),legend=dict(orientation='h'))
  left,right=st.columns([3,1])
  with left:st.plotly_chart(fig,width='stretch',key='nozzle_3d',config={'scrollZoom':True,'displayModeBar':True,'displaylogo':False})
@@ -416,17 +439,27 @@ with setup_tab.expander(T('Exemples exploratoires et diagnostic — avancé','Ex
   st.info(T('Valeurs matériaux indicatives. Vérification avec Jacques Marlier nécessaire.','Material values are indicative. Verification with Jacques Marlier is required.'))
 
 with guide_tab:
+ st.subheader(T('Manuels illustrés Nozzle — FR / EN','Illustrated Nozzle manuals — FR / EN'))
+ st.caption(T('Manuels de référence pour la version RÉTRO SCALAIRE, avec exercices et dossier caméra pour Fabien. Téléchargement PDF sans relance du palpage.','Reference manuals for the SCALAR BACKSCATTER build, including exercises and Fabien’s camera handoff. PDF downloads do not restart scanning.'))
+ for col,(name,label) in zip(st.columns(2),[('MANUEL_NOZZLE_FR.pdf','📘 Manuel Nozzle français · PDF'),('NOZZLE_USER_MANUAL_EN.pdf','📗 Nozzle English user manual · PDF')]):
+  manual=Path(__file__).with_name('nozzle_documentation')/name
+  if manual.exists():col.download_button(label,manual.read_bytes(),file_name=name,mime='application/pdf',key='nozzle_manual_'+name,on_click='ignore',use_container_width=True)
+ with st.expander(T('Manuels HTML — lecture hors ligne','HTML manuals — offline reading')):
+  for name,label in [('MANUEL_NOZZLE_FR.html','🇫🇷 Manuel Nozzle HTML'),('NOZZLE_USER_MANUAL_EN.html','🇬🇧 Nozzle HTML manual')]:
+   manual=Path(__file__).with_name('nozzle_documentation')/name
+   if manual.exists():download_without_reset(label,manual.read_bytes(),file_name=name,mime='text/html',key='nozzle_manual_'+name,on_click='ignore')
  st.subheader(T('Parcours opérateur complet','Complete operator workflow'))
- st.markdown(Path(__file__).with_name('GUIDE_OPERATEUR_'+lang+'.md').read_text(encoding='utf-8'))
- st.download_button(T('Télécharger le mode d’emploi complet','Download complete user guide'),Path(__file__).with_name('GUIDE_OPERATEUR_'+lang+'.md').read_bytes(),'GUIDE_OPERATEUR_NOZZLE_'+lang+'.md','text/markdown')
+ with st.expander(T('Notes de versions et guide texte historique','Version notes and historical text guide')):
+  st.markdown(Path(__file__).with_name('GUIDE_OPERATEUR_'+lang+'.md').read_text(encoding='utf-8'))
+ download_without_reset(T('Télécharger le mode d’emploi complet','Download complete user guide'),Path(__file__).with_name('GUIDE_OPERATEUR_'+lang+'.md').read_bytes(),'GUIDE_OPERATEUR_NOZZLE_'+lang+'.md','text/markdown')
  records=[]
  for label,pts in [('outer_intersection',outer),('nominal_root_inner_main_pipe',root)]:
   for i,p in enumerate(pts):
    if np.isfinite(p).all():records.append({'curve':label,'index':i,'theta_rad':ths[i],'X_mm':p[0],'Y_mm':p[1],'Z_mm':p[2]})
  export=pd.DataFrame(records)
- st.download_button(T('Exporter les courbes XYZ (CSV)','Export XYZ curves (CSV)'),export.to_csv(index=False).encode('utf-8'),'NOZZLE_REV0_4_REFERENCE_CURVES.csv','text/csv')
+ download_without_reset(T('Exporter les courbes XYZ (CSV)','Export XYZ curves (CSV)'),export.to_csv(index=False).encode('utf-8'),'NOZZLE_REV0_5_REFERENCE_CURVES.csv','text/csv')
  parameters={'D_main_mm':D1,'t_main_mm':t1,'D_nozzle_mm':D2,'t_nozzle_mm':t2,'axis_angle_deg':angle,'offset_mm':offset,'length_main_mm':length,'length_nozzle_mm':nlen,'bevel_deg':bevel,'root_gap_mm':gap,'root_land_mm':land,'weld_width_mm':width,'reinforcement_mm':reinf,'material':mat,'VL_m_s':vl,'VT_m_s':vs,'density_kg_m3':rho,'status':'PROVISIONAL_NOT_VALIDATED'}
- st.download_button(T('Exporter fiche paramètres (CSV)','Export parameter sheet (CSV)'),pd.DataFrame([parameters]).to_csv(index=False).encode('utf-8'),'NOZZLE_REV0_4_JACQUES_MARLIER_PARAMETERS.csv','text/csv')
+ download_without_reset(T('Exporter fiche paramètres (CSV)','Export parameter sheet (CSV)'),pd.DataFrame([parameters]).to_csv(index=False).encode('utf-8'),'NOZZLE_REV0_5_JACQUES_MARLIER_PARAMETERS.csv','text/csv')
  with st.expander(T('📖 Notice d’emploi / limites','📖 User guide / limitations')):
   st.markdown(T('''**But.** Préparer la géométrie d’un nozzle traversant pour la revue avec Jacques Marlier.\n\n**Mode opératoire.** Régler les diamètres, épaisseurs, angle et décalage ; observer la découpe visuelle du nozzle ; afficher les courbes extérieure et de racine ; exporter les courbes et la fiche paramètres. Rotation à la souris, zoom à la molette.\n\n**Courbes.** Rouge : intersection des deux surfaces extérieures. Turquoise : intersection de la surface extérieure du nozzle avec la surface intérieure du tube principal (racine nominale purement géométrique). Les deux courbes de bord en pointillés sont des décalages illustratifs, PAS des limites de fusion calculées.\n\n**Limites.** Pas de découpe CAO booléenne ni de soudure volumique ; l’ouverture et les surfaces peuvent présenter des discontinuités d’affichage. Le chanfrein, le jeu, le talon et la surépaisseur modifient les surfaces approchées. La vue de pièce est géométrique. Le champ pédagogique et le champ direct scalaire se trouvent dans l’onglet 3 ; aucun champ élastique complet n’est calculé. Les cas obliques/excentrés exigent une vérification CAO.\n\n**Validation.** Aucune qualification industrielle. Faire confirmer le dessin du joint, la coupe intérieure, la racine et les dimensions réelles avant de figer la REV0.4.''','''**Purpose.** Prepare a set-through nozzle geometry for review with Jacques Marlier.\n\n**Instructions.** Adjust diameters, thicknesses, angle and offset; inspect the visually trimmed nozzle; display the outer and root curves; export curves and the parameter sheet. Rotate with mouse and zoom with wheel.\n\n**Curves.** Red: intersection of the two outer surfaces. Turquoise: nozzle outer surface intersecting main pipe inner surface (purely geometric nominal root). Dashed edge curves are illustrative offsets, NOT computed fusion boundaries.\n\n**Limitations.** No CAD Boolean or solid weld; openings and surfaces may have display discontinuities. Bevel, gap, land and reinforcement alter the approximate surfaces. This specimen view is geometric. The teaching field and scalar direct field are in tab 3; no complete elastic field is calculated. Oblique/offset cases require CAD verification.\n\n**Validation.** Not industrially qualified. Confirm joint drawing, internal cut, root and actual dimensions before freezing REV0.4.'''))
 
@@ -447,7 +480,7 @@ with guide_tab:
   ('Indication non volumique','Planar indication','Réponse associée à un réflecteur de type plan, comme une fissure.','Response associated with a planar reflector, such as a crack.')]
   st.dataframe(pd.DataFrame(glossary,columns=['FR','EN',T('Définition française','French definition'),T('Définition anglaise','English definition')]),hide_index=True,width='stretch')
   st.caption(T('La ZAT est définie dans le lexique, mais son étendue n’est pas calculée par ce modèle géométrique.','HAZ is defined in the glossary, but its extent is not calculated by this geometry model.'))
-  st.download_button(T('Télécharger le lexique (CSV)','Download glossary (CSV)'),pd.DataFrame(glossary,columns=['FR','EN','Definition_FR','Definition_EN']).to_csv(index=False).encode('utf-8-sig'),'NOZZLE_REV0_4_GLOSSARY_FR_EN.csv','text/csv')
+  download_without_reset(T('Télécharger le lexique (CSV)','Download glossary (CSV)'),pd.DataFrame(glossary,columns=['FR','EN','Definition_FR','Definition_EN']).to_csv(index=False).encode('utf-8-sig'),'NOZZLE_REV0_5_GLOSSARY_FR_EN.csv','text/csv')
 
  with st.expander(T('Mode d’emploi REV0.4','REV0.4 user guide')):
   st.markdown(T('''1. Choisir TRAINING ou préparation d’examen réel et nommer la pièce test.

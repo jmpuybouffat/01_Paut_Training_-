@@ -35,7 +35,7 @@ Dans 3 · Scan manuel :
 - Champ et rayons : coché. Instructeur : décoché. Retour indication pédagogique : décoché.
 - Trajectoire : Libre ; Orientation locale : 0°.
 - Surface : Piquage 3D — déplacer la sonde ; Geste : Déplacer sonde.
-- Porte : A ; Début : 0 µs ; Fin : 80 µs ; Seuil relatif : 0,01 ; Gain : 3.
+- Porte : A ; Début : 0 µs ; Fin : 80 µs ; Seuil relatif : 0,01 ; Gain : 10 dB.
 - Dans le panneau Champ, choisir Champ avec réflexions — premier modèle ; seuil −30 dB.
 
 Attention : « Souris 3D / Rotation libre » dans la barre latérale commande la caméra de la pièce. « Trajectoire / Libre » dans le scan commande le geste de la sonde. « Pièce personnalisée » commande le contenu du spécimen, pas la liberté du geste.
@@ -143,7 +143,7 @@ Dans la barre latérale : choisir Pièce personnalisée. Garder la géométrie c
 
 Les cellules de position sont initialement vides en personnalisé : les renseigner toutes pour MF1. Le champ Emplacement est descriptif ; les coordonnées numériques déterminent la cible. Cette position n’est pas un flanc de soudure réel.
 
-Dans Scan manuel : Libre, Réinitialiser, Orientation locale 0°. Vérifier Az −50°, Z −100 mm, MWB 45° / 4 MHz. Choisir l’ancien Champ avec réflexions — premier modèle pour ce test heuristique, puis cocher Instructeur. Porte A, Début 0, Fin 20 µs, seuil 0,01, gain 3.
+Dans Scan manuel : Libre, Réinitialiser, Orientation locale 0°. Vérifier Az −50°, Z −100 mm, MWB 45° / 4 MHz. Choisir l’ancien Champ avec réflexions — premier modèle pour ce test heuristique, puis cocher Instructeur. Porte A, Début 0, Fin 20 µs, seuil 0,01, gain 10 dB.
 
 Attendu : écho MF1 voisin de 8,7 µs avec VT = 3240 m/s, selon le modèle heuristique actuel. Ne pas comparer à une mesure étalonnée. Tourner de quelques degrés et déplacer légèrement la sonde : la réponse doit varier. Pour comparer les positions, observer le signal courant ; le Maximum mémorisé conserve volontairement une valeur passée.
 
@@ -151,7 +151,7 @@ Attendu : écho MF1 voisin de 8,7 µs avec VT = 3240 m/s, selon le modèle heuri
 
 Exporter d’abord les données à conserver. Dans Scan manuel, cliquer **Charger le test témoin rétrodiffusion — MWB 45° / 4 MHz**. Il remplace géométrie, plan, zones et indications. Le mode Champ rétrodiffusé calculé — scalaire est sélectionné.
 
-Attendre la fin du calcul, puis cliquer Zoom indication calculée. Porte A 0–20 µs, seuil 0,01, gain 3 ; seuil du champ −40 dB. Attendu : surface finie rose, lobes colorés, réception scalaire sur l’ouverture ; écho MF1 vers 8,73 µs, amplitude relative voisine de 0,062 dans ce modèle. La référence dB reste fixe, même si la pose change.
+Attendre la fin du calcul, puis cliquer Zoom indication calculée. Porte A 0–20 µs, seuil 0,01, gain 10 dB ; seuil du champ −40 dB. Attendu : surface finie rose, lobes colorés, réception scalaire sur l’ouverture ; écho MF1 vers 8,73 µs, amplitude relative voisine de 0,062 dans ce modèle. La référence dB reste fixe, même si la pose change.
 
 Tester l’orientation de sonde, puis l’inclinaison de la normale de MF1 (45° puis 80° dans l’onglet 2), et la fréquence (4 puis 5 MHz). Le champ et la réception doivent changer. Pendant un calcul, aucun champ de l’ancienne pose n’est conservé et Enregistrer point est désactivé.
 

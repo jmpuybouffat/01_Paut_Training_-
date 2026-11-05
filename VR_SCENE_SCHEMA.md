@@ -48,3 +48,29 @@ When `beam.field_view == "scattered"`, `scalar_scattering` contains:
 - `events`: relative scalar amplitude, phase and centre-path time in µs.
 
 The outgoing field is scalar direct-path single scattering without wall bounces. The JSON contains data for a VR client; it is not itself an immersive/WebXR application. Existing geometric ray segments are explicitly labelled as references, not sampled scattered-field paths. The existing right-handed frame and mm-to-metre conversion for a VR client remain unchanged.
+
+## REV0.5 — PA32 / 32-element PA
+
+`acquisition` identifies `PHASED_ARRAY_32` or `MONO_ELEMENT`. Existing pose matrices,
+world frame and units are unchanged. For PA, the top-level `pa` block contains the
+32-element 5 MHz profile, sector events, `incident_field` grid and direct-ray
+`backprojection`. Recorded points contain `pa_profile` and `pa_sector`.
+
+Both PA incident and scattered fields use element phases and the same equivalent
+steel-interface aperture. Scattered reception is coherent over all active
+aperture points; `scalar_scattering.model` is
+`SCALAR_PHASED_ARRAY_KIRCHHOFF_SINGLE_SCATTERING`. The scalar field remains direct,
+not a solved wall-bounce or elastic wedge model. Source-element width0.45mm,
+pitch0.5mm, elevation12mm and the focus are model parameters, not approved
+instrument focal laws. Do not upload these values as hardware laws.
+
+PA S-scan uses direct time/angle backprojection into longitudinal Z/radial depth.
+Its B-scan uses the first35° ray at recorded points; selected-ray A-scan can use a
+different angle. These views do not reveal exact flaw geometry or establish
+volumetric coverage. In real-examination preparation, no synthetic acquisition
+is supplied as a real instrument measurement.
+
+For Fabien: no headset is required or assumed. The exported scene and local
+`getPose/getScene/getBeamRays` APIs are readers; camera tracking, calibrated pose
+input and tracking-loss/contact handling still require an adapter. This differs
+from the plate’s separate `ByteNDTPlate.applyTrackedPose` entry point.

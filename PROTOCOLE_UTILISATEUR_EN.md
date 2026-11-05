@@ -35,7 +35,7 @@ In **3 · Manual scan**:
 - Field and rays: checked. Instructor: unchecked. Teaching flaw return: unchecked.
 - Path: Free; Local skew: 0°.
 - Surface: Nozzle 3D — move probe; Action: Move probe.
-- Gate A: start 0 µs, end 80 µs, relative threshold 0.01; gain 3.
+- Gate A: start 0 µs, end 80 µs, relative threshold 0.01; gain 10 dB.
 - For motion tests, select **Reflected field — first teaching model**, with a −30 dB display threshold. Test 9 uses the new computed backscattered field instead.
 
 **3D mouse / Orbit** in the sidebar controls the specimen camera. **Path / Free** in Manual scan controls probe movement. **Custom specimen** defines specimen/flaw data, not a free-motion mode.
@@ -143,7 +143,7 @@ Choose Custom specimen, retain the common geometry and use plan C. In Indication
 
 Fill all MF1 pose cells, initially empty in Custom specimen. Location is descriptive; numerical coordinates position the target. This position is not a real weld-face location.
 
-In Manual scan: Free, Reset, Local skew 0°. Verify Az −50°, Z −100 mm, MWB 45° / 4 MHz. For this legacy comparison, select Reflected field — first teaching model, then enable Instructor. Gate A: 0–20 µs, relative threshold 0.01, gain 3.
+In Manual scan: Free, Reset, Local skew 0°. Verify Az −50°, Z −100 mm, MWB 45° / 4 MHz. For this legacy comparison, select Reflected field — first teaching model, then enable Instructor. Gate A: 0–20 µs, relative threshold 0.01, gain 10 dB.
 
 Expected: MF1 echo near 8.7 µs at VT 3240 m/s in the heuristic model. Do not treat it as calibrated instrument data. Small translations and rotations should change the current response. The stored maximum deliberately retains a previous peak; use the current waveform to compare poses.
 
@@ -151,7 +151,7 @@ Expected: MF1 echo near 8.7 µs at VT 3240 m/s in the heuristic model. Do not tr
 
 Export personal data first. In Manual scan, press **Load backscatter witness test — MWB 45° / 4 MHz**. This replaces specimen geometry, plan, zones and flaws with the witness case and selects Computed backscattered field — scalar.
 
-Wait for calculation to finish and press Focus computed flaw. Gate A 0–20 µs, threshold 0.01, gain 3; field display cutoff −40 dB. Expected: finite pink reflecting surface, coloured scattered-field lobes and aperture-integrated reception. MF1 centre-path time is about 8.73 µs; relative amplitude is about 0.062 for this reduced model. The dB reference stays fixed across poses.
+Wait for calculation to finish and press Focus computed flaw. Gate A 0–20 µs, threshold 0.01, gain 10 dB; field display cutoff −40 dB. Expected: finite pink reflecting surface, coloured scattered-field lobes and aperture-integrated reception. MF1 centre-path time is about 8.73 µs; relative amplitude is about 0.062 for this reduced model. The dB reference stays fixed across poses.
 
 Try changing probe heading, then MF1 normal tilt from 45° to 80° in tab 2, then frequency from 4 to 5 MHz. Field and reception must change. While a new pose is computed, the previous field is hidden and Record point is disabled.
 

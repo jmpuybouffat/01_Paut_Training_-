@@ -1,0 +1,382 @@
+{
+  "FR": {
+    "event": {
+      "id": "MF1",
+      "t": 8.729713347982077,
+      "amp": 0.06193713352885877,
+      "phase_rad": -2.2055287396276415,
+      "kind": "flaw",
+      "leg": 1,
+      "reflections_before_target": 0,
+      "path_label": "Direct — diffusion scalaire",
+      "mechanism": "FINITE_SURFACE_SCALAR_KIRCHHOFF_SINGLE_SCATTERING",
+      "one_way_mm": 14.142135623730967,
+      "point_mm": [
+        122.12964584044248,
+        -145.5484441926058,
+        -90
+      ],
+      "receiver_complex": {
+        "re": -0.0018363185337965894,
+        "im": -0.00249368312278532
+      },
+      "fixed_reference_amplitude": 0.05,
+      "validated_elastic": false
+    },
+    "pose": {
+      "position_mm": [
+        128.55752193730788,
+        -153.20888862379562,
+        -100
+      ],
+      "rotation_matrix_local_to_world": [
+        [
+          0,
+          -0.766044443118978,
+          0.6427876096865394
+        ],
+        [
+          0,
+          -0.6427876096865394,
+          -0.766044443118978
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "local_axes": {
+        "x_forward": [
+          0,
+          0,
+          1
+        ],
+        "y_side": [
+          -0.766044443118978,
+          -0.6427876096865394,
+          0
+        ],
+        "z_outward": [
+          0.6427876096865394,
+          -0.766044443118978,
+          0
+        ]
+      },
+      "beam_direction_world": [
+        -0.45451947767204376,
+        0.5416752204197018,
+        0.7071067811865475
+      ],
+      "azimuth_deg": -50,
+      "z_mm": -100,
+      "heading_deg": 0,
+      "scan_status": "UNASSESSED"
+    },
+    "reference": 0.05,
+    "model": "FINITE_SURFACE_SCALAR_KIRCHHOFF_SINGLE_SCATTERING"
+  },
+  "FR_PA": {
+    "pose": {
+      "position_mm": [
+        128.55752193730788,
+        -153.20888862379562,
+        -100
+      ],
+      "rotation_matrix_local_to_world": [
+        [
+          0,
+          -0.766044443118978,
+          0.6427876096865394
+        ],
+        [
+          0,
+          -0.6427876096865394,
+          -0.766044443118978
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "local_axes": {
+        "x_forward": [
+          0,
+          0,
+          1
+        ],
+        "y_side": [
+          -0.766044443118978,
+          -0.6427876096865394,
+          0
+        ],
+        "z_outward": [
+          0.6427876096865394,
+          -0.766044443118978,
+          0
+        ]
+      },
+      "beam_direction_world": [
+        -0.45451947767204376,
+        0.5416752204197018,
+        0.7071067811865475
+      ],
+      "azimuth_deg": -50,
+      "z_mm": -100,
+      "heading_deg": 0,
+      "scan_status": "UNASSESSED"
+    },
+    "pa": {
+      "elements": 32,
+      "frequency_MHz": 5,
+      "pitch_mm": 0.5,
+      "element_width_mm": 0.45,
+      "elevation_mm": 12,
+      "focus_mm": 30,
+      "sector_min_deg": 35,
+      "sector_max_deg": 70,
+      "angular_step_deg": 2,
+      "selected_angle_deg": 45,
+      "manufacturer": "Imasonic",
+      "wedge_nominal_shear_deg": 55,
+      "wedge_reference": null,
+      "source_model": "EQUIVALENT_STEEL_INTERFACE_NO_WEDGE_PROPAGATION"
+    },
+    "event": {
+      "id": "MF1",
+      "t": 8.729713347982077,
+      "amp": 0.00537994833566929,
+      "phase_rad": 2.0608573094002116,
+      "kind": "flaw",
+      "leg": 1,
+      "reflections_before_target": 0,
+      "path_label": "DIRECT_ARRAY_SINGLE_SCATTERING",
+      "mechanism": "SCALAR_PHASED_ARRAY_KIRCHHOFF_SINGLE_SCATTERING",
+      "one_way_mm": 14.142135623730965,
+      "point_mm": [
+        122.12964584044248,
+        -145.5484441926058,
+        -90
+      ],
+      "angle_deg": 45,
+      "receiver_complex": {
+        "re": -0.0001266116218863527,
+        "im": 0.0002373375390440462
+      },
+      "fixed_reference_amplitude": 0.05,
+      "validated_elastic": false
+    },
+    "angles": [
+      35,
+      37,
+      39,
+      41,
+      43,
+      45,
+      47,
+      49,
+      51,
+      53,
+      55,
+      57,
+      59,
+      61,
+      63,
+      65,
+      67,
+      69,
+      70
+    ]
+  },
+  "EN": {
+    "event": {
+      "id": "MF1",
+      "t": 8.729713347982077,
+      "amp": 0.06193713352885877,
+      "phase_rad": -2.2055287396276415,
+      "kind": "flaw",
+      "leg": 1,
+      "reflections_before_target": 0,
+      "path_label": "Direct — scalar scattering",
+      "mechanism": "FINITE_SURFACE_SCALAR_KIRCHHOFF_SINGLE_SCATTERING",
+      "one_way_mm": 14.142135623730967,
+      "point_mm": [
+        122.12964584044248,
+        -145.5484441926058,
+        -90
+      ],
+      "receiver_complex": {
+        "re": -0.0018363185337965894,
+        "im": -0.00249368312278532
+      },
+      "fixed_reference_amplitude": 0.05,
+      "validated_elastic": false
+    },
+    "pose": {
+      "position_mm": [
+        128.55752193730788,
+        -153.20888862379562,
+        -100
+      ],
+      "rotation_matrix_local_to_world": [
+        [
+          0,
+          -0.766044443118978,
+          0.6427876096865394
+        ],
+        [
+          0,
+          -0.6427876096865394,
+          -0.766044443118978
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "local_axes": {
+        "x_forward": [
+          0,
+          0,
+          1
+        ],
+        "y_side": [
+          -0.766044443118978,
+          -0.6427876096865394,
+          0
+        ],
+        "z_outward": [
+          0.6427876096865394,
+          -0.766044443118978,
+          0
+        ]
+      },
+      "beam_direction_world": [
+        -0.45451947767204376,
+        0.5416752204197018,
+        0.7071067811865475
+      ],
+      "azimuth_deg": -50,
+      "z_mm": -100,
+      "heading_deg": 0,
+      "scan_status": "UNASSESSED"
+    },
+    "reference": 0.05,
+    "model": "FINITE_SURFACE_SCALAR_KIRCHHOFF_SINGLE_SCATTERING"
+  },
+  "EN_PA": {
+    "pose": {
+      "position_mm": [
+        128.55752193730788,
+        -153.20888862379562,
+        -100
+      ],
+      "rotation_matrix_local_to_world": [
+        [
+          0,
+          -0.766044443118978,
+          0.6427876096865394
+        ],
+        [
+          0,
+          -0.6427876096865394,
+          -0.766044443118978
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "local_axes": {
+        "x_forward": [
+          0,
+          0,
+          1
+        ],
+        "y_side": [
+          -0.766044443118978,
+          -0.6427876096865394,
+          0
+        ],
+        "z_outward": [
+          0.6427876096865394,
+          -0.766044443118978,
+          0
+        ]
+      },
+      "beam_direction_world": [
+        -0.45451947767204376,
+        0.5416752204197018,
+        0.7071067811865475
+      ],
+      "azimuth_deg": -50,
+      "z_mm": -100,
+      "heading_deg": 0,
+      "scan_status": "UNASSESSED"
+    },
+    "pa": {
+      "elements": 32,
+      "frequency_MHz": 5,
+      "pitch_mm": 0.5,
+      "element_width_mm": 0.45,
+      "elevation_mm": 12,
+      "focus_mm": 30,
+      "sector_min_deg": 35,
+      "sector_max_deg": 70,
+      "angular_step_deg": 2,
+      "selected_angle_deg": 45,
+      "manufacturer": "Imasonic",
+      "wedge_nominal_shear_deg": 55,
+      "wedge_reference": null,
+      "source_model": "EQUIVALENT_STEEL_INTERFACE_NO_WEDGE_PROPAGATION"
+    },
+    "event": {
+      "id": "MF1",
+      "t": 8.729713347982077,
+      "amp": 0.00537994833566929,
+      "phase_rad": 2.0608573094002116,
+      "kind": "flaw",
+      "leg": 1,
+      "reflections_before_target": 0,
+      "path_label": "DIRECT_ARRAY_SINGLE_SCATTERING",
+      "mechanism": "SCALAR_PHASED_ARRAY_KIRCHHOFF_SINGLE_SCATTERING",
+      "one_way_mm": 14.142135623730965,
+      "point_mm": [
+        122.12964584044248,
+        -145.5484441926058,
+        -90
+      ],
+      "angle_deg": 45,
+      "receiver_complex": {
+        "re": -0.0001266116218863527,
+        "im": 0.0002373375390440462
+      },
+      "fixed_reference_amplitude": 0.05,
+      "validated_elastic": false
+    },
+    "angles": [
+      35,
+      37,
+      39,
+      41,
+      43,
+      45,
+      47,
+      49,
+      51,
+      53,
+      55,
+      57,
+      59,
+      61,
+      63,
+      65,
+      67,
+      69,
+      70
+    ]
+  }
+}

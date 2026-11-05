@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),A=require('./nozzle_array.js'),S=require('./scalar_scattering.js');
+const profile={elements:32,pitch_mm:.5,element_width_mm:.45,elevation_mm:12},lambda=.648,src=A.source([0,0,0],[0,0,-1],[1,0,0],profile,lambda),surface=S.rectangle([0,0,30],[0,0,-1],[1,0,0],2,2,lambda,2),base=A.prepare(src,surface),phased=A.evaluate(base,0,0);
+const mono=S.prepare({center:src.center,direction:src.direction,points:src.points},surface,lambda),ref=S.receive(mono);
+assert(Math.abs(phased.received.re-ref.re)<1e-10);assert(Math.abs(phased.received.im-ref.im)<1e-10);
+assert.equal(src.centres.length,32);assert(Math.abs(src.centres[31][0]-src.centres[0][0]-15.5)<1e-12);
+const steered=A.evaluate(base,40,0);assert(steered.received.amplitude<phased.received.amplitude/5);
+const focused=A.evaluate(base,0,30);assert(Number.isFinite(focused.received.amplitude));assert(focused.received.amplitude>0);
+const oblique=A.evaluate(base,22,30),w=A.phases(src,22,30);let re=0,im=0;for(let i=0;i<src.points.length;i++){const q=S.at(oblique.prepared,src.points[i],src.direction),phase=w[src.indices[i]];re+=q.re*phase[0]-q.im*phase[1];im+=q.re*phase[1]+q.im*phase[0];}re/=src.points.length;im/=src.points.length;assert(Math.abs(re-oblique.received.re)<1e-10);assert(Math.abs(im-oblique.received.im)<1e-10);
+const inc=A.incident(src,w,oblique.prepared.nodes[0].p);assert(Math.abs(inc.re-oblique.prepared.nodes[0].re)<1e-10);assert(Math.abs(inc.im-oblique.prepared.nodes[0].im)<1e-10);
+console.log('Array: 32 real elements, 15.5 mm centre span, reciprocal aperture matches independent scalar integration, steering sensitivity and finite focus: PASS');
