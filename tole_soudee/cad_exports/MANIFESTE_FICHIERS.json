@@ -1,0 +1,157 @@
+[
+  {
+    "file": "PIECES/METAL_FONDU_X.step",
+    "bytes": 29696,
+    "sha256": "856bbed5d7ecb52d6c3aeb7c3ddbea80376b28eaae4e6a8660dd4a1bca264d0e"
+  },
+  {
+    "file": "INDICATIONS_REFERENCES_NON_COUPANTES.step",
+    "bytes": 32227,
+    "sha256": "a7001129a5af6b76633246f1867eee8d19199d53b59c3e69a4a4c4b6a93fbba6"
+  },
+  {
+    "file": "variations_indications.csv",
+    "bytes": 797,
+    "sha256": "0aeb06c27d2b2145042e5dcf165f2e535658b99dc1d64b60f7d9acfb5059022c"
+  },
+  {
+    "file": "PIECES/TOLE_GAUCHE_EXT.step",
+    "bytes": 15472,
+    "sha256": "0d1378fbe8c10c18fe363190d4cddc4794dd36a9ada830f96acdaa5c693131e4"
+  },
+  {
+    "file": "PIECES/TOLE_GAUCHE_RIVE.step",
+    "bytes": 22741,
+    "sha256": "b873f7b762c07856834c80d43644aaae58742d0153f3282229bcdbaf95d3a491"
+  },
+  {
+    "file": "table_indications_EN.csv",
+    "bytes": 671,
+    "sha256": "9572fc6f611a731f822f14ae7f6351dc272f4031d28b24802fb16c1b164fb851"
+  },
+  {
+    "file": "PIECES/BOURRELET_INFERIEUR.step",
+    "bytes": 4311736,
+    "sha256": "a6fcf1642a6bff2cab75a683a110336fc061c445df4e1e1c4b2e6b04bfe55269"
+  },
+  {
+    "file": "geometrie_pour_rv.json",
+    "bytes": 2208487,
+    "sha256": "83f8e49b8ae900ba3aaa8433c686b0df60a00cc7be42fd4c7408e0b15e0e5b36"
+  },
+  {
+    "file": "PIECES/ZAT_GAUCHE.step",
+    "bytes": 15488,
+    "sha256": "0b0eecd1a54685cfe1067e3a40b773cf1074553b57f4e79b1c9bf4f1787b6016"
+  },
+  {
+    "file": "TOLE_X_ENVELOPPE_LISSE.step",
+    "bytes": 163721,
+    "sha256": "91f5d5cb8207e99d245fa3696c53517f7d0c41b6caac86eb5117edac1e991129"
+  },
+  {
+    "file": "parametres_et_geometrie.json",
+    "bytes": 2142,
+    "sha256": "cf5090550a7ed67df658ffe298d591d8cf73f1b5a691d0955635efa1dcfc4610"
+  },
+  {
+    "file": "APERCU_CAO.png",
+    "bytes": 184316,
+    "sha256": "b7972faf4af11894cfda214ef3b9bff23a31ab96aa7c8a7684c4b424ad3e3b5b"
+  },
+  {
+    "file": "TOLE_X_245_250_10_ASSEMBLAGE.step",
+    "bytes": 8644418,
+    "sha256": "b99967614a3bcc7511712e5a1156d6ee6635d3a01f955f2918c96171b4dbc925"
+  },
+  {
+    "file": "PIECES/ZAT_DROITE.step",
+    "bytes": 15488,
+    "sha256": "191cef6ddbfc2df4addaec8482c738bfa400735e6d04efd1dbee0a3ca705931c"
+  },
+  {
+    "file": "variations_domaines.csv",
+    "bytes": 2176,
+    "sha256": "f27627814d1171a1f9cd794625dbafc22c994ebc54154b78b4ed7bb9c046edd5"
+  },
+  {
+    "file": "PIECES/TOLE_DROITE_RIVE.step",
+    "bytes": 22746,
+    "sha256": "e4c78d293918ed17035c4ea34c2b4c19b47aca5fa328cfac4c47e6c966273317"
+  },
+  {
+    "file": "table_indications_FR.csv",
+    "bytes": 695,
+    "sha256": "0f4e3dddf708475b9ffccaed2fc8e7c524bfc404b86cd7d858eba5496f50b402"
+  },
+  {
+    "file": "WELDED_PLATE_X_245_250_10_ASSEMBLY_EN.step",
+    "bytes": 8644478,
+    "sha256": "6c8ce969fa99c5a8d890c57deddb14735cce507baf6f01e71f8e489593b46513"
+  },
+  {
+    "file": "PIECES/BOURRELET_SUPERIEUR.step",
+    "bytes": 4101060,
+    "sha256": "a8aafff73a50da6f216f9de21349cc67906db8e24dc3451690978ee9b3b9ff93"
+  },
+  {
+    "file": "PIECES/TOLE_DROITE_EXT.step",
+    "bytes": 15498,
+    "sha256": "eeb2ebcab9dc1b81a3871973b3508a31b489ddf775012bf8f2d713b49663d14c"
+  },
+  {
+    "file": "CAD_TOLE_X_FR_EN.html",
+    "bytes": 7220017,
+    "sha256": "57e3127df5380b266b5ff1260756f0624a0bff6852176e7769e878e101228f6e"
+  },
+  {
+    "file": "README_FR.md",
+    "bytes": 5166,
+    "sha256": "0a7fd77bfe15051bd7c8231978a6e80f4bf6e973f081810fd14bdb55ca6a5230"
+  },
+  {
+    "file": "README_EN.md",
+    "bytes": 4154,
+    "sha256": "929c62795e53e1702fcef1a8393a4f126d4c1f232e0e8ed9535e657921c07a40"
+  },
+  {
+    "file": "BILAN_CONTROLES_FR_EN.md",
+    "bytes": 2472,
+    "sha256": "75e8ab083b65734e27d594425ff05956154f4b95436723f85023565ca46d1751"
+  },
+  {
+    "file": "SPEC_APPLICATION_FR_EN.md",
+    "bytes": 5662,
+    "sha256": "09c6b9b7ecc212007085876c6afc73276b43de1e2ff8f78b895c04790018a79a"
+  },
+  {
+    "file": "SOURCE/cad_model.py",
+    "bytes": 11114,
+    "sha256": "e94efea7f9eafb2ccb8add31cb99fed9bde0bc56f35513a37f5b26461a501639"
+  },
+  {
+    "file": "SOURCE/make_viewer.py",
+    "bytes": 11290,
+    "sha256": "efbd6c3b75075d955179dfb7c0618054c53d4f96675a8a3672598d777b156569"
+  },
+  {
+    "file": "SOURCE/parameters.json",
+    "bytes": 1261,
+    "sha256": "55c3b5415b552dd3995f5da52248a111d42659d0a6705ea0668b8ac29414fc6e"
+  },
+  {
+    "file": "SOURCE/requirements-cad.txt",
+    "bytes": 29,
+    "sha256": "cacc17fa1715f252fcc5380381841a9fc7c386e996c36e4ac126ded2625ce80f"
+  },
+  {
+    "file": "SOURCE/test_cad_model.py",
+    "bytes": 4302,
+    "sha256": "84d4c5092de92b1a9012bea17670254d1389b96d16a65749e0969eb180753144"
+  },
+  {
+    "file": "SOURCE/test_viewer_browser.py",
+    "bytes": 1581,
+    "sha256": "91b5124035354a76b8ec2521a95565f213d359afbb516de3c791d71fe84317eb"
+  }
+]

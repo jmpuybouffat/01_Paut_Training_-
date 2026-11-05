@@ -1,0 +1,6 @@
+﻿ID,Type,Longueur (mm),Largeur (mm),Diamètre (mm),Ouverture (mm),X (mm),Y (mm),Z (mm),Rx (°),Ry (°),Rz (°),Statut du placement
+MF1,Collage — face de référence,2.0,0.5,,,65.0,122.625,7.5,-45.0,0.0,0.0,Scénario proposé — à valider
+MF2,Collage — face de référence,4.0,0.5,,,165.0,127.375,7.5,45.0,0.0,0.0,Scénario proposé — à valider
+INC1,Inclusion sphérique — référence,,,0.5,,105.0,111.0,3.0,0.0,0.0,0.0,Scénario proposé — à valider
+INC2,Inclusion sphérique — référence,,,0.5,,185.0,139.0,7.0,0.0,0.0,0.0,Scénario proposé — à valider
+FIS1,Fissure dentelée — référence,2.0,0.5,,,125.0,125.0,3.0,90.0,0.0,0.0,Scénario proposé — à valider

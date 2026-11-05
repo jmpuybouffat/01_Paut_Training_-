@@ -1,0 +1,6 @@
+﻿ID,Type,Length (mm),Width (mm),Diameter (mm),Opening (mm),X (mm),Y (mm),Z (mm),Rx (deg),Ry (deg),Rz (deg),Placement status
+MF1,Lack of fusion — reference face,2.0,0.5,,,65.0,122.625,7.5,-45.0,0.0,0.0,Proposed scenario — to review
+MF2,Lack of fusion — reference face,4.0,0.5,,,165.0,127.375,7.5,45.0,0.0,0.0,Proposed scenario — to review
+INC1,Spherical inclusion — reference,,,0.5,,105.0,111.0,3.0,0.0,0.0,0.0,Proposed scenario — to review
+INC2,Spherical inclusion — reference,,,0.5,,185.0,139.0,7.0,0.0,0.0,0.0,Proposed scenario — to review
+FIS1,Sawtooth crack — reference,2.0,0.5,,,125.0,125.0,3.0,90.0,0.0,0.0,Proposed scenario — to review
