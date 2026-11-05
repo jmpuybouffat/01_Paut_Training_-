@@ -16,4 +16,8 @@ const twice=P.evaluate(P.prepare({...c,inclusion_contrast:.2},pose,se),0).events
 const pa={...se,kind:'PA',mode:'T',frequency_MHz:5,angle_deg:52,pitch_mm:.5,element_width_mm:.45,active_height_mm:12,focus_mm:30};const paprep=P.prepare(c,{...pose,y:100},pa),ev=P.evaluate(paprep,52);assert(ev.events.every(e=>Number.isFinite(e.amplitude)));assert(P.weights(paprep.tx,{...pose,y:100},52).every(w=>w.every(Number.isFinite)));
 assert(P.incident(paprep,ev,[105,110,5])>=0);assert(Number.isFinite(P.field(paprep,ev,[105,111,4],'I').scattered));
 const rotation=P.rotation(0,0,90);assert(Math.abs(rotation[0][0])<1e-12);assert.equal(rotation[1][0],1);
+assert.equal(P.field(P.prepare({...c,indications:[]},pose,se),empty,[105,111,4],null).scattered,0,'No artificial scattering without defects');
+const all=P.field(prep,res,[105,111,4],null),one=P.field(prep,res,[105,111,4],'I');assert(Math.abs(all.scattered-one.scattered)<1e-12);
+assert(Math.abs(P.incident(prep,res,[105,111,0]))<1e-10,'Opposite-wall pressure-release image has zero scalar pressure at wall');
+const multi=P.prepare({...c,indications:[inclusion,{...inclusion,id:'I2',x_mm:106}]},pose,se),multiEv=P.evaluate(multi,0),allField=P.field(multi,multiEv,[105,111,4],null),f1=P.field(multi,multiEv,[105,111,4],'I'),f2=P.field(multi,multiEv,[105,111,4],'I2');for(let k=0;k<2;k++)assert(Math.abs(allField.complex[k]-f1.complex[k]-f2.complex[k])<1e-10);
 console.log('Plate physics: bounds, 45° ray, dual Tx/Rx, analytic times, backwall, volume, gain scaling, uniform HAZ, SE projection, PA finite field: PASS');

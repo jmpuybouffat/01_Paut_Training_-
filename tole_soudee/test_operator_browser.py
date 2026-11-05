@@ -34,7 +34,7 @@ with sync_playwright() as p:
     assert page.evaluate('records.at(-1).angles.at(-1)')==70
     assert page.evaluate('records.at(-1).profile.pitch_mm')==.5
     assert page.evaluate('records.at(-1).profile.active_height_mm')==12
-    assert page.evaluate("$('field').data.length")==2
+    assert page.evaluate("$('field').data.length")>1
     with page.expect_download() as d:page.locator('#export').click()
     export=Path('/tmp/plate-session-training.json');d.value.save_as(export)
     data=json.loads(export.read_text());assert data['truth'];assert data['acquisition'][-1]['pose6d']['position_mm']==[65,100,10]

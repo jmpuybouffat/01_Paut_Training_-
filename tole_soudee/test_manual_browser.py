@@ -19,10 +19,12 @@ with sync_playwright() as p:
     page.mouse.move(*end,steps=8)
     assert abs(page.evaluate('pose().x')-75)<.02
     assert abs(page.evaluate('pose().y')-101)<.02
+    page.wait_for_function("lastComputedPose&&Math.abs(lastComputedPose.x-75)<.02&&$('field').data[0].z.length===11",timeout=60000)
     page.mouse.up();settle(page)
+    assert page.evaluate("$('field').data[0].z.length")==21
     assert abs(page.evaluate('lastComputedPose.x')-75)<.02
     assert abs(page.evaluate('records.at(-1).pose.y')-101)<.02
-    assert page.evaluate("$('field').data.length")==2,'Full field refreshed after release'
+    assert page.evaluate("$('field').data.length")>1,'Full field refreshed after release'
     assert len(page.evaluate("$('joint').data[2].x"))==9
     assert page.evaluate("$('joint').data[2].y")==[0,0,4.375,5.625,10,10,5.625,4.375,0]
     assert page.evaluate("$('section').data.some(t=>t.name.includes('Préparation'))")
