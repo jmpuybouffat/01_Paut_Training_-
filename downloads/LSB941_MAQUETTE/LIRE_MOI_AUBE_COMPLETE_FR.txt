@@ -1,0 +1,19 @@
+LSB941_AUBE_TEST_001_COMPLETE — MAQUETTE RECONSTRUITE
+
+Contenu : une copie de la pièce test, complétée par un aerofoil reconstruit à partir de l’aube voisine. Un composant contenant un seul solide valide. La source reçue reste inchangée.
+
+IMPORT FUSION
+1. Décompresser le ZIP dans le dossier LSB941_TWIN, sous-dossier CAO_ASSEMBLAGE_2026_11_05.
+2. Ouvrir LSB941_AUBE_TEST_001_COMPLETE.step dans un document distinct avec Fichier > Ouvrir > Ouvrir à partir de mon ordinateur.
+3. Vérifier les unités : mm, échelle du fichier reçu conservée sans conversion présumée.
+4. Pour l’assemblage, insérer ce nouveau composant en conservant le repère du STEP reçu. Ne pas déplacer ni supprimer l’original avant la comparaison.
+5. Masquer la pièce centrale d’origine lorsque la copie complète est affichée afin d’éviter une superposition.
+
+CONSTRUCTION
+Contour de coupe mesuré : 138 sommets. Écart maximal au plan ajusté : 0,000247 mm. Extension par loft réglé, 14 sections, raccord adapté sur 1600 mm dans les unités reçues ; profils issus de la voisine recalée approximativement. Extrémité arrêtée 15 mm avant la cote maximale de la référence, puis fermée. Il ne s’agit pas d’une restitution constructeur de l’aerofoil.
+
+VERIFICATIONS
+Un solide valide. Fusion de la copie avec tolérance 0,001 mm. Écart de volume relatif à la somme pièce + extension : environ 7,9e-10. Les deux coquilles internes ont leurs sommets conservés à moins de 1e-7 mm. Cela vérifie ces cavités présentes dans le STEP, pas les indications éventuellement définies seulement par esquisses ou métadonnées Fusion.
+
+LIMITES
+La forme reconstruite doit être revue avant de figer les dégagements scanners. Le montage du bloc et des deux voisines reste à valider séparément. Cette livraison ne prétend pas fournir l’assemblage complet corrigé ni une roue entière. Ne pas utiliser l’extension reconstruite comme géométrie acoustique validée. Contrôle mécanique et comparaison dans Fusion encore nécessaires.
