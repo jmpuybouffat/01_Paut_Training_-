@@ -1,0 +1,28 @@
+C1 — CYCLE COMPLET, VUE CLAIRE ET RESULTATS
+
+OUVRIR EN PREMIER : 00_OUVRIR_CYCLE_COMPLET_C1.html
+Double-cliquer sur ce fichier apres avoir extrait TOUT le ZIP dans un meme dossier. Il s'ouvre dans Chrome ou Edge, sans installation de Python.
+
+1. Mouvement : fond clair, surfaces completes des aubes, volume global holder + PA + wedge. Cliquer Lecture. La souris tourne la vue ; la molette zoome ; le curseur Transparence rend le passage plus lisible.
+2. Cycle de l'application : dans le graphique 3D du cycle, utiliser Play pour derouler acquisition simulee et detections sur 41 positions. Les vues PAUT/cartographie suivantes sont l'arret final 41/41.
+3. Analyses : ouvrir les rubriques EDM_01 a EDM_05 pour voir TFM et voxel de chaque indication.
+4. Rapport : consulter le rapport dans la page ou cliquer Ouvrir le rapport original. Les liens CSV donnent validation, detections, cartographie, lois focales, reglages, analyse/decision et contexte JSON.
+
+POUR UNE VIDEO SEULE : C1_CYCLE_COMPLET_VUE_CLAIRE.mp4
+Cette video enchaine la vue claire du parcours 3D puis la video de resultats produite par le generateur original C1, puis le rapport. La video choisit EDM_03 pour l'illustration TFM/voxel ; la page HTML donne les cinq indications.
+
+CE QUI EST CONSERVE
+Source C1 : https://bytendt-b014-true-twin.streamlit.app/
+Depot ByteNDT-B014-TRUE-TWIN, revision 9c5a7b4edea07050edc0bd937893608c69f767bc.
+41 positions originales ; 3 485 lois ; 5/5 EDM dans la gorge intrados.
+53 fonctions originales de l'application restent identiques. Les resultats affiches sont obtenus en rejouant leurs entrees/constantes d'origine ; aucune trajectoire, seuil ou indication n'a ete ajuste pour forcer le resultat.
+Les maillages trois aubes sont ajoutes aux figures uniquement. Pas de modification des donnees geometriques utilisees par le calcul UT.
+
+STATUT
+Rejeu numerique de reference, pas une nouvelle acquisition sur piece physique. Le volume holder + PA + wedge est une enveloppe visuelle a detailler ; son cube graphique ne valide pas les dimensions finales de l'ensemble. Contact, jeu dans le slot, insertion/retrait, cable, rail et entrainement restent a verifier avant fabrication.
+
+L'APPLICATION STREAMLIT EN LIGNE N'A PAS ETE MODIFIEE.
+Ce dossier livre la page hors ligne et la video complete ; les sources d'une version Streamlit avec contexte trois aubes sont fournies separement pour preparation du deploiement.
+
+CORRECTION VISUELLE
+Le premier sketch etait trop sombre et echantillonnait les triangles, creant des trous visuels. Cette version conserve toutes les faces des maillages d'affichage et utilise un fond clair. La transparence facilite la lecture, mais ne constitue pas une preuve d'absence de collision.
