@@ -1,0 +1,28 @@
+C1 — PREMIERE REPRISE DANS LE MODELE TROIS AUBES
+
+Ouvrir C1_41_POSITIONS_MODELE_3_AUBES.html dans Chrome/Edge. Cliquer Lecture pour parcourir les 41 positions source. Le curseur, Debut, Vue ensemble et Vue sonde permettent de revoir le mouvement. Le fichier HTML fonctionne hors ligne.
+
+Source : https://bytendt-b014-true-twin.streamlit.app/
+Depot public : jmpuybouffat/ByteNDT-B014-TRUE-TWIN
+Revision : 9c5a7b4edea07050edc0bd937893608c69f767bc
+Script : B014_TRUE_TWIN_LIVING_ENGINEERING_FINAL.py (titre C1 EXTRADOS vers INTRADOS, 41 positions, 5 EDM).
+
+CONTINUITE
+Les 41 positions PA et leurs cibles sont lues sans modification dans les deux CSV geles de l'application. La matrice acoustique reprend les fonctions geometriques originales array_elements/build_steps. Aucun deplacement, projection sur aube, recalage force ou substitution par PARCOURS_1/2. Les directions nominales sont celles PA-vers-cible de l'application. Controle de repere : 1794 sommets racine compares au STL source x0,1 ; ecart maximal 0,00001351 mm, compatible avec precision STL. Les voisines et le bloc restent ceux de la base trois aubes acceptee.
+
+Le mouvement dans le HTML passe d'une position source a la suivante. Il ne definit pas une nouvelle loi de commande mecanique ni une vitesse d'acquisition.
+
+REPRESENTATION
+Le volume unique represente globalement HOLDER + PA + WEDGE, selon la confirmation utilisateur. Son cube graphique de 25 mm est une representation de travail, pas une cote validee de l'encombrement total. Ne pas reduire les pieces CAO V04 pour rentrer dans ce cube : PA+wedge seul avait ete fixe a 25 mm et largeur du berceau d'etude a 29,6 mm. Le volume est centre sur le point PA source et oriente sur le repere acoustique pour l'illustration ; la pose de contact du wedge n'est pas exportee par ces tables.
+
+Les aubes sont transparentes uniquement pour lisibilite. Cette vue ne valide pas l'absence de collision, l'appui, le couplage ou l'insertion/retrait du scanner.
+
+RESULTATS
+Le resultat C1 connu de 5/5 EDM dans la gorge intrados reste la reference de l'application. Ce sketch ne recalcule ni signaux, ni lois, ni detections, ni TFM/voxel. Il ne pretend pas reafficher tous ces panneaux ou animer les detections ; il reprend ici le mouvement, la matrice acoustique et le segment nominal vers la cible.
+
+FABRICATION
+Rail, moteur-codeur, support plateforme, cable reel, ressort, profils wedges et verification de passage restent a integrer. Ce package n'est pas un dossier de fabrication ni une validation d'examen physique.
+
+Publication : utiliser la mention « C1 — reprise des 41 positions source dans le modele trois aubes — volume mecanique global a detailler ». Ne pas presenter le cube comme un scanner termine ou un nouvel examen acquis.
+
+Three.js — MIT. Licence incluse.
