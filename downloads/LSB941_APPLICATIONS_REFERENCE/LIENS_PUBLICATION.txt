@@ -1,0 +1,10 @@
+BYTE NDT — TWIN LSB941
+
+C1 — EXTRADOS vers INTRADOS — 41 positions — 5 indications EDM
+https://bytendt-b014-true-twin.streamlit.app/
+
+C2 — INTRADOS vers EXTRADOS — 199 positions — 6 indications EDM
+Matrice 8x8, 64 elements, 16 915 lois focales
+https://bytendt-b014-c2-corrige.streamlit.app/
+
+Reference : capture utilisateur et faces confirmees en session. Les URL restent inchangees.
