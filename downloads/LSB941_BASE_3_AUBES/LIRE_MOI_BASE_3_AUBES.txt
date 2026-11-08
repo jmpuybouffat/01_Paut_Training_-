@@ -1,0 +1,10 @@
+BASE DE CONCEPTION SCANNER — 3 AUBES COMPLETES V02
+
+Sources : proposition de recalage ouverte par Jean-Michel + extension centrale seule deja publiee.
+Ajout unique : EXTENSION_CENTRALE_RECONSTRUITE_PROVISOIRE. Aucune seconde racine.
+Racine et extension : facteur 1, pas de nouvelle translation/rotation. Peripherie : memes transformations que la proposition acceptee.
+Le fichier conserve le repere et l echelle native du STEP precedent. Ne pas confondre avec les mm physiques : la base 0,1 sert aux dimensions reelles discutees.
+Le bloc conserve le defaut topologique source et la correction relative de peripherie 1,101743 ; cette base de conception ne valide pas l insertion reelle ni une fabrication.
+Les 5/6 indications, leurs identifiants et les donnees natives TWIN ne sont pas sauvegardes par ce STEP. Conserver le document natif d origine.
+
+UTILISATION : ouvrir le STEP dans un document separe. Si la proposition precedente est deja chargee, il suffit plutot d inserer LSB941_EXTENSION_AEROFOIL_SEULE au repere d origine ; ne pas importer a nouveau tout l assemblage dans le meme document.
