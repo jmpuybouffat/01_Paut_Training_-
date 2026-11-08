@@ -1,0 +1,29 @@
+SCANNER C1 — MODULE ROTULE + RESSORT V04
+ETUDE POUR REVUE, PAS UNE LIBERATION DE FABRICATION
+
+Cette version integre la rotule au porte-sonde, independamment du coulisseau a ressort. Ce n'est pas encore le scanner complet.
+
+Ouvrir APERCU_MODULE_V04.html hors ligne dans Chrome ou Edge. Utiliser les curseurs Course axiale et Bascule pour examiner le mouvement. Le STEP permet la revue CAO dans Fusion ; tous les fichiers de ce dossier sont en mm physiques, PA+wedge 25 x25 x25 mm. Ne pas appliquer le facteur 10 du vieux repere trois aubes aux pieces a fabriquer.
+
+14 groupes CAO dont 4 pieces imprimees envisagees :
+01 berceau avec rotule annulaire integree ;
+02 coquille basse ;
+03 coquille haute avec coulisseau ;
+04 chapeau fixe.
+
+Controle obtenu : 14 groupes geometriquement valides ; 4 pieces candidates constituees chacune d'un solide. Aucune intersection volumique interne detectee sur 15 poses : course -1/0/+3 mm combinee aux bascules 0 et +/-1 degre autour de chacun des deux axes. Echantillonnage geometrique, pas un essai physique, pas une preuve de toutes les combinaisons ni du passage dans le slot.
+
+Mouillage global : le tuyau de l'ancien berceau a ete retire du mecanisme articule. L'installation de mouillage reste a definir.
+
+NON TERMINE avant impression fonctionnelle :
+- retenue des vis/coquilles par ecrous ou inserts, jeu d'impression et montage des tiges ;
+- qualification des butees et de la limitation de rotation autour de la normale ;
+- choix du ressort metallique et de l'effort ;
+- passage du connecteur reel, souplesse et rayon du cable ;
+- profil reel des wedges et verification acoustique ;
+- integration sur parcours EXACT de l'application C1, controle de la course complete et insertion/retrait entre aubes ;
+- support plateforme, verrouillage, rail, moteur-codeur et transmission.
+
+Les enveloppes ressort/tiges/vis/sonde/connecteur/cable ne sont pas des pieces a imprimer. Aucun STL de fabrication n'est fourni pour eviter de confondre cette revue avec des pieces qualifiees. Les resultats UT existants ne sont ni recalcules ni modifies.
+
+Three.js — MIT, copyright 2010-2023 Three.js authors. Licence incluse.
